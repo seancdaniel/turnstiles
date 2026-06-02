@@ -1,7 +1,4 @@
-/* ============================================================
-   Turnstiles — Theme Park Visit Tracker
-   main.js
-   ============================================================ */
+/* Turnstiles — main.js */
 
 // ============================================================
 // STATE
@@ -799,6 +796,10 @@ function timeAgo(ts) {
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+  // Always start on landing (user must sign in)
+  document.getElementById('landing-shell').style.display = 'block';
+  document.getElementById('app-shell').style.display = 'none';
+
   // Set today's date in check-in form
   document.getElementById('ci-date').valueAsDate = new Date();
 
