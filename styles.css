@@ -216,7 +216,7 @@ body {
 }
 
 .hero-starburst-inner::before {
-  content: '★  OPEN NOW  ★';
+  content: '★  Who\'s Number 1  ★';
   position: absolute;
   top: -11px; left: 50%; transform: translateX(-50%);
   font-family: 'Josefin Sans', sans-serif;
