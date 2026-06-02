@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turnstiles — Theme Park Visit Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ======================================================
+     TOAST
+     ====================================================== -->
+<div class="toast" id="toast">
+  <i class="ti ti-circle-check" id="toast-icon"></i>
+  <span id="toast-msg">Done!</span>
+</div>
+
+<!-- ======================================================
+     OVERLAYS / MODALS
+     ====================================================== -->
+
+<!-- Sign In Modal -->
+<div class="overlay" id="overlay-signin">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Sign In</span>
+      <button class="modal-close" onclick="closeOverlay('overlay-signin')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label class="field-lbl">Username or Email</label>
+        <input class="field-input" id="signin-user" type="text" placeholder="your_username">
+        <div class="field-error" id="signin-err">Invalid username or password</div>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Password</label>
+        <input class="field-input" id="signin-pass" type="password" placeholder="••••••••">
+      </div>
+      <br>
+      <button class="btn-hero" style="width:100%;justify-content:center" onclick="doSignIn()">Sign In</button>
+      <div class="auth-switch">No account? <a onclick="switchToRegister()">Create one free</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- Register Modal -->
+<div class="overlay" id="overlay-register">
+  <div class="modal modal-wide">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Create Profile</span>
+      <button class="modal-close" onclick="closeOverlay('overlay-register')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="steps" id="reg-steps">
+        <div class="step-item active" id="reg-step-1"><span class="step-num">1</span>Account</div>
+        <div class="step-item" id="reg-step-2"><span class="step-num">2</span>About You</div>
+        <div class="step-item" id="reg-step-3"><span class="step-num">3</span>Parks</div>
+      </div>
+
+      <!-- Step 1 -->
+      <div id="reg-page-1">
+        <div class="field-row">
+          <div class="field">
+            <label class="field-lbl">First Name</label>
+            <input class="field-input" id="reg-fname" placeholder="Sean">
+          </div>
+          <div class="field">
+            <label class="field-lbl">Last Name</label>
+            <input class="field-input" id="reg-lname" placeholder="Daniel">
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-lbl">Username</label>
+          <input class="field-input" id="reg-username" placeholder="turnstile_king">
+          <div class="field-error" id="reg-user-err">Username already taken</div>
+        </div>
+        <div class="field">
+          <label class="field-lbl">Email</label>
+          <input class="field-input" id="reg-email" type="email" placeholder="you@email.com">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="field-lbl">Password</label>
+            <input class="field-input" id="reg-pass" type="password" placeholder="••••••••">
+          </div>
+          <div class="field">
+            <label class="field-lbl">Confirm Password</label>
+            <input class="field-input" id="reg-pass2" type="password" placeholder="••••••••">
+          </div>
+        </div>
+        <div class="field-error" id="reg-pass-err">Passwords do not match</div>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="reg-page-2" style="display:none">
+        <div class="field">
+          <label class="field-lbl">Pick your avatar</label>
+          <div class="auth-avatar-picker" id="avatar-picker">
+            <div class="avatar-opt selected" data-emoji="🎢" onclick="pickAvatar(this)">🎢</div>
+            <div class="avatar-opt" data-emoji="🏰" onclick="pickAvatar(this)">🏰</div>
+            <div class="avatar-opt" data-emoji="🎡" onclick="pickAvatar(this)">🎡</div>
+            <div class="avatar-opt" data-emoji="🎠" onclick="pickAvatar(this)">🎠</div>
+            <div class="avatar-opt" data-emoji="🌍" onclick="pickAvatar(this)">🌍</div>
+            <div class="avatar-opt" data-emoji="🦁" onclick="pickAvatar(this)">🦁</div>
+            <div class="avatar-opt" data-emoji="🚀" onclick="pickAvatar(this)">🚀</div>
+            <div class="avatar-opt" data-emoji="⚓" onclick="pickAvatar(this)">⚓</div>
+            <div class="avatar-opt" data-emoji="🌋" onclick="pickAvatar(this)">🌋</div>
+            <div class="avatar-opt" data-emoji="🎬" onclick="pickAvatar(this)">🎬</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-lbl">Bio (optional)</label>
+          <textarea class="field-input" id="reg-bio" rows="3" placeholder="Annual passholder since 2019. EPCOT is my happy place." style="resize:none;height:80px"></textarea>
+        </div>
+        <div class="field">
+          <label class="field-lbl">Home Location (optional)</label>
+          <input class="field-input" id="reg-location" placeholder="Orlando, FL">
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div id="reg-page-3" style="display:none">
+        <p style="font-size:13px;color:var(--ink-light);font-weight:300;margin-bottom:18px;line-height:1.7">
+          Which parks do you hold passes for? This helps personalise your feed.
+        </p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="park-picker">
+          <label class="park-pick-opt"><input type="checkbox" value="Magic Kingdom"> 🏰 Magic Kingdom</label>
+          <label class="park-pick-opt"><input type="checkbox" value="EPCOT"> 🌍 EPCOT</label>
+          <label class="park-pick-opt"><input type="checkbox" value="Hollywood Studios"> 🎬 Hollywood Studios</label>
+          <label class="park-pick-opt"><input type="checkbox" value="Animal Kingdom"> 🦁 Animal Kingdom</label>
+          <label class="park-pick-opt"><input type="checkbox" value="Universal Studios Florida"> 🎥 Universal Studios FL</label>
+          <label class="park-pick-opt"><input type="checkbox" value="Islands of Adventure"> ⚓ Islands of Adventure</label>
+          <label class="park-pick-opt"><input type="checkbox" value="Epic Universe"> 🌌 Epic Universe</label>
+          <label class="park-pick-opt"><input type="checkbox" value="Blizzard Beach"> ⛷️ Blizzard Beach</label>
+          <label class="park-pick-opt"><input type="checkbox" value="Typhoon Lagoon"> 🌊 Typhoon Lagoon</label>
+          <label class="park-pick-opt"><input type="checkbox" value="Volcano Bay"> 🌋 Volcano Bay</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" id="reg-back-btn" onclick="regBack()" style="display:none">Back</button>
+      <button class="btn-sm primary" id="reg-next-btn" onclick="regNext()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Check-In Modal -->
+<div class="overlay" id="overlay-checkin">
+  <div class="modal modal-wide">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Log a Check-In</span>
+      <button class="modal-close" onclick="closeOverlay('overlay-checkin')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field">
+          <label class="field-lbl">Park</label>
+          <select class="field-input" id="ci-park">
+            <optgroup label="Disney World">
+              <option>Magic Kingdom</option>
+              <option>EPCOT</option>
+              <option>Hollywood Studios</option>
+              <option>Animal Kingdom</option>
+            </optgroup>
+            <optgroup label="Universal Orlando">
+              <option>Universal Studios Florida</option>
+              <option>Islands of Adventure</option>
+              <option>Epic Universe</option>
+            </optgroup>
+            <optgroup label="Water Parks">
+              <option>Blizzard Beach</option>
+              <option>Typhoon Lagoon</option>
+              <option>Volcano Bay</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-lbl">Date</label>
+          <input class="field-input" id="ci-date" type="date">
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Miles Walked</label>
+        <input class="field-input" id="ci-miles" type="number" min="0" max="30" step="0.1" placeholder="e.g. 7.4">
+      </div>
+      <div class="field">
+        <label class="field-lbl">Food &amp; Drinks Tried</label>
+        <div class="food-tag-input-wrap">
+          <input class="field-input" id="ci-food-input" placeholder="e.g. Dole Whip Float" onkeydown="foodKeydown(event)">
+          <button class="btn-sm" onclick="addFoodTag()">Add</button>
+        </div>
+        <div class="food-tags-list" id="ci-food-tags"></div>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Score This Visit's Food — <span id="ci-score-display" style="color:var(--coral);font-weight:700">8.5 / 10</span></label>
+        <div class="score-slider-wrap">
+          <input type="range" class="score-slider" id="ci-score" min="1" max="10" step="0.5" value="8.5" oninput="updateScoreDisplay(this.value)">
+          <div class="score-slider-labels"><span>1</span><span>5</span><span>10</span></div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Review (optional)</label>
+        <textarea class="field-input" id="ci-review" rows="3" placeholder="What was the highlight? Any tips for fellow passholders?" style="resize:none;height:80px"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Add a Photo (optional)</label>
+        <div class="photo-upload-zone" onclick="triggerPhotoUpload()">
+          <div class="photo-upload-icon"><i class="ti ti-camera-plus"></i></div>
+          <div class="photo-upload-text">Click to upload a photo</div>
+          <div class="photo-upload-sub">JPEG, PNG up to 10MB</div>
+        </div>
+        <input type="file" id="ci-photo-input" accept="image/*" style="display:none" onchange="handlePhotoSelect(event)">
+        <div id="ci-photo-preview" style="margin-top:8px;display:none">
+          <img id="ci-photo-img" style="width:100%;max-height:180px;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeOverlay('overlay-checkin')">Cancel</button>
+      <button class="btn-sm primary" onclick="submitCheckin()"><i class="ti ti-circle-check" style="font-size:13px"></i> Submit Check-In</button>
+    </div>
+  </div>
+</div>
+
+<!-- Food Review Modal -->
+<div class="overlay" id="overlay-food-review">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Rate a Food Item</span>
+      <button class="modal-close" onclick="closeOverlay('overlay-food-review')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label class="field-lbl">Item Name</label>
+        <input class="field-input" id="fr-name" placeholder="e.g. Dole Whip Float">
+      </div>
+      <div class="field">
+        <label class="field-lbl">Park / Location</label>
+        <select class="field-input" id="fr-park">
+          <option>Magic Kingdom</option><option>EPCOT</option>
+          <option>Hollywood Studios</option><option>Animal Kingdom</option>
+          <option>Universal Studios Florida</option><option>Islands of Adventure</option>
+          <option>Epic Universe</option><option>Blizzard Beach</option>
+          <option>Typhoon Lagoon</option><option>Volcano Bay</option>
+        </select>
+      </div>
+      <div class="field">
+        <div class="score-display" id="fr-score-display">8.5</div>
+        <div class="score-display-sub">your score out of 10</div>
+        <input type="range" class="score-slider" id="fr-score" min="1" max="10" step="0.5" value="8.5" oninput="document.getElementById('fr-score-display').textContent=parseFloat(this.value).toFixed(1)">
+        <div class="score-slider-labels"><span>1 — Avoid</span><span>5 — Decent</span><span>10 — Must Try</span></div>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Review</label>
+        <textarea class="field-input" id="fr-review" rows="3" style="resize:none;height:80px" placeholder="Tell the community what you thought..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeOverlay('overlay-food-review')">Cancel</button>
+      <button class="btn-sm primary" onclick="submitFoodReview()">Submit Review</button>
+    </div>
+  </div>
+</div>
+
+<!-- Photo Upload Modal -->
+<div class="overlay" id="overlay-photo">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Share a Photo</span>
+      <button class="modal-close" onclick="closeOverlay('overlay-photo')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label class="field-lbl">Park</label>
+        <select class="field-input" id="ph-park">
+          <option>Magic Kingdom</option><option>EPCOT</option>
+          <option>Hollywood Studios</option><option>Animal Kingdom</option>
+          <option>Universal Studios Florida</option><option>Islands of Adventure</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Photo</label>
+        <div class="photo-upload-zone" onclick="document.getElementById('ph-file').click()">
+          <div class="photo-upload-icon"><i class="ti ti-photo-plus"></i></div>
+          <div class="photo-upload-text">Click to choose photo</div>
+          <div class="photo-upload-sub">JPEG or PNG</div>
+        </div>
+        <input type="file" id="ph-file" accept="image/*" style="display:none" onchange="handleCommunityPhoto(event)">
+        <div id="ph-preview" style="margin-top:8px;display:none">
+          <img id="ph-preview-img" style="width:100%;max-height:200px;object-fit:cover;border-radius:6px">
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Caption (optional)</label>
+        <input class="field-input" id="ph-caption" placeholder="Magic at the Magic Kingdom!">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeOverlay('overlay-photo')">Cancel</button>
+      <button class="btn-sm primary" onclick="submitPhoto()">Share Photo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     MAIN APP SHELL
+     ====================================================== -->
+<div id="app-shell" style="display:none">
+
+  <!-- NAV -->
+  <header>
+    <nav class="nav" aria-label="Main navigation">
+      <div class="nav-inner">
+        <a href="#" class="nav-brand" onclick="showView('home')">
+          <div class="nav-logo-wrap" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
+              <circle cx="11" cy="11" r="5" stroke="#1DA09A" stroke-width="2"/>
+              <line x1="11" y1="0" x2="11" y2="8" stroke="#1DA09A" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="11" y1="14" x2="11" y2="22" stroke="#1DA09A" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+              <line x1="0" y1="11" x2="8" y2="11" stroke="#1DA09A" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+              <line x1="14" y1="11" x2="22" y2="11" stroke="#1DA09A" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+            </svg>
+          </div>
+          <span class="nav-wordmark">TURN<span>STILES</span></span>
+        </a>
+        <ul class="nav-links" role="list">
+          <li><a href="#" onclick="showView('home')" id="nav-home">My Parks</a></li>
+          <li><a href="#" onclick="showView('community')" id="nav-community">Community</a></li>
+          <li><a href="#" onclick="showView('food')" id="nav-food">Food Scores</a></li>
+          <li><a href="#" onclick="showView('photos')" id="nav-photos">Photos</a></li>
+        </ul>
+        <div class="nav-actions">
+          <button class="btn-solid" onclick="openOverlay('overlay-checkin')">
+            <i class="ti ti-plus"></i> Check In
+          </button>
+          <div class="nav-user" onclick="toggleDropdown()" id="nav-user-pill">
+            <div class="nav-user-av" id="nav-avatar">🎢</div>
+            <span class="nav-user-name" id="nav-username">You</span>
+            <i class="ti ti-chevron-down" style="font-size:12px;color:var(--ink-faint)"></i>
+          </div>
+          <div class="dropdown" id="user-dropdown">
+            <div class="dropdown-item" onclick="showView('profile');closeDropdown()">
+              <i class="ti ti-user"></i> My Profile
+            </div>
+            <div class="dropdown-item" onclick="openOverlay('overlay-checkin');closeDropdown()">
+              <i class="ti ti-circle-plus"></i> Log Check-In
+            </div>
+            <div class="dropdown-item" onclick="openOverlay('overlay-food-review');closeDropdown()">
+              <i class="ti ti-star"></i> Rate a Food Item
+            </div>
+            <div class="dropdown-item" onclick="openOverlay('overlay-photo');closeDropdown()">
+              <i class="ti ti-camera"></i> Share a Photo
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-item danger" onclick="doSignOut()">
+              <i class="ti ti-logout"></i> Sign Out
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ── HOME VIEW ── -->
+  <div id="view-home" class="screen active">
+    <!-- ===== BACKGROUND SILHOUETTES ===== -->
+<div class="bg-layer" aria-hidden="true">
+<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:0;left:0">
+  <!-- Ferris wheel — top right -->
+  <g opacity="0.055" transform="translate(1100,-50)">
+    <circle cx="110" cy="120" r="105" fill="none" stroke="#0E1E2E" stroke-width="2.5"/>
+    <line x1="110" y1="15" x2="110" y2="225" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="5" y1="120" x2="215" y2="120" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="36" y1="36" x2="184" y2="204" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="184" y1="36" x2="36" y2="204" stroke="#0E1E2E" stroke-width="1.5"/>
+    <circle cx="110" cy="120" r="13" fill="none" stroke="#0E1E2E" stroke-width="2"/>
+    <rect x="92" y="5" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="170" y="48" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="196" y="110" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="170" y="170" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="92" y="205" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="17" y="170" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="-9" y="110" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="17" y="48" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="110" y1="230" x2="86" y2="295" stroke="#0E1E2E" stroke-width="2.5"/>
+    <line x1="110" y1="230" x2="134" y2="295" stroke="#0E1E2E" stroke-width="2.5"/>
+    <line x1="72" y1="295" x2="148" y2="295" stroke="#0E1E2E" stroke-width="2.5"/>
+  </g>
+
+  <!-- Roller coaster — upper-mid-right -->
+  <g opacity="0.045" transform="translate(820,260)">
+    <path d="M0,110 Q50,20 100,85 Q150,150 200,65 Q250,0 300,45 Q350,90 400,30 L400,130 L0,130 Z" fill="none" stroke="#0E1E2E" stroke-width="2.5"/>
+    <line x1="0" y1="130" x2="400" y2="130" stroke="#0E1E2E" stroke-width="2"/>
+    <line x1="25" y1="100" x2="25" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="75" y1="65" x2="75" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="125" y1="108" x2="125" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="175" y1="80" x2="175" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="225" y1="52" x2="225" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="275" y1="60" x2="275" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="325" y1="50" x2="325" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="375" y1="72" x2="375" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="90" y="62" width="28" height="18" rx="3" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="95" y="58" width="18" height="8" rx="2" fill="none" stroke="#0E1E2E" stroke-width="1"/>
+  </g>
+
+  <!-- Ticket stub — top left -->
+  <g opacity="0.06" transform="translate(-10, 60) rotate(-10)">
+    <rect x="10" y="20" width="180" height="78" rx="8" fill="none" stroke="#0E1E2E" stroke-width="2"/>
+    <circle cx="10" cy="59" r="16" fill="#E8ECF0" stroke="#0E1E2E" stroke-width="2"/>
+    <circle cx="190" cy="59" r="16" fill="#E8ECF0" stroke="#0E1E2E" stroke-width="2"/>
+    <line x1="10" y1="59" x2="190" y2="59" stroke="#0E1E2E" stroke-width="1" stroke-dasharray="7,5" opacity="0.5"/>
+    <rect x="22" y="30" width="75" height="9" rx="2" fill="#0E1E2E" opacity="0.25"/>
+    <rect x="22" y="45" width="52" height="6" rx="2" fill="#0E1E2E" opacity="0.18"/>
+    <rect x="22" y="65" width="62" height="6" rx="2" fill="#0E1E2E" opacity="0.18"/>
+    <rect x="22" y="76" width="40" height="5" rx="2" fill="#0E1E2E" opacity="0.12"/>
+  </g>
+
+  <!-- Pennant flags across top -->
+  <g opacity="0.08" transform="translate(260, 0)">
+    <line x1="0" y1="0" x2="780" y2="0" stroke="#0E1E2E" stroke-width="1.5"/>
+    <polygon points="30,0 52,36 8,36" fill="#1565A8" opacity="0.7"/>
+    <polygon points="95,0 117,36 73,36" fill="#1DA09A" opacity="0.7"/>
+    <polygon points="160,0 182,36 138,36" fill="#2E9E6A" opacity="0.7"/>
+    <polygon points="225,0 247,36 203,36" fill="#0D2744" opacity="0.7"/>
+    <polygon points="290,0 312,36 268,36" fill="#1565A8" opacity="0.7"/>
+    <polygon points="355,0 377,36 333,36" fill="#1DA09A" opacity="0.7"/>
+    <polygon points="420,0 442,36 398,36" fill="#2E9E6A" opacity="0.7"/>
+    <polygon points="485,0 507,36 463,36" fill="#0D2744" opacity="0.7"/>
+    <polygon points="550,0 572,36 528,36" fill="#1565A8" opacity="0.7"/>
+    <polygon points="615,0 637,36 593,36" fill="#1DA09A" opacity="0.7"/>
+    <polygon points="680,0 702,36 658,36" fill="#2E9E6A" opacity="0.7"/>
+    <polygon points="745,0 767,36 723,36" fill="#0D2744" opacity="0.7"/>
+  </g>
+
+  <!-- Turnstile — bottom left -->
+  <g opacity="0.055" transform="translate(10, 750)">
+    <circle cx="70" cy="70" r="62" fill="none" stroke="#0E1E2E" stroke-width="2"/>
+    <circle cx="70" cy="70" r="11" fill="none" stroke="#0E1E2E" stroke-width="2"/>
+    <line x1="70" y1="8" x2="70" y2="59" stroke="#0E1E2E" stroke-width="4" stroke-linecap="round"/>
+    <line x1="70" y1="81" x2="70" y2="132" stroke="#0E1E2E" stroke-width="4" stroke-linecap="round" opacity="0.35"/>
+    <line x1="8" y1="70" x2="59" y2="70" stroke="#0E1E2E" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+    <line x1="81" y1="70" x2="132" y2="70" stroke="#0E1E2E" stroke-width="4" stroke-linecap="round" opacity="0.35"/>
+    <rect x="48" y="132" width="44" height="66" rx="4" fill="none" stroke="#0E1E2E" stroke-width="2"/>
+    <line x1="70" y1="198" x2="50" y2="240" stroke="#0E1E2E" stroke-width="2.5"/>
+    <line x1="70" y1="198" x2="90" y2="240" stroke="#0E1E2E" stroke-width="2.5"/>
+    <rect x="30" y="240" width="80" height="8" rx="4" fill="#0E1E2E" opacity="0.25"/>
+  </g>
+
+  <!-- Balloon cluster — right mid -->
+  <g opacity="0.055" transform="translate(1185, 480)">
+    <ellipse cx="32" cy="33" rx="24" ry="30" fill="none" stroke="#1565A8" stroke-width="2"/>
+    <line x1="32" y1="63" x2="55" y2="118" stroke="#1565A8" stroke-width="1.5"/>
+    <ellipse cx="72" cy="22" rx="24" ry="30" fill="none" stroke="#1DA09A" stroke-width="2"/>
+    <line x1="72" y1="52" x2="60" y2="118" stroke="#1DA09A" stroke-width="1.5"/>
+    <ellipse cx="110" cy="33" rx="24" ry="30" fill="none" stroke="#2E9E6A" stroke-width="2"/>
+    <line x1="110" y1="63" x2="68" y2="118" stroke="#2E9E6A" stroke-width="1.5"/>
+  </g>
+
+  <!-- Second ticket — bottom right -->
+  <g opacity="0.055" transform="translate(1020, 850) rotate(6)">
+    <rect x="10" y="20" width="190" height="82" rx="8" fill="none" stroke="#0E1E2E" stroke-width="2"/>
+    <circle cx="10" cy="61" r="17" fill="#E8ECF0" stroke="#0E1E2E" stroke-width="2"/>
+    <circle cx="200" cy="61" r="17" fill="#E8ECF0" stroke="#0E1E2E" stroke-width="2"/>
+    <line x1="10" y1="61" x2="200" y2="61" stroke="#0E1E2E" stroke-width="1" stroke-dasharray="7,5" opacity="0.5"/>
+    <rect x="24" y="30" width="80" height="10" rx="2" fill="#0E1E2E" opacity="0.22"/>
+    <rect x="24" y="46" width="56" height="6" rx="2" fill="#0E1E2E" opacity="0.16"/>
+    <rect x="24" y="68" width="66" height="6" rx="2" fill="#0E1E2E" opacity="0.16"/>
+    <rect x="24" y="80" width="44" height="5" rx="2" fill="#0E1E2E" opacity="0.11"/>
+  </g>
+
+  <!-- Castle silhouette — bottom left far -->
+  <g opacity="0.04" transform="translate(-20, 1060)">
+    <rect x="70" y="90" width="130" height="130" fill="#0E1E2E"/>
+    <rect x="46" y="110" width="46" height="110" fill="#0E1E2E"/>
+    <rect x="178" y="110" width="46" height="110" fill="#0E1E2E"/>
+    <rect x="105" y="46" width="58" height="54" fill="#0E1E2E"/>
+    <polygon points="134,0 110,46 158,46" fill="#0E1E2E"/>
+    <polygon points="69,68 46,110 92,110" fill="#0E1E2E"/>
+    <polygon points="201,68 178,110 224,110" fill="#0E1E2E"/>
+    <rect x="115" y="150" width="40" height="70" fill="#E8ECF0"/>
+  </g>
+
+  <!-- Star / diamond decorations -->
+  <g opacity="0.07">
+    <text x="58" y="480" font-size="16" fill="#1DA09A" font-family="serif">✦</text>
+    <text x="1196" y="720" font-size="20" fill="#1565A8" font-family="serif">★</text>
+    <text x="1238" y="260" font-size="13" fill="#1DA09A" font-family="serif">✦</text>
+    <text x="30" y="310" font-size="14" fill="#2E9E6A" font-family="serif">✦</text>
+    <text x="580" y="1160" font-size="18" fill="#1DA09A" font-family="serif">★</text>
+    <text x="880" y="860" font-size="14" fill="#1565A8" font-family="serif">✦</text>
+  </g>
+</svg>
+</div>
+
+    <div class="page">
+      <div class="marquee-strip" aria-hidden="true">
+        <div class="marquee-track" id="mtrack">
+          <span>Admit One</span><span class="marquee-sep">✦</span>
+          <span>Your Park Passport Awaits</span><span class="marquee-sep">✦</span>
+          <span>Log Every Visit</span><span class="marquee-sep">✦</span>
+          <span>Track Your Miles</span><span class="marquee-sep">✦</span>
+          <span>Rate the Food</span><span class="marquee-sep">✦</span>
+          <span>Climb the Leaderboard</span><span class="marquee-sep">✦</span>
+          <span>Admit One</span><span class="marquee-sep">✦</span>
+          <span>Your Park Passport Awaits</span><span class="marquee-sep">✦</span>
+          <span>Log Every Visit</span><span class="marquee-sep">✦</span>
+          <span>Track Your Miles</span><span class="marquee-sep">✦</span>
+          <span>Rate the Food</span><span class="marquee-sep">✦</span>
+          <span>Climb the Leaderboard</span><span class="marquee-sep">✦</span>
+        </div>
+      </div>
+
+      <section class="hero-wrap">
+        <div class="hero-inner">
+          <div>
+            <div class="hero-title-block">
+              <!-- Marquee-badge eyebrow -->
+              <div class="hero-starburst">
+                <div class="hero-starburst-inner">
+                  <span class="hero-starburst-text">The Official Passholder Tracker</span>
+                </div>
+              </div>
+
+              <!-- Big outline marquee name -->
+              <div class="hero-marquee-sign">
+                <span class="hero-name-outline">TURNSTILES</span>
+              </div>
+
+              <!-- Coloured banner rule -->
+              <div class="hero-name-banner">
+                <div class="hero-banner-left"></div>
+                <div class="hero-banner-center">EST. 2026 &nbsp;·&nbsp; ADMIT ONE</div>
+                <div class="hero-banner-right"></div>
+              </div>
+
+              <!-- Tagline -->
+              <div class="hero-tagline-wrap">
+                <span class="hero-tagline-star">★</span>
+                <span class="hero-tagline">Where <em>every visit</em> counts.</span>
+                <span class="hero-tagline-star">★</span>
+              </div>
+
+              <!-- Ticket stub row -->
+              <div class="hero-ticket-row">
+                <div class="hero-ticket-stub">Log Visits</div>
+                <div class="hero-ticket-line"></div>
+                <div class="hero-ticket-stub">Rate Food</div>
+                <div class="hero-ticket-line"></div>
+                <div class="hero-ticket-stub">Climb the Board</div>
+                <div class="hero-ticket-line"></div>
+                <div class="hero-ticket-stub">Share Photos</div>
+              </div>
+            </div>
+            <p class="hero-sub">
+              Log your check-ins across Disney World, Universal, and the water parks.
+              Track your miles, rate the food, and see where you rank in the community.
+            </p>
+            <div class="hero-stats" id="home-stats">
+              <div class="hero-stat"><div class="hero-stat-num" id="stat-visits">0</div><div class="hero-stat-lbl">Total Visits</div></div>
+              <div class="hero-stat"><div class="hero-stat-num" id="stat-miles">0</div><div class="hero-stat-lbl">Miles Walked</div></div>
+              <div class="hero-stat"><div class="hero-stat-num" id="stat-foods">0</div><div class="hero-stat-lbl">Foods Tried</div></div>
+              <div class="hero-stat"><div class="hero-stat-num" id="stat-rank">#—</div><div class="hero-stat-lbl">Community Rank</div></div>
+            </div>
+            <div class="hero-actions">
+              <button class="btn-hero" onclick="openOverlay('overlay-checkin')"><i class="ti ti-circle-plus"></i> Log a Check-In</button>
+              <button class="btn-hero-outline" onclick="showView('community')">Browse Community</button>
+            </div>
+          </div>
+          <!-- Passport -->
+          <aside class="passport">
+            <div class="passport-stub">
+              <div class="pp-serial">
+                <span>Annual Passholder</span><span>Admit One</span>
+              </div>
+              <div class="pp-name-row">
+                <div class="pp-name" id="passport-name">YOUR NAME</div>
+                <div class="pp-avatar" id="passport-avatar">🎢</div>
+              </div>
+              <div class="pp-tier-row">
+                <span style="color:rgba(168,230,226,0.7);font-size:11px" id="passport-stars">★</span>
+                <span class="pp-tier-badge" id="passport-tier">Bronze Tier</span>
+                <span class="pp-rank">Ranked <strong id="passport-rank">#—</strong></span>
+              </div>
+              <div class="passport-tear"></div>
+            </div>
+            <div class="passport-body">
+              <div class="pp-section-lbl">Visits by park</div>
+              <div class="park-bars" id="passport-park-bars">
+                <div style="text-align:center;padding:16px 0;font-size:12px;color:var(--ink-faint);font-weight:300;letter-spacing:0.5px">
+                  No visits logged yet.<br>Hit "Log a Check-In" to get started!
+                </div>
+              </div>
+            </div>
+            <div class="passport-footer">
+              <div class="pf-stat"><div class="pf-num" id="pf-since">—</div><div class="pf-lbl">Member Since</div></div>
+              <div class="pf-div"></div>
+              <div class="pf-stat"><div class="pf-num" id="pf-avg-food">—</div><div class="pf-lbl">Avg Food Score</div></div>
+              <div class="pf-div"></div>
+              <div class="pf-stat"><div class="pf-num" id="pf-photos">0</div><div class="pf-lbl">Photos Shared</div></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- PARK SELECTOR -->
+      <section class="section-wrap" id="parks">
+        <div class="section-head">
+          <div><h2 class="section-title">SELECT A PARK</h2><p class="section-sub">Log a check-in or view visit history</p></div>
+          <a href="#" class="section-link" onclick="showView('profile')">My history <i class="ti ti-arrow-right"></i></a>
+        </div>
+        <div class="tabs">
+          <button class="tab active" onclick="switchParkTab(this,'disney')">Disney World</button>
+          <button class="tab" onclick="switchParkTab(this,'universal')">Universal Orlando</button>
+          <button class="tab" onclick="switchParkTab(this,'water')">Water Parks</button>
+        </div>
+        <div id="ptab-disney">
+          <div class="park-grid">
+            <div class="park-card" onclick="quickCheckin('Magic Kingdom')">
+              <span class="park-icon-big">🏰</span>
+              <div class="park-card-name">MAGIC KINGDOM</div>
+              <div class="park-card-visits" id="pv-Magic Kingdom">0 visits</div>
+              <button class="checkin-btn featured"><i class="ti ti-plus"></i> Check In</button>
+            </div>
+            <div class="park-card" onclick="quickCheckin('EPCOT')">
+              <span class="park-icon-big">🌍</span>
+              <div class="park-card-name">EPCOT</div>
+              <div class="park-card-visits" id="pv-EPCOT">0 visits</div>
+              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
+            </div>
+            <div class="park-card" onclick="quickCheckin('Hollywood Studios')">
+              <span class="park-icon-big">🎬</span>
+              <div class="park-card-name">HOLLYWOOD STUDIOS</div>
+              <div class="park-card-visits" id="pv-Hollywood Studios">0 visits</div>
+              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
+            </div>
+            <div class="park-card" onclick="quickCheckin('Animal Kingdom')">
+              <span class="park-icon-big">🦁</span>
+              <div class="park-card-name">ANIMAL KINGDOM</div>
+              <div class="park-card-visits" id="pv-Animal Kingdom">0 visits</div>
+              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
+            </div>
+          </div>
+        </div>
+        <div id="ptab-universal" style="display:none">
+          <div class="park-grid">
+            <div class="park-card" onclick="quickCheckin('Universal Studios Florida')">
+              <span class="park-icon-big">🎥</span>
+              <div class="park-card-name">UNIVERSAL STUDIOS FL</div>
+              <div class="park-card-visits" id="pv-Universal Studios Florida">0 visits</div>
+              <button class="checkin-btn featured"><i class="ti ti-plus"></i> Check In</button>
+            </div>
+            <div class="park-card" onclick="quickCheckin('Islands of Adventure')">
+              <span class="park-icon-big">⚓</span>
+              <div class="park-card-name">ISLANDS OF ADVENTURE</div>
+              <div class="park-card-visits" id="pv-Islands of Adventure">0 visits</div>
+              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
+            </div>
+            <div class="park-card" onclick="quickCheckin('Epic Universe')">
+              <span class="park-icon-big">🌌</span>
+              <div class="park-card-name">EPIC UNIVERSE</div>
+              <div class="park-card-visits" id="pv-Epic Universe">0 visits</div>
+              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
+            </div>
+          </div>
+        </div>
+        <div id="ptab-water" style="display:none">
+          <div class="park-grid park-grid-3">
+            <div class="park-card" onclick="quickCheckin('Blizzard Beach')">
+              <span class="park-icon-big">⛷️</span>
+              <div class="park-card-name">BLIZZARD BEACH</div>
+              <div class="park-card-visits" id="pv-Blizzard Beach">0 visits</div>
+              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
+            </div>
+            <div class="park-card" onclick="quickCheckin('Typhoon Lagoon')">
+              <span class="park-icon-big">🌊</span>
+              <div class="park-card-name">TYPHOON LAGOON</div>
+              <div class="park-card-visits" id="pv-Typhoon Lagoon">0 visits</div>
+              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
+            </div>
+            <div class="park-card" onclick="quickCheckin('Volcano Bay')">
+              <span class="park-icon-big">🌋</span>
+              <div class="park-card-name">VOLCANO BAY</div>
+              <div class="park-card-visits" id="pv-Volcano Bay">0 visits</div>
+              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RECENT ACTIVITY -->
+      <section class="section-wrap" style="padding-bottom:52px">
+        <div class="section-head">
+          <div><h2 class="section-title">YOUR RECENT ACTIVITY</h2><p class="section-sub">Your latest check-ins</p></div>
+        </div>
+        <div id="recent-activity-list">
+          <div class="empty-state">
+            <div class="empty-state-icon">🎢</div>
+            <div class="empty-state-title">No Check-Ins Yet</div>
+            <div class="empty-state-sub">Log your first visit using the Check In button above.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA / FOOTER -->
+      <div class="cta-wrap">
+        <div class="cta-inner">
+          <div class="cta-watermark">ADMIT ONE</div>
+          <div>
+            <div class="cta-eyebrow">✦ Explore More ✦</div>
+            <h2 class="cta-title">SEE HOW YOU RANK<br>IN THE COMMUNITY.</h2>
+            <p class="cta-sub">Check the leaderboard, browse community check-ins, and discover the highest-rated food across all parks.</p>
+          </div>
+          <div class="cta-actions">
+            <button class="btn-cta-wh" onclick="showView('community')">View Leaderboard</button>
+            <button class="btn-cta-out" onclick="showView('food')">Food Scores</button>
+          </div>
+        </div>
+      </div>
+      <footer class="site-footer">
+        <div>
+          <div class="footer-brand">TURN<span>STILES</span></div>
+          <div class="footer-tagline">Track every visit. Rate every bite. Climb the board.</div>
+        </div>
+        <ul class="footer-links">
+          <li><a href="#">About</a></li><li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li><li><a href="#">Contact</a></li>
+        </ul>
+        <div class="footer-copy">© 2026 Turnstiles · Not affiliated with Disney or Universal</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ── COMMUNITY VIEW ── -->
+  <div id="view-community" class="screen">
+    <div style="max-width:1300px;margin:0 auto;padding:48px 32px">
+      <div class="section-head">
+        <div><h2 class="section-title">COMMUNITY</h2><p class="section-sub">See what everyone's up to</p></div>
+      </div>
+      <div class="page-tabs">
+        <button class="page-tab active" onclick="switchCommunityTab(this,'leaderboard')">Leaderboard</button>
+        <button class="page-tab" onclick="switchCommunityTab(this,'feed')">Activity Feed</button>
+      </div>
+
+      <!-- Leaderboard tab -->
+      <div id="ctab-leaderboard">
+        <div class="section-head" style="margin-bottom:14px">
+          <div style="display:flex;gap:8px">
+            <button class="btn-sm primary" id="lb-btn-all" onclick="switchLbFilter('all',this)">All Parks</button>
+            <button class="btn-sm" id="lb-btn-disney" onclick="switchLbFilter('disney',this)">Disney</button>
+            <button class="btn-sm" id="lb-btn-universal" onclick="switchLbFilter('universal',this)">Universal</button>
+            <button class="btn-sm" id="lb-btn-water" onclick="switchLbFilter('water',this)">Water Parks</button>
+          </div>
+        </div>
+        <div class="light-card" id="leaderboard-list"></div>
+      </div>
+
+      <!-- Feed tab -->
+      <div id="ctab-feed" style="display:none">
+        <div id="community-feed-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOOD SCORES VIEW ── -->
+  <div id="view-food" class="screen">
+    <div style="max-width:1300px;margin:0 auto;padding:48px 32px">
+      <div class="section-head">
+        <div><h2 class="section-title">FOOD SCORES</h2><p class="section-sub">Community-rated across all parks</p></div>
+        <button class="btn-sm primary" onclick="openOverlay('overlay-food-review')"><i class="ti ti-plus" style="font-size:12px"></i> Rate an Item</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px">
+        <div>
+          <div class="section-head" style="margin-bottom:12px">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--ink)">Top Rated</div>
+          </div>
+          <div class="light-card" id="food-scores-list"></div>
+        </div>
+        <div>
+          <div class="section-head" style="margin-bottom:12px">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--ink)">Most Reviewed</div>
+          </div>
+          <div class="light-card" id="food-popular-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PHOTOS VIEW ── -->
+  <div id="view-photos" class="screen">
+    <div style="max-width:1300px;margin:0 auto;padding:48px 32px">
+      <div class="section-head">
+        <div><h2 class="section-title">COMMUNITY PHOTOS</h2><p class="section-sub">Shots from across the parks</p></div>
+        <button class="btn-sm primary" onclick="openOverlay('overlay-photo')"><i class="ti ti-camera-plus" style="font-size:12px"></i> Share a Photo</button>
+      </div>
+      <div id="photos-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"></div>
+    </div>
+  </div>
+
+  <!-- ── PROFILE VIEW ── -->
+  <div id="view-profile" class="screen">
+    <div style="max-width:1300px;margin:0 auto;padding:48px 32px">
+      <div class="profile-header-card">
+        <div class="profile-hd-inner">
+          <div class="profile-avatar" id="profile-avatar-big">🎢</div>
+          <div class="profile-info">
+            <div class="profile-display-name" id="profile-display-name">Your Name</div>
+            <div class="profile-username" id="profile-username">@username</div>
+            <div class="profile-bio" id="profile-bio">No bio yet.</div>
+          </div>
+          <button class="btn-sm" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:white" onclick="openEditProfile()">
+            <i class="ti ti-pencil" style="font-size:11px"></i> Edit Profile
+          </button>
+        </div>
+        <div class="profile-badges" id="profile-badges">
+          <span class="badge">Bronze Tier</span>
+        </div>
+      </div>
+
+      <div class="stat-cards">
+        <div class="stat-card"><div class="stat-card-num" id="prof-stat-visits">0</div><div class="stat-card-lbl">Total Visits</div></div>
+        <div class="stat-card"><div class="stat-card-num" id="prof-stat-miles">0.0</div><div class="stat-card-lbl">Miles Walked</div></div>
+        <div class="stat-card"><div class="stat-card-num" id="prof-stat-foods">0</div><div class="stat-card-lbl">Foods Tried</div></div>
+        <div class="stat-card"><div class="stat-card-num" id="prof-stat-avg">—</div><div class="stat-card-lbl">Avg Food Score</div></div>
+      </div>
+
+      <div class="section-head" style="margin-bottom:14px">
+        <div><h2 class="section-title">VISIT HISTORY</h2><p class="section-sub">Every check-in you've logged</p></div>
+      </div>
+      <div class="light-card">
+        <div id="visit-history-table">
+          <div class="empty-state">
+            <div class="empty-state-icon">🎟️</div>
+            <div class="empty-state-title">No Visits Yet</div>
+            <div class="empty-state-sub">Your logged check-ins will appear here.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end app-shell -->
+
+<!-- ======================================================
+     LANDING (shown when not logged in)
+     ====================================================== -->
+<div id="landing-shell">
+  <!-- ===== BACKGROUND SILHOUETTES ===== -->
+<div class="bg-layer" aria-hidden="true">
+<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:0;left:0">
+  <!-- Ferris wheel — top right -->
+  <g opacity="0.055" transform="translate(1100,-50)">
+    <circle cx="110" cy="120" r="105" fill="none" stroke="#0E1E2E" stroke-width="2.5"/>
+    <line x1="110" y1="15" x2="110" y2="225" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="5" y1="120" x2="215" y2="120" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="36" y1="36" x2="184" y2="204" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="184" y1="36" x2="36" y2="204" stroke="#0E1E2E" stroke-width="1.5"/>
+    <circle cx="110" cy="120" r="13" fill="none" stroke="#0E1E2E" stroke-width="2"/>
+    <rect x="92" y="5" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="170" y="48" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="196" y="110" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="170" y="170" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="92" y="205" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="17" y="170" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="-9" y="110" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="17" y="48" width="26" height="20" rx="4" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="110" y1="230" x2="86" y2="295" stroke="#0E1E2E" stroke-width="2.5"/>
+    <line x1="110" y1="230" x2="134" y2="295" stroke="#0E1E2E" stroke-width="2.5"/>
+    <line x1="72" y1="295" x2="148" y2="295" stroke="#0E1E2E" stroke-width="2.5"/>
+  </g>
+
+  <!-- Roller coaster — upper-mid-right -->
+  <g opacity="0.045" transform="translate(820,260)">
+    <path d="M0,110 Q50,20 100,85 Q150,150 200,65 Q250,0 300,45 Q350,90 400,30 L400,130 L0,130 Z" fill="none" stroke="#0E1E2E" stroke-width="2.5"/>
+    <line x1="0" y1="130" x2="400" y2="130" stroke="#0E1E2E" stroke-width="2"/>
+    <line x1="25" y1="100" x2="25" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="75" y1="65" x2="75" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="125" y1="108" x2="125" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="175" y1="80" x2="175" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="225" y1="52" x2="225" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="275" y1="60" x2="275" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="325" y1="50" x2="325" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <line x1="375" y1="72" x2="375" y2="130" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="90" y="62" width="28" height="18" rx="3" fill="none" stroke="#0E1E2E" stroke-width="1.5"/>
+    <rect x="95" y="58" width="18" height="8" rx="2" fill="none" stroke="#0E1E2E" stroke-width="1"/>
+  </g>
+
+  <!-- Ticket stub — top left -->
+  <g opacity="0.06" transform="translate(-10, 60) rotate(-10)">
+    <rect x="10" y="20" width="180" height="78" rx="8" fill="none" stroke="#0E1E2E" stroke-width="2"/>
+    <circle cx="10" cy="59" r="16" fill="#E8ECF0" stroke="#0E1E2E" stroke-width="2"/>
+    <circle cx="190" cy="59" r="16" fill="#E8ECF0" stroke="#0E1E2E" stroke-width="2"/>
+    <line x1="10" y1="59" x2="190" y2="59" stroke="#0E1E2E" stroke-width="1" stroke-dasharray="7,5" opacity="0.5"/>
+    <rect x="22" y="30" width="75" height="9" rx="2" fill="#0E1E2E" opacity="0.25"/>
+    <rect x="22" y="45" width="52" height="6" rx="2" fill="#0E1E2E" opacity="0.18"/>
+    <rect x="22" y="65" width="62" height="6" rx="2" fill="#0E1E2E" opacity="0.18"/>
+    <rect x="22" y="76" width="40" height="5" rx="2" fill="#0E1E2E" opacity="0.12"/>
+  </g>
+
+  <!-- Pennant flags across top -->
+  <g opacity="0.08" transform="translate(260, 0)">
+    <line x1="0" y1="0" x2="780" y2="0" stroke="#0E1E2E" stroke-width="1.5"/>
+    <polygon points="30,0 52,36 8,36" fill="#1565A8" opacity="0.7"/>
+    <polygon points="95,0 117,36 73,36" fill="#1DA09A" opacity="0.7"/>
+    <polygon points="160,0 182,36 138,36" fill="#2E9E6A" opacity="0.7"/>
+    <polygon points="225,0 247,36 203,36" fill="#0D2744" opacity="0.7"/>
+    <polygon points="290,0 312,36 268,36" fill="#1565A8" opacity="0.7"/>
+    <polygon points="355,0 377,36 333,36" fill="#1DA09A" opacity="0.7"/>
+    <polygon points="420,0 442,36 398,36" fill="#2E9E6A" opacity="0.7"/>
+    <polygon points="485,0 507,36 463,36" fill="#0D2744" opacity="0.7"/>
+    <polygon points="550,0 572,36 528,36" fill="#1565A8" opacity="0.7"/>
+    <polygon points="615,0 637,36 593,36" fill="#1DA09A" opacity="0.7"/>
+    <polygon points="680,0 702,36 658,36" fill="#2E9E6A" opacity="0.7"/>
+    <polygon points="745,0 767,36 723,36" fill="#0D2744" opacity="0.7"/>
+  </g>
+
+  <!-- Turnstile — bottom left -->
+  <g opacity="0.055" transform="translate(10, 750)">
+    <circle cx="70" cy="70" r="62" fill="none" stroke="#0E1E2E" stroke-width="2"/>
+    <circle cx="70" cy="70" r="11" fill="none" stroke="#0E1E2E" stroke-width="2"/>
+    <line x1="70" y1="8" x2="70" y2="59" stroke="#0E1E2E" stroke-width="4" stroke-linecap="round"/>
+    <line x1="70" y1="81" x2="70" y2="132" stroke="#0E1E2E" stroke-width="4" stroke-linecap="round" opacity="0.35"/>
+    <line x1="8" y1="70" x2="59" y2="70" stroke="#0E1E2E" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+    <line x1="81" y1="70" x2="132" y2="70" stroke="#0E1E2E" stroke-width="4" stroke-linecap="round" opacity="0.35"/>
+    <rect x="48" y="132" width="44" height="66" rx="4" fill="none" stroke="#0E1E2E" stroke-width="2"/>
+    <line x1="70" y1="198" x2="50" y2="240" stroke="#0E1E2E" stroke-width="2.5"/>
+    <line x1="70" y1="198" x2="90" y2="240" stroke="#0E1E2E" stroke-width="2.5"/>
+    <rect x="30" y="240" width="80" height="8" rx="4" fill="#0E1E2E" opacity="0.25"/>
+  </g>
+
+  <!-- Balloon cluster — right mid -->
+  <g opacity="0.055" transform="translate(1185, 480)">
+    <ellipse cx="32" cy="33" rx="24" ry="30" fill="none" stroke="#1565A8" stroke-width="2"/>
+    <line x1="32" y1="63" x2="55" y2="118" stroke="#1565A8" stroke-width="1.5"/>
+    <ellipse cx="72" cy="22" rx="24" ry="30" fill="none" stroke="#1DA09A" stroke-width="2"/>
+    <line x1="72" y1="52" x2="60" y2="118" stroke="#1DA09A" stroke-width="1.5"/>
+    <ellipse cx="110" cy="33" rx="24" ry="30" fill="none" stroke="#2E9E6A" stroke-width="2"/>
+    <line x1="110" y1="63" x2="68" y2="118" stroke="#2E9E6A" stroke-width="1.5"/>
+  </g>
+
+  <!-- Second ticket — bottom right -->
+  <g opacity="0.055" transform="translate(1020, 850) rotate(6)">
+    <rect x="10" y="20" width="190" height="82" rx="8" fill="none" stroke="#0E1E2E" stroke-width="2"/>
+    <circle cx="10" cy="61" r="17" fill="#E8ECF0" stroke="#0E1E2E" stroke-width="2"/>
+    <circle cx="200" cy="61" r="17" fill="#E8ECF0" stroke="#0E1E2E" stroke-width="2"/>
+    <line x1="10" y1="61" x2="200" y2="61" stroke="#0E1E2E" stroke-width="1" stroke-dasharray="7,5" opacity="0.5"/>
+    <rect x="24" y="30" width="80" height="10" rx="2" fill="#0E1E2E" opacity="0.22"/>
+    <rect x="24" y="46" width="56" height="6" rx="2" fill="#0E1E2E" opacity="0.16"/>
+    <rect x="24" y="68" width="66" height="6" rx="2" fill="#0E1E2E" opacity="0.16"/>
+    <rect x="24" y="80" width="44" height="5" rx="2" fill="#0E1E2E" opacity="0.11"/>
+  </g>
+
+  <!-- Castle silhouette — bottom left far -->
+  <g opacity="0.04" transform="translate(-20, 1060)">
+    <rect x="70" y="90" width="130" height="130" fill="#0E1E2E"/>
+    <rect x="46" y="110" width="46" height="110" fill="#0E1E2E"/>
+    <rect x="178" y="110" width="46" height="110" fill="#0E1E2E"/>
+    <rect x="105" y="46" width="58" height="54" fill="#0E1E2E"/>
+    <polygon points="134,0 110,46 158,46" fill="#0E1E2E"/>
+    <polygon points="69,68 46,110 92,110" fill="#0E1E2E"/>
+    <polygon points="201,68 178,110 224,110" fill="#0E1E2E"/>
+    <rect x="115" y="150" width="40" height="70" fill="#E8ECF0"/>
+  </g>
+
+  <!-- Star / diamond decorations -->
+  <g opacity="0.07">
+    <text x="58" y="480" font-size="16" fill="#1DA09A" font-family="serif">✦</text>
+    <text x="1196" y="720" font-size="20" fill="#1565A8" font-family="serif">★</text>
+    <text x="1238" y="260" font-size="13" fill="#1DA09A" font-family="serif">✦</text>
+    <text x="30" y="310" font-size="14" fill="#2E9E6A" font-family="serif">✦</text>
+    <text x="580" y="1160" font-size="18" fill="#1DA09A" font-family="serif">★</text>
+    <text x="880" y="860" font-size="14" fill="#1565A8" font-family="serif">✦</text>
+  </g>
+</svg>
+</div>
+
+  <div class="page">
+    <nav class="nav">
+      <div class="nav-inner">
+        <div class="nav-brand">
+          <div class="nav-logo-wrap">
+            <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
+              <circle cx="11" cy="11" r="5" stroke="#1DA09A" stroke-width="2"/>
+              <line x1="11" y1="0" x2="11" y2="8" stroke="#1DA09A" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="11" y1="14" x2="11" y2="22" stroke="#1DA09A" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+              <line x1="0" y1="11" x2="8" y2="11" stroke="#1DA09A" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+              <line x1="14" y1="11" x2="22" y2="11" stroke="#1DA09A" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+            </svg>
+          </div>
+          <span class="nav-wordmark">TURN<span>STILES</span></span>
+        </div>
+        <div class="nav-actions">
+          <button class="btn-outline" onclick="openOverlay('overlay-signin')">Sign In</button>
+          <button class="btn-solid" onclick="openOverlay('overlay-register')">Create Free Account</button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="marquee-strip">
+      <div class="marquee-track" id="landing-mtrack">
+        <span>Admit One</span><span class="marquee-sep">✦</span>
+        <span>Your Park Passport Awaits</span><span class="marquee-sep">✦</span>
+        <span>Log Every Visit</span><span class="marquee-sep">✦</span>
+        <span>Track Your Miles</span><span class="marquee-sep">✦</span>
+        <span>Rate the Food</span><span class="marquee-sep">✦</span>
+        <span>Climb the Leaderboard</span><span class="marquee-sep">✦</span>
+        <span>Admit One</span><span class="marquee-sep">✦</span>
+        <span>Your Park Passport Awaits</span><span class="marquee-sep">✦</span>
+        <span>Log Every Visit</span><span class="marquee-sep">✦</span>
+        <span>Track Your Miles</span><span class="marquee-sep">✦</span>
+        <span>Rate the Food</span><span class="marquee-sep">✦</span>
+        <span>Climb the Leaderboard</span><span class="marquee-sep">✦</span>
+      </div>
+    </div>
+
+    <section class="hero-wrap">
+      <div class="hero-inner">
+        <div>
+          <div class="hero-title-block">
+              <div class="hero-starburst">
+                <div class="hero-starburst-inner">
+                  <span class="hero-starburst-text">The Official Passholder Tracker</span>
+                </div>
+              </div>
+              <div class="hero-marquee-sign">
+                <span class="hero-name-outline">TURNSTILES</span>
+              </div>
+              <div class="hero-name-banner">
+                <div class="hero-banner-left"></div>
+                <div class="hero-banner-center">EST. 2026 &nbsp;·&nbsp; ADMIT ONE</div>
+                <div class="hero-banner-right"></div>
+              </div>
+              <div class="hero-tagline-wrap">
+                <span class="hero-tagline-star">★</span>
+                <span class="hero-tagline">Where <em>every visit</em> counts.</span>
+                <span class="hero-tagline-star">★</span>
+              </div>
+              <div class="hero-ticket-row">
+                <div class="hero-ticket-stub">Log Visits</div>
+                <div class="hero-ticket-line"></div>
+                <div class="hero-ticket-stub">Rate Food</div>
+                <div class="hero-ticket-line"></div>
+                <div class="hero-ticket-stub">Climb the Board</div>
+                <div class="hero-ticket-line"></div>
+                <div class="hero-ticket-stub">Share Photos</div>
+              </div>
+          </div>
+          <p class="hero-sub">Log check-ins across Disney World, Universal, and the water parks. Track your miles, rate the food, and see where you rank in the passholder community worldwide.</p>
+          <div class="hero-actions">
+            <button class="btn-hero" onclick="openOverlay('overlay-register')"><i class="ti ti-circle-plus"></i> Create Free Account</button>
+            <button class="btn-hero-outline" onclick="openOverlay('overlay-signin')">Sign In</button>
+          </div>
+        </div>
+        <aside class="passport">
+          <div class="passport-stub">
+            <div class="pp-serial"><span>Annual Passholder</span><span>Admit One</span></div>
+            <div class="pp-name-row">
+              <div class="pp-name">YOUR NAME</div>
+              <div class="pp-avatar">🎢</div>
+            </div>
+            <div class="pp-tier-row">
+              <span style="color:rgba(168,230,226,0.7);font-size:11px">★</span>
+              <span class="pp-tier-badge">Bronze Tier</span>
+              <span class="pp-rank">Join to rank up</span>
+            </div>
+            <div class="passport-tear"></div>
+          </div>
+          <div class="passport-body">
+            <div class="pp-section-lbl">Visits by park</div>
+            <div style="text-align:center;padding:20px 0;font-size:12px;color:var(--ink-faint);font-weight:300;letter-spacing:0.5px;line-height:1.8">
+              Create your free account to start<br>logging visits and tracking your stats.
+            </div>
+          </div>
+          <div class="passport-footer">
+            <div class="pf-stat"><div class="pf-num">—</div><div class="pf-lbl">Member Since</div></div>
+            <div class="pf-div"></div>
+            <div class="pf-stat"><div class="pf-num">—</div><div class="pf-lbl">Avg Food Score</div></div>
+            <div class="pf-div"></div>
+            <div class="pf-stat"><div class="pf-num">—</div><div class="pf-lbl">Photos Shared</div></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <div class="cta-wrap" style="padding-bottom:52px">
+      <div class="cta-inner">
+        <div class="cta-watermark">ADMIT ONE</div>
+        <div>
+          <div class="cta-eyebrow">✦ Free to Join ✦</div>
+          <h2 class="cta-title">EVERY PASSHOLDER<br>DESERVES A PASSPORT.</h2>
+          <p class="cta-sub">Create your free account and start logging visits today. Connect with thousands of theme park fans around the world.</p>
+        </div>
+        <div class="cta-actions">
+          <button class="btn-cta-wh" onclick="openOverlay('overlay-register')">Create Free Account</button>
+          <button class="btn-cta-out" onclick="openOverlay('overlay-signin')">Sign In</button>
+        </div>
+      </div>
+    </div>
+    <footer class="site-footer">
+      <div><div class="footer-brand">TURN<span>STILES</span></div><div class="footer-tagline">Track every visit. Rate every bite. Climb the board.</div></div>
+      <ul class="footer-links"><li><a href="#">About</a></li><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Contact</a></li></ul>
+      <div class="footer-copy">© 2026 Turnstiles · Not affiliated with Disney or Universal</div>
+    </footer>
+  </div>
+</div>
+
+
+<!-- ======================================================
+     JAVASCRIPT
+     ====================================================== -->
+<script src="main.js"></script>
+</body>
+</html>
