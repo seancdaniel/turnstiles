@@ -1017,71 +1017,90 @@
       </div>
     </div>
 
-    <section class="hero-wrap">
-      <div class="hero-inner">
-        <div>
-          <div class="hero-title-block">
-              <div class="hero-starburst">
-                <div class="hero-starburst-inner">
-                  <span class="hero-starburst-text">The Official Passholder Tracker</span>
-                </div>
-              </div>
-              <div class="hero-marquee-sign">
-                <span class="hero-name-outline">TURNSTILES</span>
-              </div>
-              <div class="hero-name-banner">
-                <div class="hero-banner-left"></div>
-                <div class="hero-banner-center">EST. 2026 &nbsp;·&nbsp; ADMIT ONE</div>
-                <div class="hero-banner-right"></div>
-              </div>
-              <div class="hero-tagline-wrap">
-                <span class="hero-tagline-star">★</span>
-                <span class="hero-tagline">Where <em>every visit</em> counts.</span>
-                <span class="hero-tagline-star">★</span>
-              </div>
-              <div class="hero-ticket-row">
-                <div class="hero-ticket-stub">Log Visits</div>
-                <div class="hero-ticket-line"></div>
-                <div class="hero-ticket-stub">Rate Food</div>
-                <div class="hero-ticket-line"></div>
-                <div class="hero-ticket-stub">Climb the Board</div>
-                <div class="hero-ticket-line"></div>
-                <div class="hero-ticket-stub">Share Photos</div>
-              </div>
+    <section class="ticket-hero">
+      <!-- Animated dusk sky: twinkling stars, fireworks & a passing ride -->
+      <div class="sky-fx" aria-hidden="true">
+        <span class="fw fw-1"></span>
+        <span class="fw fw-2"></span>
+        <span class="fw fw-3"></span>
+        <span class="fw fw-4"></span>
+        <span class="fw fw-5"></span>
+
+        <!-- Ferris wheel, slowly turning -->
+        <svg class="ride-ferris" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g class="wheel" stroke="currentColor" stroke-width="2">
+            <circle cx="100" cy="90" r="78"/>
+            <circle cx="100" cy="90" r="10"/>
+            <line x1="100" y1="12" x2="100" y2="168"/>
+            <line x1="22" y1="90" x2="178" y2="90"/>
+            <line x1="45" y1="35" x2="155" y2="145"/>
+            <line x1="155" y1="35" x2="45" y2="145"/>
+            <rect x="92" y="2"   width="16" height="13" rx="3"/>
+            <rect x="147" y="27" width="16" height="13" rx="3"/>
+            <rect x="170" y="82" width="16" height="13" rx="3"/>
+            <rect x="147" y="138" width="16" height="13" rx="3"/>
+            <rect x="92" y="163" width="16" height="13" rx="3"/>
+            <rect x="37" y="138" width="16" height="13" rx="3"/>
+            <rect x="14" y="82" width="16" height="13" rx="3"/>
+            <rect x="37" y="27" width="16" height="13" rx="3"/>
+          </g>
+          <line x1="100" y1="90" x2="64" y2="192" stroke="currentColor" stroke-width="2.5"/>
+          <line x1="100" y1="90" x2="136" y2="192" stroke="currentColor" stroke-width="2.5"/>
+        </svg>
+
+        <!-- Faint coaster track -->
+        <div class="coaster-track">
+          <svg viewBox="0 0 1200 96" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,70 Q150,4 300,58 T600,52 T900,60 T1200,44" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <!-- Coaster car gliding by -->
+        <div class="ride-coaster">
+          <svg viewBox="0 0 70 26" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="2" width="32" height="14" rx="4"/>
+            <rect x="38" y="2" width="24" height="14" rx="4"/>
+            <circle cx="12" cy="20" r="3.5"/>
+            <circle cx="26" cy="20" r="3.5"/>
+            <circle cx="48" cy="20" r="3.5"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- The giant admission ticket -->
+      <div class="ticket">
+        <div class="ticket-main">
+          <div class="ticket-head">
+            <span class="ticket-head-star">★</span>
+            <span>Admit One</span>
+            <span class="ticket-head-no">No. 00·2026</span>
           </div>
-          <p class="hero-sub">Log check-ins across Disney World, Universal, and the water parks. Track your miles, rate the food, and see where you rank in the passholder community worldwide.</p>
-          <div class="hero-actions">
+          <div class="ticket-eyebrow">The Official Passholder Tracker · Est. 2026</div>
+          <h1 class="ticket-wordmark">TURN<span>STILES</span></h1>
+          <div class="ticket-banner">
+            <span class="tb-l"></span>
+            <span class="tb-c">Every Visit Counts</span>
+            <span class="tb-r"></span>
+          </div>
+          <p class="ticket-tagline">Log check-ins across Disney World, Universal &amp; the water parks. Track your miles, <em>rate the food</em>, and see where you rank in the passholder community worldwide.</p>
+          <div class="ticket-actions">
             <button class="btn-hero" onclick="openOverlay('overlay-register')"><i class="ti ti-circle-plus"></i> Create Free Account</button>
             <button class="btn-hero-outline" onclick="openOverlay('overlay-signin')">Sign In</button>
           </div>
+          <div class="ticket-feats">
+            <span class="tf">Log Visits</span><span class="tf-dot">●</span>
+            <span class="tf">Rate Food</span><span class="tf-dot">●</span>
+            <span class="tf">Climb the Board</span><span class="tf-dot">●</span>
+            <span class="tf">Share Photos</span>
+          </div>
         </div>
-        <aside class="passport">
-          <div class="passport-stub">
-            <div class="pp-serial"><span>Annual Passholder</span><span>Admit One</span></div>
-            <div class="pp-name-row">
-              <div class="pp-name">YOUR NAME</div>
-              <div class="pp-avatar">🎢</div>
-            </div>
-            <div class="pp-tier-row">
-              <span style="color:rgba(168,230,226,0.7);font-size:11px">★</span>
-              <span class="pp-tier-badge">Bronze Tier</span>
-              <span class="pp-rank">Join to rank up</span>
-            </div>
-            <div class="passport-tear"></div>
+
+        <aside class="ticket-stub">
+          <div class="stub-rot">
+            <span class="stub-admit">ADMIT ONE</span>
+            <span class="stub-wordmark">TURNSTILES</span>
           </div>
-          <div class="passport-body">
-            <div class="pp-section-lbl">Visits by park</div>
-            <div style="text-align:center;padding:20px 0;font-size:12px;color:var(--ink-faint);font-weight:300;letter-spacing:0.5px;line-height:1.8">
-              Create your free account to start<br>logging visits and tracking your stats.
-            </div>
-          </div>
-          <div class="passport-footer">
-            <div class="pf-stat"><div class="pf-num">—</div><div class="pf-lbl">Member Since</div></div>
-            <div class="pf-div"></div>
-            <div class="pf-stat"><div class="pf-num">—</div><div class="pf-lbl">Avg Food Score</div></div>
-            <div class="pf-div"></div>
-            <div class="pf-stat"><div class="pf-num">—</div><div class="pf-lbl">Photos Shared</div></div>
-          </div>
+          <div class="stub-barcode"></div>
+          <div class="stub-no">№ 00 · 2026</div>
         </aside>
       </div>
     </section>
