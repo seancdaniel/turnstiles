@@ -94,10 +94,25 @@ function openOverlay(id) {
 }
 function closeOverlay(id) {
   document.getElementById(id).classList.remove('open');
+  resetTicket();
 }
 document.querySelectorAll('.overlay').forEach(o => {
-  o.addEventListener('click', e => { if(e.target===o) o.classList.remove('open'); });
+  o.addEventListener('click', e => { if(e.target===o){ o.classList.remove('open'); resetTicket(); } });
 });
+
+// Tear the hero ticket's stub off, then open the auth modal
+function ripTicket(which) {
+  const overlay = which === 'signin' ? 'overlay-signin' : 'overlay-register';
+  const t = document.querySelector('.ticket-hero .ticket');
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!t || reduce || t.classList.contains('ripping')) { openOverlay(overlay); return; }
+  t.classList.add('ripping');
+  setTimeout(() => openOverlay(overlay), 620);
+}
+function resetTicket() {
+  const t = document.querySelector('.ticket-hero .ticket');
+  if(t) t.classList.remove('ripping');
+}
 
 function showView(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
