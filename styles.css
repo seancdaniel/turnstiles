@@ -161,11 +161,16 @@ body {
   display: inline-block;
   white-space: nowrap;
   animation: marquee-scroll 22s linear infinite;
+  /* keep a full-resolution GPU layer so text stays crisp while moving */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 @keyframes marquee-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
 }
 
 .marquee-track span {
