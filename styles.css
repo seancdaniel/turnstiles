@@ -1486,12 +1486,13 @@ select.field-input { cursor: pointer; }
 .ticket-hero {
   position: relative;
   overflow: hidden;
-  padding: 64px 32px 72px;
+  padding: 130px 32px 76px;
   background:
-    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(231,206,138,0.18), transparent 60%),
-    radial-gradient(ellipse 120% 90% at 50% 0%, #21384f 0%, #16293f 48%, #0E1E2E 100%);
+    radial-gradient(ellipse 80% 50% at 50% -6%, rgba(231,206,138,0.20), transparent 60%),
+    radial-gradient(ellipse 130% 95% at 50% 0%, #21384f 0%, #16293f 48%, #0E1E2E 100%);
   border-bottom: 1px solid var(--border-gold);
 }
+@media (max-width: 600px) { .ticket-hero { padding-top: 92px; } }
 
 /* ---------- animated sky layer ---------- */
 .sky-fx { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
@@ -1512,41 +1513,75 @@ select.field-input { cursor: pointer; }
 }
 @keyframes twinkle { 0%,100%{opacity:.55} 50%{opacity:1} }
 
-/* fireworks: a bright core that bursts into a fading ring */
+/* fireworks: a bright flash that bursts into radiating sparks + a shockwave ring */
 .fw {
   position: absolute;
-  width: 6px; height: 6px; border-radius: 50%;
+  width: 3px; height: 3px; border-radius: 50%;
+  background: currentColor;
   opacity: 0;
-  transform: scale(0);
-  animation: fw-core 6s ease-out infinite;
+  /* radiating spark particles — outer ring of 16 + inner ring of 8 */
+  box-shadow:
+    38px 0 0 currentColor, 35px 15px 0 currentColor, 27px 27px 0 currentColor, 15px 35px 0 currentColor,
+    0 38px 0 currentColor, -15px 35px 0 currentColor, -27px 27px 0 currentColor, -35px 15px 0 currentColor,
+    -38px 0 0 currentColor, -35px -15px 0 currentColor, -27px -27px 0 currentColor, -15px -35px 0 currentColor,
+    0 -38px 0 currentColor, 15px -35px 0 currentColor, 27px -27px 0 currentColor, 35px -15px 0 currentColor,
+    20px 0 0 currentColor, 14px 14px 0 currentColor, 0 20px 0 currentColor, -14px 14px 0 currentColor,
+    -20px 0 0 currentColor, -14px -14px 0 currentColor, 0 -20px 0 currentColor, 14px -14px 0 currentColor;
+  animation: fw-burst 6s ease-out infinite;
 }
+/* bright core flash */
+.fw::before {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 16px 5px currentColor;
+  opacity: 0;
+  animation: fw-flash 6s ease-out infinite;
+  animation-delay: inherit;
+}
+/* expanding shockwave ring */
 .fw::after {
-  content: '';
-  position: absolute; inset: -3px;
-  border-radius: 50%;
-  border: 2px solid currentColor;
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%;
+  border: 1.5px solid currentColor;
   opacity: 0;
   animation: fw-ring 6s ease-out infinite;
+  animation-delay: inherit;
 }
-@keyframes fw-core {
+@keyframes fw-burst {
+  0%   { opacity: 0; transform: translateY(0) scale(0.12); }
+  6%   { opacity: 1; }
+  42%  { opacity: 1; transform: translateY(3px) scale(1); }
+  68%  { opacity: 0; transform: translateY(14px) scale(1.18); }
+  100% { opacity: 0; transform: translateY(14px) scale(1.18); }
+}
+@keyframes fw-burst-big {
+  0%   { opacity: 0; transform: translateY(0) scale(0.15); }
+  6%   { opacity: 1; }
+  42%  { opacity: 1; transform: translateY(4px) scale(1.7); }
+  72%  { opacity: 0; transform: translateY(24px) scale(1.95); }
+  100% { opacity: 0; transform: translateY(24px) scale(1.95); }
+}
+@keyframes fw-flash {
   0%, 100% { opacity: 0; transform: scale(0); }
-  6%  { opacity: 1; transform: scale(1.1); box-shadow: 0 0 12px 3px currentColor; }
-  16% { opacity: 0; transform: scale(0.6); box-shadow: 0 0 0 0 transparent; }
+  3%  { opacity: 1; transform: scale(1.3); }
+  13% { opacity: 0; transform: scale(0.4); }
 }
 @keyframes fw-ring {
-  0%, 5% { opacity: 0; transform: scale(0.2); }
-  9%  { opacity: 0.9; }
-  22% { opacity: 0; transform: scale(3.4); }
-  100%{ opacity: 0; transform: scale(3.4); }
+  0%, 4% { opacity: 0; transform: scale(0.3); }
+  9%  { opacity: 0.85; }
+  26% { opacity: 0; transform: scale(4); }
+  100%{ opacity: 0; transform: scale(4); }
 }
-.fw-1 { top: 20%; left: 18%; color: #E7CE8A; animation-delay: 0s;   }
-.fw-2 { top: 14%; left: 72%; color: #F1A6A0; animation-delay: 1.6s; }
-.fw-3 { top: 30%; left: 50%; color: #A6E3DE; animation-delay: 3.1s; }
-.fw-4 { top: 24%; left: 88%; color: #E7CE8A; animation-delay: 4.4s; }
-.fw-5 { top: 36%; left: 32%; color: #F1A6A0; animation-delay: 5.2s; }
-.fw-6 { top: 18%; left: 60%; color: #A6E3DE; animation-delay: 2.4s; }
-.fw-7 { top: 42%; left: 78%; color: #E7CE8A; animation-delay: 6.0s; }
-.fw-8 { top: 12%; left: 40%; color: #F1A6A0; animation-delay: 7.3s; }
+.fw-1 { top: 30px; left: 14%; color: #E7CE8A; animation-delay: 0s;   }
+.fw-2 { top: 58px; left: 30%; color: #F1A6A0; animation-delay: 1.3s; }
+.fw-3 { top: 26px; left: 48%; color: #A6E3DE; animation-delay: 2.6s; }
+.fw-4 { top: 64px; left: 66%; color: #F2C879; animation-delay: 3.6s; }
+.fw-5 { top: 40px; left: 84%; color: #F1A6A0; animation-delay: 4.5s; }
+.fw-6 { top: 78px; left: 20%; color: #A6E3DE; animation-delay: 5.4s; }
+.fw-7 { top: 46px; left: 58%; color: #FFF3D0; animation-delay: 3.0s; }
+.fw-8 { top: 70px; left: 78%; color: #F2C879; animation-delay: 6.6s; }
+/* bigger finale shells */
+.fw-4, .fw-7 { animation-name: fw-burst-big; }
 
 /* ---------- the ticket card ---------- */
 .ticket {
@@ -1736,9 +1771,10 @@ select.field-input { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   .marquee-track,
   .sky-fx::before,
-  .fw, .fw::after { animation: none !important; }
-  .fw { opacity: 0.55; transform: scale(1); }
-  .fw::after { opacity: 0.35; transform: scale(1.6); }
+  .fw, .fw::before, .fw::after { animation: none !important; }
+  .fw { opacity: 0.5; transform: scale(1); }
+  .fw::before { opacity: 0.5; }
+  .fw::after { opacity: 0.3; transform: scale(2); }
 }
 
 /* ======================================================
