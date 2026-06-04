@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body>
 
@@ -1037,64 +1037,70 @@
     </header>
 
     <section class="ticket-hero">
-      <!-- Animated dusk sky: twinkling stars, fireworks & a passing ride -->
+      <!-- Animated dusk sky: twinkling stars & fireworks -->
       <div class="sky-fx" aria-hidden="true">
         <span class="fw fw-1"></span>
         <span class="fw fw-2"></span>
         <span class="fw fw-3"></span>
         <span class="fw fw-4"></span>
         <span class="fw fw-5"></span>
-
-        <!-- Ferris wheel, slowly turning -->
-        <svg class="ride-ferris" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g class="wheel" stroke="currentColor" stroke-width="2">
-            <circle cx="100" cy="90" r="78"/>
-            <circle cx="100" cy="90" r="10"/>
-            <line x1="100" y1="12" x2="100" y2="168"/>
-            <line x1="22" y1="90" x2="178" y2="90"/>
-            <line x1="45" y1="35" x2="155" y2="145"/>
-            <line x1="155" y1="35" x2="45" y2="145"/>
-            <rect x="92" y="2"   width="16" height="13" rx="3"/>
-            <rect x="147" y="27" width="16" height="13" rx="3"/>
-            <rect x="170" y="82" width="16" height="13" rx="3"/>
-            <rect x="147" y="138" width="16" height="13" rx="3"/>
-            <rect x="92" y="163" width="16" height="13" rx="3"/>
-            <rect x="37" y="138" width="16" height="13" rx="3"/>
-            <rect x="14" y="82" width="16" height="13" rx="3"/>
-            <rect x="37" y="27" width="16" height="13" rx="3"/>
-          </g>
-          <line x1="100" y1="90" x2="64" y2="192" stroke="currentColor" stroke-width="2.5"/>
-          <line x1="100" y1="90" x2="136" y2="192" stroke="currentColor" stroke-width="2.5"/>
-        </svg>
-
-        <!-- Faint coaster track -->
-        <div class="coaster-track">
-          <svg viewBox="0 0 1200 96" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,70 Q150,4 300,58 T600,52 T900,60 T1200,44" stroke="currentColor" stroke-width="2"/>
-          </svg>
-        </div>
-        <!-- Coaster car gliding by -->
-        <div class="ride-coaster">
-          <svg viewBox="0 0 70 26" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
-            <rect x="2" y="2" width="32" height="14" rx="4"/>
-            <rect x="38" y="2" width="24" height="14" rx="4"/>
-            <circle cx="12" cy="20" r="3.5"/>
-            <circle cx="26" cy="20" r="3.5"/>
-            <circle cx="48" cy="20" r="3.5"/>
-          </svg>
-        </div>
+        <span class="fw fw-6"></span>
+        <span class="fw fw-7"></span>
+        <span class="fw fw-8"></span>
       </div>
 
       <!-- The giant admission ticket -->
       <div class="ticket">
+        <!-- ornamental corner flourishes -->
+        <svg class="tk-corner tk-tl" viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M4 40 C4 18 18 4 40 4 M11 40 C11 23 23 11 40 11" stroke="currentColor" stroke-width="1.4"/><circle cx="15" cy="15" r="2.1" fill="currentColor"/><path d="M4 40 q10 -2 12 -12" stroke="currentColor" stroke-width="1.2"/></svg>
+        <svg class="tk-corner tk-tr" viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M4 40 C4 18 18 4 40 4 M11 40 C11 23 23 11 40 11" stroke="currentColor" stroke-width="1.4"/><circle cx="15" cy="15" r="2.1" fill="currentColor"/><path d="M4 40 q10 -2 12 -12" stroke="currentColor" stroke-width="1.2"/></svg>
+        <svg class="tk-corner tk-bl" viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M4 40 C4 18 18 4 40 4 M11 40 C11 23 23 11 40 11" stroke="currentColor" stroke-width="1.4"/><circle cx="15" cy="15" r="2.1" fill="currentColor"/><path d="M4 40 q10 -2 12 -12" stroke="currentColor" stroke-width="1.2"/></svg>
+        <svg class="tk-corner tk-br" viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M4 40 C4 18 18 4 40 4 M11 40 C11 23 23 11 40 11" stroke="currentColor" stroke-width="1.4"/><circle cx="15" cy="15" r="2.1" fill="currentColor"/><path d="M4 40 q10 -2 12 -12" stroke="currentColor" stroke-width="1.2"/></svg>
+
         <div class="ticket-main">
           <div class="ticket-head">
             <span class="ticket-head-star">★</span>
             <span>Admit One</span>
             <span class="ticket-head-no">No. 00·2026</span>
           </div>
+
           <div class="ticket-eyebrow">The Official Passholder Tracker · Est. 2026</div>
           <h1 class="ticket-wordmark">TURN<span>STILES</span></h1>
+
+          <!-- engraved park skyline -->
+          <svg class="ticket-skyline" viewBox="0 0 580 96" fill="none" stroke="currentColor" aria-hidden="true">
+            <line x1="8" y1="90" x2="572" y2="90" stroke-width="1.4"/>
+            <!-- coaster -->
+            <path d="M22 90 L22 56 C46 12 76 60 100 38 C120 20 140 70 158 44 L158 90" stroke-width="1.5"/>
+            <path d="M36 90 V60 M58 90 V50 M80 90 V56 M104 90 V46 M126 90 V58 M148 90 V54" stroke-width="0.9"/>
+            <!-- castle -->
+            <g stroke-width="1.4">
+              <rect x="250" y="54" width="17" height="36"/><path d="M248 54 L258.5 40 L269 54"/>
+              <rect x="313" y="54" width="17" height="36"/><path d="M311 54 L321.5 40 L332 54"/>
+              <rect x="278" y="38" width="24" height="52"/><path d="M275 38 L290 18 L305 38"/>
+              <line x1="290" y1="18" x2="290" y2="8"/><path d="M290 9 L302 12 L290 16"/>
+              <rect x="285" y="62" width="10" height="28"/>
+            </g>
+            <!-- ferris wheel -->
+            <g stroke-width="1.4">
+              <circle cx="488" cy="54" r="30"/><circle cx="488" cy="54" r="4"/>
+              <line x1="488" y1="24" x2="488" y2="84"/><line x1="458" y1="54" x2="518" y2="54"/>
+              <line x1="467" y1="33" x2="509" y2="75"/><line x1="509" y1="33" x2="467" y2="75"/>
+              <line x1="488" y1="54" x2="472" y2="90"/><line x1="488" y1="54" x2="504" y2="90"/>
+            </g>
+            <!-- fireworks + stars -->
+            <g stroke-width="1.1" opacity="0.9">
+              <path d="M196 12 V26 M182 17 L192 25 M210 17 L200 25 M180 28 L191 29 M212 28 L201 29"/>
+              <path d="M372 8 V20 M361 12 L369 19 M383 12 L375 19 M360 23 L368 22 M384 23 L376 22"/>
+            </g>
+            <g stroke-width="1" opacity="0.8">
+              <path d="M226 22 l0 9 M221.5 26.5 l9 0"/>
+              <path d="M348 30 l0 8 M344 34 l8 0"/>
+              <path d="M150 20 l0 7 M146.5 23.5 l7 0"/>
+              <path d="M420 22 l0 7 M416.5 25.5 l7 0"/>
+            </g>
+          </svg>
+
           <div class="ticket-banner">
             <span class="tb-l"></span>
             <span class="tb-c">Every Visit Counts</span>
@@ -1114,12 +1120,14 @@
         </div>
 
         <aside class="ticket-stub">
-          <div class="stub-rot">
-            <span class="stub-admit">ADMIT ONE</span>
-            <span class="stub-wordmark">TURNSTILES</span>
+          <span class="stub-star">★</span>
+          <div class="stub-lines">
+            <span class="stub-good">Good For</span>
+            <span class="stub-one">One</span>
+            <span class="stub-adm">Admission</span>
           </div>
-          <div class="stub-barcode"></div>
-          <div class="stub-no">№ 00 · 2026</div>
+          <span class="stub-star">★</span>
+          <span class="stub-no">№ 04·2026</span>
         </aside>
       </div>
     </section>
