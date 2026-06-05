@@ -1801,137 +1801,58 @@ select.field-input { cursor: pointer; }
 }
 
 /* ======================================================
-   RETRO-EPCOT ILLUMINATED HEADER (landing)
+   SITE HEADER (landing) — refined & professional
    ====================================================== */
-.epcot-header {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  background:
-    radial-gradient(120% 150% at 50% -30%, rgba(231,206,138,0.12), transparent 55%),
-    radial-gradient(90% 130% at 50% 140%, rgba(27,143,137,0.20), transparent 62%),
-    linear-gradient(180deg, #102739 0%, #0c1d2e 58%, #0a1826 100%);
-  border-bottom: 1px solid rgba(194,154,44,0.45);
-  box-shadow: 0 18px 44px rgba(0,0,0,0.40);
+.site-head {
+  position: sticky; top: 0; z-index: 200;
+  background: linear-gradient(180deg, rgba(14,31,48,0.88), rgba(11,25,40,0.82));
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+          backdrop-filter: blur(18px) saturate(135%);
+  border-bottom: 1px solid rgba(194,154,44,0.22);
 }
-
-/* faint geodesic facet texture (Spaceship Earth nod) */
-.eh-facets {
-  position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  opacity: 0.55;
-  background-image:
-    repeating-linear-gradient( 60deg, rgba(231,206,138,0.055) 0 1px, transparent 1px 44px),
-    repeating-linear-gradient(-60deg, rgba(231,206,138,0.055) 0 1px, transparent 1px 44px),
-    repeating-linear-gradient(  0deg, rgba(231,206,138,0.04) 0 1px, transparent 1px 44px);
-}
-/* warm glow that breathes behind the wordmark */
-.eh-glow {
-  position: absolute; z-index: -1; left: 50%; top: 42%;
-  width: 560px; height: 210px; transform: translate(-50%,-50%);
-  background: radial-gradient(ellipse at center, rgba(231,206,138,0.30), transparent 70%);
-  filter: blur(10px);
-  animation: eh-breathe 6s ease-in-out infinite;
-}
-@keyframes eh-breathe { 0%,100%{opacity:.5} 50%{opacity:1} }
-
-/* runway light rails — dots with a slow sweeping wave of brightness */
-.eh-rail {
-  position: relative; height: 13px;
-  background-image: radial-gradient(circle, rgba(231,206,138,0.80) 0 1.8px, transparent 2.4px);
-  background-size: 26px 13px; background-position: center; background-repeat: repeat-x;
-}
-.eh-rail::before {
-  content: ''; position: absolute; inset: 0;
-  background-image: radial-gradient(circle, rgba(231,206,138,0.55) 0 2.6px, transparent 5px);
-  background-size: 26px 13px; background-position: center; background-repeat: repeat-x;
-  filter: blur(3px);
-}
-.eh-rail::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,247,222,0.95) 12%, transparent 26%);
-  background-size: 280px 100%; background-repeat: repeat-x;
-  mix-blend-mode: screen;
-  animation: eh-wave 7s linear infinite;
-}
-@keyframes eh-wave { from { background-position: -280px 0; } to { background-position: 110% 0; } }
-
-/* nav row */
-.eh-nav {
-  position: relative; z-index: 1;
+.site-head-inner {
   max-width: 1300px; margin: 0 auto;
-  padding: 20px 32px;
+  padding: 0 40px; height: 78px;
   display: flex; align-items: center; justify-content: space-between;
 }
-.eh-brand { display: flex; align-items: center; gap: 15px; text-decoration: none; }
-.eh-sphere { width: 48px; height: 48px; display: block; flex-shrink: 0;
-  filter: drop-shadow(0 0 9px rgba(231,206,138,0.5)); color: #E7CE8A; }
-.eh-sphere svg { width: 100%; height: 100%; display: block; }
-.eh-sphere .spin { transform-box: fill-box; transform-origin: center; animation: eh-globe 34s linear infinite; }
-@keyframes eh-globe { to { transform: rotateZ(360deg); } }
-
-.eh-wordmark {
-  position: relative;
+.sh-brand { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+.sh-logo {
+  width: 40px; height: 40px; flex-shrink: 0; color: #E7CE8A;
+  filter: drop-shadow(0 0 6px rgba(231,206,138,0.28));
+}
+.sh-logo svg { width: 100%; height: 100%; display: block; }
+.sh-wordmark {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 36px; letter-spacing: 6px; line-height: 1;
-  background: linear-gradient(180deg, #F8E9B0 0%, #E7CE8A 38%, #C9A227 72%, #EAD395 100%);
+  font-size: 30px; letter-spacing: 7px; line-height: 1; padding-left: 2px;
+  background: linear-gradient(180deg, #F3E4B4 0%, #E4C97E 55%, #C9A227 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
-  text-shadow: 0 0 20px rgba(231,206,138,0.30);
 }
-.eh-wordmark::after {
-  content: 'TURNSTILES';
-  position: absolute; left: 0; top: 0; pointer-events: none;
-  background: linear-gradient(100deg, transparent 38%, rgba(255,255,255,0.9) 50%, transparent 62%);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  background-size: 240% 100%;
-  animation: eh-shimmer 5.5s ease-in-out infinite;
-}
-@keyframes eh-shimmer { 0% { background-position: 130% 0; } 55%, 100% { background-position: -130% 0; } }
-
-/* actions */
-.eh-actions { display: flex; align-items: center; gap: 12px; }
-.eh-btn-ghost, .eh-btn-gold {
+.sh-actions { display: flex; align-items: center; gap: 14px; }
+.sh-signin, .sh-join {
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-  border-radius: 4px; cursor: pointer; transition: all 0.18s ease;
+  font-size: 11.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  border-radius: 6px; cursor: pointer; transition: all 0.2s ease;
 }
-.eh-btn-ghost {
-  color: #E7CE8A; background: transparent;
-  border: 1px solid rgba(231,206,138,0.5); padding: 10px 20px;
+.sh-signin {
+  color: #EAD8A4; background: transparent;
+  border: 1px solid rgba(231,206,138,0.35); padding: 11px 22px;
 }
-.eh-btn-ghost:hover { background: rgba(231,206,138,0.12); border-color: rgba(231,206,138,0.85); color: #F8E9B0; }
-.eh-btn-gold {
-  color: #2a1d07; border: none; padding: 11px 22px;
-  background: linear-gradient(180deg, #F8E9B0, #D9B441);
-  box-shadow: 0 0 0 1px rgba(231,206,138,0.6), 0 7px 18px rgba(217,180,65,0.30), inset 0 1px 0 rgba(255,255,255,0.6);
+.sh-signin:hover { background: rgba(231,206,138,0.08); border-color: rgba(231,206,138,0.65); color: #F6E9C2; }
+.sh-join {
+  color: #1c1407; border: none; padding: 12px 24px;
+  background: linear-gradient(180deg, #ECD391 0%, #D2A93F 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 2px 8px rgba(0,0,0,0.25);
 }
-.eh-btn-gold:hover {
+.sh-join:hover {
   transform: translateY(-1px);
-  box-shadow: 0 0 0 1px rgba(231,206,138,0.85), 0 11px 28px rgba(217,180,65,0.50), inset 0 1px 0 rgba(255,255,255,0.7);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 8px 20px rgba(205,163,60,0.30);
 }
 
-/* illuminated ticker band */
-.eh-ticker {
-  position: relative; overflow: hidden; white-space: nowrap;
-  padding: 9px 0;
-  background: linear-gradient(180deg, rgba(7,17,27,0.92), rgba(10,24,38,0.92));
-  border-top: 1px solid rgba(194,154,44,0.35);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-}
-.eh-ticker .marquee-track span { color: #E7CE8A; text-shadow: 0 0 10px rgba(231,206,138,0.35); }
-.eh-ticker .marquee-sep { color: rgba(43,176,150,0.95); }
-
-@media (max-width: 600px) {
-  .eh-nav { padding: 14px 18px; flex-wrap: wrap; gap: 12px; }
-  .eh-wordmark { font-size: 30px; letter-spacing: 4px; }
-  .eh-wordmark::after { content: 'TURNSTILES'; }
-  .eh-actions { width: 100%; }
-  .eh-btn-gold { flex: 1; text-align: center; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .eh-glow, .eh-rail::after, .eh-wordmark::after, .eh-sphere .spin { animation: none !important; }
-  .eh-wordmark::after { opacity: 0; }
+@media (max-width: 640px) {
+  .site-head-inner { padding: 0 18px; height: 66px; }
+  .sh-wordmark { font-size: 25px; letter-spacing: 5px; }
+  .sh-signin { padding: 9px 14px; }
+  .sh-join { padding: 10px 16px; }
 }
 
 /* ======================================================

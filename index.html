@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=6">
+  <link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body>
 
@@ -503,23 +503,6 @@
 </div>
 
     <div class="page">
-      <div class="marquee-strip" aria-hidden="true">
-        <div class="marquee-track" id="mtrack">
-          <span>Admit One</span><span class="marquee-sep">✦</span>
-          <span>Your Park Passport Awaits</span><span class="marquee-sep">✦</span>
-          <span>Log Every Visit</span><span class="marquee-sep">✦</span>
-          <span>Track Your Miles</span><span class="marquee-sep">✦</span>
-          <span>Rate the Food</span><span class="marquee-sep">✦</span>
-          <span>Climb the Leaderboard</span><span class="marquee-sep">✦</span>
-          <span>Admit One</span><span class="marquee-sep">✦</span>
-          <span>Your Park Passport Awaits</span><span class="marquee-sep">✦</span>
-          <span>Log Every Visit</span><span class="marquee-sep">✦</span>
-          <span>Track Your Miles</span><span class="marquee-sep">✦</span>
-          <span>Rate the Food</span><span class="marquee-sep">✦</span>
-          <span>Climb the Leaderboard</span><span class="marquee-sep">✦</span>
-        </div>
-      </div>
-
       <section class="hero-wrap">
         <div class="hero-inner">
           <div>
@@ -984,24 +967,16 @@
 </div>
 
   <div class="page">
-    <header class="epcot-header">
-      <div class="eh-facets" aria-hidden="true"></div>
-      <div class="eh-glow" aria-hidden="true"></div>
-      <div class="eh-rail" aria-hidden="true"></div>
-
-      <nav class="eh-nav" aria-label="Main navigation">
-        <a href="#" class="eh-brand" aria-label="Turnstiles home">
-          <span class="eh-sphere" aria-hidden="true">
+    <header class="site-head">
+      <div class="site-head-inner">
+        <a href="#" class="sh-brand" aria-label="Turnstiles home">
+          <span class="sh-logo" aria-hidden="true">
             <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
               <circle cx="24" cy="24" r="21" stroke-width="1.7"/>
-              <g class="spin" stroke-width="1" opacity="0.9">
-                <ellipse cx="24" cy="24" rx="8.5" ry="21"/>
-                <ellipse cx="24" cy="24" rx="21" ry="8.5"/>
-                <line x1="3" y1="24" x2="45" y2="24"/>
-                <line x1="24" y1="3" x2="24" y2="45"/>
-                <path d="M24 3 L31 10 M24 3 L17 10 M9.5 13 L17 10 L24 16 L31 10 L38.5 13"/>
-                <path d="M24 45 L31 38 M24 45 L17 38 M9.5 35 L17 38 L24 32 L31 38 L38.5 35"/>
-              </g>
+              <ellipse cx="24" cy="24" rx="8.5" ry="21" stroke-width="1" opacity="0.8"/>
+              <ellipse cx="24" cy="24" rx="21" ry="8.5" stroke-width="1" opacity="0.8"/>
+              <line x1="3" y1="24" x2="45" y2="24" stroke-width="1" opacity="0.8"/>
+              <line x1="24" y1="3" x2="24" y2="45" stroke-width="1" opacity="0.8"/>
               <circle cx="24" cy="24" r="4.2" stroke-width="1.7"/>
               <line x1="24" y1="19.8" x2="24" y2="11" stroke-width="1.7" stroke-linecap="round"/>
               <line x1="24" y1="28.2" x2="24" y2="37" stroke-width="1.7" stroke-linecap="round"/>
@@ -1009,31 +984,13 @@
               <line x1="28.2" y1="24" x2="37" y2="24" stroke-width="1.7" stroke-linecap="round"/>
             </svg>
           </span>
-          <span class="eh-wordmark">TURNSTILES</span>
+          <span class="sh-wordmark">TURNSTILES</span>
         </a>
-        <div class="eh-actions">
-          <button class="eh-btn-ghost" onclick="openOverlay('overlay-signin')">Sign In</button>
-          <button class="eh-btn-gold" onclick="openOverlay('overlay-register')">Create Free Account</button>
-        </div>
-      </nav>
-
-      <div class="eh-ticker">
-        <div class="marquee-track" id="landing-mtrack">
-        <span>Admit One</span><span class="marquee-sep">✦</span>
-        <span>Your Park Passport Awaits</span><span class="marquee-sep">✦</span>
-        <span>Log Every Visit</span><span class="marquee-sep">✦</span>
-        <span>Track Your Miles</span><span class="marquee-sep">✦</span>
-        <span>Rate the Food</span><span class="marquee-sep">✦</span>
-        <span>Climb the Leaderboard</span><span class="marquee-sep">✦</span>
-        <span>Admit One</span><span class="marquee-sep">✦</span>
-        <span>Your Park Passport Awaits</span><span class="marquee-sep">✦</span>
-        <span>Log Every Visit</span><span class="marquee-sep">✦</span>
-        <span>Track Your Miles</span><span class="marquee-sep">✦</span>
-        <span>Rate the Food</span><span class="marquee-sep">✦</span>
-        <span>Climb the Leaderboard</span><span class="marquee-sep">✦</span>
+        <div class="sh-actions">
+          <button class="sh-signin" onclick="openOverlay('overlay-signin')">Sign In</button>
+          <button class="sh-join" onclick="openOverlay('overlay-register')">Create Free Account</button>
         </div>
       </div>
-      <div class="eh-rail" aria-hidden="true"></div>
     </header>
 
     <section class="ticket-hero">
