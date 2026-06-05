@@ -115,6 +115,8 @@ function resetTicket() {
 }
 
 function showView(name) {
+  // Guests can browse public sections; personal pages require an account
+  if(isGuest() && (name==='home' || name==='profile')) { openOverlay('overlay-register'); return; }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
@@ -125,6 +127,39 @@ function showView(name) {
   if(name==='photos') renderPhotos();
   if(name==='profile') renderProfile();
   window.scrollTo(0,0);
+}
+
+// ============================================================
+// GUEST BROWSE (explore before signing up)
+// ============================================================
+function isGuest() { return document.body.classList.contains('guest'); }
+
+function guestBrowse(name) {
+  STATE.currentUser = null;
+  document.body.classList.add('guest');
+  closeDropdown();
+  document.getElementById('landing-shell').style.display = 'none';
+  document.getElementById('app-shell').style.display = 'block';
+  showView(name);
+}
+
+function exitGuest() {
+  document.body.classList.remove('guest');
+  document.getElementById('app-shell').style.display = 'none';
+  document.getElementById('landing-shell').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+// Nav brand: go to dashboard if signed in, otherwise back to the landing page
+function goHome() {
+  if(STATE.currentUser) showView('home');
+  else exitGuest();
+}
+
+// Run a gated action, or prompt the visitor to create an account
+function actionOrSignup(overlayId) {
+  if(!STATE.currentUser) { openOverlay('overlay-register'); return; }
+  openOverlay(overlayId);
 }
 
 // ============================================================
@@ -153,6 +188,7 @@ function doSignIn() {
 
 function loginAs(user) {
   STATE.currentUser = user;
+  document.body.classList.remove('guest');
   document.getElementById('nav-avatar').textContent = user.avatar;
   document.getElementById('nav-username').textContent = user.username;
   document.getElementById('landing-shell').style.display = 'none';

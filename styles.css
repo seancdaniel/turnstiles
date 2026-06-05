@@ -1762,59 +1762,121 @@ select.field-input { cursor: pointer; }
 }
 
 /* ======================================================
-   SITE HEADER (landing) — refined & professional
+   SITE HEADER (landing) — floating glass pill
    ====================================================== */
 .site-head {
-  position: sticky; top: 0; z-index: 200;
-  background: linear-gradient(180deg, rgba(14,31,48,0.88), rgba(11,25,40,0.82));
-  -webkit-backdrop-filter: blur(18px) saturate(135%);
-          backdrop-filter: blur(18px) saturate(135%);
-  border-bottom: 1px solid rgba(194,154,44,0.22);
+  position: sticky; top: 14px; z-index: 200;
+  width: calc(100% - 28px); max-width: 1240px;
+  margin: 14px auto 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(20,38,57,0.80), rgba(12,26,42,0.72));
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+          backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(194,154,44,0.26);
+  box-shadow: 0 14px 44px rgba(0,0,0,0.45);
 }
 .site-head-inner {
-  max-width: 1300px; margin: 0 auto;
-  padding: 0 40px; height: 78px;
   display: flex; align-items: center; justify-content: space-between;
+  gap: 18px;
+  padding: 9px 9px 9px 26px; height: 62px;
 }
-.sh-brand { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+.sh-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
 .sh-logo {
-  width: 40px; height: 40px; flex-shrink: 0; color: #E7CE8A;
+  width: 38px; height: 38px; flex-shrink: 0; color: #E7CE8A;
   filter: drop-shadow(0 0 6px rgba(231,206,138,0.28));
 }
 .sh-logo svg { width: 100%; height: 100%; display: block; }
 .sh-wordmark {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 30px; letter-spacing: 7px; line-height: 1; padding-left: 2px;
+  font-size: 27px; letter-spacing: 6px; line-height: 1; padding-left: 2px;
   background: linear-gradient(180deg, #F3E4B4 0%, #E4C97E 55%, #C9A227 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
-.sh-actions { display: flex; align-items: center; gap: 14px; }
+/* center browse nav */
+.sh-nav { display: flex; align-items: center; gap: 4px; }
+.sh-nav a {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  color: rgba(231,206,138,0.74); text-decoration: none;
+  padding: 9px 15px; border-radius: 999px; transition: all 0.18s ease; white-space: nowrap;
+}
+.sh-nav a:hover { color: #F6E9C2; background: rgba(231,206,138,0.10); }
+.sh-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .sh-signin, .sh-join {
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 11.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-  border-radius: 6px; cursor: pointer; transition: all 0.2s ease;
+  font-size: 11.5px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+  border-radius: 999px; cursor: pointer; transition: all 0.2s ease; white-space: nowrap;
 }
 .sh-signin {
   color: #EAD8A4; background: transparent;
-  border: 1px solid rgba(231,206,138,0.35); padding: 11px 22px;
+  border: 1px solid rgba(231,206,138,0.32); padding: 11px 20px;
 }
-.sh-signin:hover { background: rgba(231,206,138,0.08); border-color: rgba(231,206,138,0.65); color: #F6E9C2; }
+.sh-signin:hover { background: rgba(231,206,138,0.08); border-color: rgba(231,206,138,0.6); color: #F6E9C2; }
 .sh-join {
   color: #1c1407; border: none; padding: 12px 24px;
   background: linear-gradient(180deg, #ECD391 0%, #D2A93F 100%);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 2px 8px rgba(0,0,0,0.25);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 2px 8px rgba(0,0,0,0.22);
 }
 .sh-join:hover {
   transform: translateY(-1px);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 8px 20px rgba(205,163,60,0.30);
 }
 
-@media (max-width: 640px) {
-  .site-head-inner { padding: 0 18px; height: 66px; }
-  .sh-wordmark { font-size: 25px; letter-spacing: 5px; }
-  .sh-signin { padding: 9px 14px; }
+@media (max-width: 1000px) {
+  .sh-nav { display: none; }
+}
+@media (max-width: 560px) {
+  .site-head { top: 8px; width: calc(100% - 16px); margin-top: 8px; }
+  .site-head-inner { padding: 8px 8px 8px 18px; height: 56px; }
+  .sh-wordmark { font-size: 23px; letter-spacing: 4px; }
+  .sh-signin { display: none; }
   .sh-join { padding: 10px 16px; }
 }
+
+/* ---- guest browse mode: app nav swaps to sign-up CTAs ---- */
+.nav-guest-actions { display: none; align-items: center; gap: 10px; }
+body.guest .nav-guest-actions { display: flex; }
+body.guest .nav .btn-solid,
+body.guest #nav-user-pill,
+body.guest #user-dropdown,
+body.guest #nav-home { display: none !important; }
+
+/* ======================================================
+   ABOUT VIEW
+   ====================================================== */
+.about-wrap { max-width: 1000px; margin: 0 auto; padding: 64px 32px 76px; }
+.about-hero { text-align: center; max-width: 740px; margin: 0 auto 46px; }
+.about-eyebrow {
+  font-family: 'Special Elite', cursive; font-size: 12px; letter-spacing: 3px;
+  text-transform: uppercase; color: #E7CE8A; margin-bottom: 16px;
+}
+.about-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: clamp(48px, 7vw, 84px);
+  letter-spacing: 2px; line-height: 0.9; color: #F3E7C8; margin-bottom: 18px;
+}
+.about-lead { font-size: 17px; font-weight: 300; line-height: 1.7; color: rgba(231,206,138,0.82); }
+.about-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-bottom: 46px; }
+.about-card {
+  background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 26px 26px;
+}
+.about-card i { font-size: 26px; color: var(--coral); }
+.about-card h3 {
+  font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px;
+  color: var(--ink); margin: 12px 0 8px;
+}
+.about-card p { font-size: 14px; font-weight: 300; line-height: 1.65; color: var(--ink-light); }
+.about-cta {
+  text-align: center;
+  background: linear-gradient(180deg, #16293f, #10202f);
+  border: 1px solid rgba(194,154,44,0.30); border-radius: 14px; padding: 46px 28px;
+}
+.about-cta h2 {
+  font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 1px;
+  color: #F3E7C8; margin-bottom: 8px;
+}
+.about-cta p { font-size: 14px; color: rgba(231,206,138,0.7); margin-bottom: 22px; }
+.about-cta .btn-hero { display: inline-flex; }
+@media (max-width: 680px) { .about-grid { grid-template-columns: 1fr; } }
 
 /* ======================================================
    DARK PREMIUM ROLLOUT — dark chrome, light paper content
