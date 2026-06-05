@@ -149,44 +149,6 @@ body {
 }
 .btn-solid:hover { background: var(--coral-dk); }
 
-/* ========== MARQUEE ========== */
-.marquee-strip {
-  background: var(--coral);
-  overflow: hidden;
-  white-space: nowrap;
-  padding: 7px 0;
-}
-
-.marquee-track {
-  display: inline-block;
-  white-space: nowrap;
-  animation: marquee-scroll 22s linear infinite;
-  /* keep a full-resolution GPU layer so text stays crisp while moving */
-  will-change: transform;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-@keyframes marquee-scroll {
-  0%   { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-50%, 0, 0); }
-}
-
-.marquee-track span {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 13px;
-  letter-spacing: 4px;
-  color: white;
-  padding: 0 24px;
-}
-
-.marquee-sep {
-  color: rgba(255,255,255,0.5);
-  font-size: 10px;
-  padding: 0 4px;
-}
-
 /* ========== HERO ========== */
 .hero-wrap {
   border-bottom: 1px solid var(--border);
@@ -1792,7 +1754,6 @@ select.field-input { cursor: pointer; }
 
 /* ---------- respect reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track,
   .sky-fx::before,
   .fw, .fw::before, .fw::after { animation: none !important; }
   .fw { opacity: 0.5; transform: scale(1); }
@@ -1894,15 +1855,6 @@ body {
 }
 .btn-solid:hover { background: linear-gradient(180deg, #FBEFBE, #E0BD4C); transform: translateY(-1px); }
 .dropdown { border-color: rgba(194,154,44,0.40); box-shadow: 0 12px 30px rgba(0,0,0,0.45); }
-
-/* ---- App marquee → lit gold band ---- */
-.marquee-strip {
-  background: linear-gradient(180deg, rgba(7,17,27,0.95), rgba(10,24,38,0.95));
-  border-top: 1px solid rgba(194,154,44,0.30);
-  border-bottom: 1px solid rgba(194,154,44,0.20);
-}
-.marquee-strip .marquee-track span { color: #E7CE8A; text-shadow: 0 0 10px rgba(231,206,138,0.30); }
-.marquee-strip .marquee-sep { color: rgba(43,176,150,0.95); }
 
 /* ---- On-background section chrome → light ---- */
 .section-title { color: #F3E7C8; }

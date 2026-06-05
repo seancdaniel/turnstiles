@@ -817,10 +817,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Set today's date in check-in form
   document.getElementById('ci-date').valueAsDate = new Date();
-
-  // Duplicate marquee tracks for seamless scroll
-  ['mtrack','landing-mtrack'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.innerHTML = el.innerHTML + el.innerHTML;
-  });
 });
