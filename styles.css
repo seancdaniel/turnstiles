@@ -1821,15 +1821,54 @@ select.field-input { cursor: pointer; }
   outline: 2px solid #E7CE8A; outline-offset: 2px;
 }
 
+/* hamburger (mobile) */
+.sh-burger {
+  display: none; width: 42px; height: 42px; flex-shrink: 0;
+  background: transparent; border: none; cursor: pointer; border-radius: 999px;
+  flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  transition: background-color 0.18s ease;
+}
+.sh-burger:hover { background: rgba(255,255,255,0.08); }
+.sh-burger span { width: 20px; height: 2px; border-radius: 2px; background: #F4EFE3; transition: transform 0.22s ease, opacity 0.22s ease; }
+.site-head.menu-open .sh-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.site-head.menu-open .sh-burger span:nth-child(2) { opacity: 0; }
+.site-head.menu-open .sh-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.sh-burger:focus-visible { outline: 2px solid #E7CE8A; outline-offset: 2px; }
+
+/* mobile dropdown panel */
+.sh-mobile {
+  position: absolute; top: calc(100% + 10px); left: 0; right: 0;
+  background: rgba(16,31,47,0.94);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+          backdrop-filter: blur(22px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 20px; padding: 10px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+  display: none; flex-direction: column; gap: 2px;
+}
+.site-head.menu-open .sh-mobile { display: flex; }
+.sh-mobile a {
+  font-family: 'Josefin Sans', sans-serif; font-size: 15px; font-weight: 600;
+  color: rgba(255,255,255,0.82); text-decoration: none;
+  padding: 13px 16px; border-radius: 12px; transition: background-color 0.18s ease, color 0.18s ease;
+}
+.sh-mobile a:hover { background: rgba(255,255,255,0.07); color: #fff; }
+.sh-mobile-actions { display: flex; gap: 8px; padding: 10px 6px 6px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 6px; }
+.sh-mobile-actions .sh-signin, .sh-mobile-actions .sh-join {
+  flex: 1; justify-content: center; text-align: center; padding: 13px 14px; margin: 0; display: block;
+}
+.sh-mobile-actions .sh-signin { background: rgba(255,255,255,0.07); }
+
 @media (max-width: 1000px) {
   .sh-nav { display: none; }
+  .sh-burger { display: inline-flex; }
+  .sh-actions .sh-signin { display: none; }
 }
 @media (max-width: 560px) {
   .site-head { top: 10px; width: calc(100% - 18px); margin-top: 10px; }
-  .site-head-inner { padding: 0 10px 0 16px; height: 58px; }
+  .site-head-inner { padding: 0 8px 0 16px; height: 58px; }
   .sh-wordmark { font-size: 22px; letter-spacing: 2px; }
-  .sh-signin { display: none; }
-  .sh-join { padding: 10px 16px; }
+  .sh-actions .sh-join { display: none; }
 }
 
 /* ---- guest browse mode: app nav swaps to sign-up CTAs ---- */

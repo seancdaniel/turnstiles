@@ -162,6 +162,22 @@ function actionOrSignup(overlayId) {
   openOverlay(overlayId);
 }
 
+// Mobile header menu
+function toggleMobileMenu() {
+  const h = document.getElementById('site-head');
+  if(!h) return;
+  const open = h.classList.toggle('menu-open');
+  const b = h.querySelector('.sh-burger');
+  if(b) { b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.setAttribute('aria-label', open ? 'Close menu' : 'Open menu'); }
+}
+function closeMobileMenu() {
+  const h = document.getElementById('site-head');
+  if(!h) return;
+  h.classList.remove('menu-open');
+  const b = h.querySelector('.sh-burger');
+  if(b) { b.setAttribute('aria-expanded', 'false'); b.setAttribute('aria-label', 'Open menu'); }
+}
+
 // ============================================================
 // AUTH
 // ============================================================

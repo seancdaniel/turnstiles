@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=10">
+  <link rel="stylesheet" href="styles.css?v=11">
 </head>
 <body>
 
@@ -994,7 +994,7 @@
 </div>
 
   <div class="page">
-    <header class="site-head">
+    <header class="site-head" id="site-head">
       <div class="site-head-inner">
         <a href="#" class="sh-brand" aria-label="Turnstiles home">
           <span class="sh-logo" aria-hidden="true">
@@ -1022,6 +1022,19 @@
         <div class="sh-actions">
           <button class="sh-signin" onclick="openOverlay('overlay-signin')">Sign In</button>
           <button class="sh-join" onclick="openOverlay('overlay-register')">Create Account</button>
+          <button class="sh-burger" aria-label="Open menu" aria-expanded="false" aria-controls="sh-mobile" onclick="toggleMobileMenu()">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="sh-mobile" id="sh-mobile">
+        <a href="#" onclick="closeMobileMenu();guestBrowse('community')">Leaderboard</a>
+        <a href="#" onclick="closeMobileMenu();guestBrowse('food')">Food Scores</a>
+        <a href="#" onclick="closeMobileMenu();guestBrowse('photos')">Photos</a>
+        <a href="#" onclick="closeMobileMenu();guestBrowse('about')">About</a>
+        <div class="sh-mobile-actions">
+          <button class="sh-signin" onclick="closeMobileMenu();openOverlay('overlay-signin')">Sign In</button>
+          <button class="sh-join" onclick="closeMobileMenu();openOverlay('overlay-register')">Create Account</button>
         </div>
       </div>
     </header>
@@ -1126,6 +1139,6 @@
 <!-- ======================================================
      JAVASCRIPT
      ====================================================== -->
-<script src="main.js?v=4"></script>
+<script src="main.js?v=5"></script>
 </body>
 </html>
