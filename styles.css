@@ -1032,14 +1032,15 @@ body {
 
 /* ── Modal panel ── */
 .modal {
-  background: white;
-  border-radius: 12px;
+  background: #FCF9F1;
+  border-radius: 16px;
   width: 100%;
   max-width: 480px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 24px 64px rgba(14,30,46,0.25);
-  animation: modal-in 0.2s ease;
+  border: 1px solid rgba(194,154,44,0.22);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+  animation: modal-in 0.22s cubic-bezier(.2,.7,.3,1);
 }
 .modal-wide { max-width: 640px; }
 
@@ -1049,23 +1050,24 @@ body {
 }
 
 .modal-hd {
-  padding: 20px 24px 16px;
+  padding: 22px 24px 18px;
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between;
 }
 .modal-hd-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 24px; letter-spacing: 2px; color: var(--ink);
+  font-size: 26px; letter-spacing: 1.5px; color: var(--ink);
 }
 .modal-close {
-  width: 32px; height: 32px;
-  border: 1px solid var(--border-md); border-radius: 4px;
-  background: none; cursor: pointer;
+  width: 34px; height: 34px;
+  border: none; border-radius: 999px;
+  background: rgba(26,42,58,0.05); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  color: var(--ink-faint); font-size: 16px;
-  transition: all 0.15s;
+  color: var(--ink-light); font-size: 17px;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
-.modal-close:hover { background: var(--parchment); color: var(--ink); }
+.modal-close:hover { background: rgba(26,42,58,0.10); color: var(--ink); }
+.modal-close:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
 
 .modal-body { padding: 24px; }
 .modal-footer {
@@ -1078,23 +1080,23 @@ body {
 .field { margin-bottom: 16px; }
 .field:last-child { margin-bottom: 0; }
 .field-lbl {
-  font-size: 9px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--ink-faint);
-  display: block; margin-bottom: 6px;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--ink-light);
+  display: block; margin-bottom: 7px;
 }
 .field-input {
   width: 100%;
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 14px; font-weight: 400;
+  font-size: 15px; font-weight: 400;
   color: var(--ink);
-  background: var(--parchment);
-  border: 1px solid var(--border-md);
-  border-radius: 4px;
-  padding: 10px 14px;
+  background: #fff;
+  border: 1px solid rgba(26,42,58,0.18);
+  border-radius: 8px;
+  padding: 12px 14px;
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.field-input:focus { border-color: var(--coral); background: white; }
+.field-input:focus { border-color: var(--coral); box-shadow: 0 0 0 3px rgba(184,61,43,0.13); }
 .field-input::placeholder { color: var(--ink-faint); font-weight: 300; }
 
 select.field-input { cursor: pointer; }
@@ -1111,6 +1113,14 @@ select.field-input { cursor: pointer; }
   color: #C0392B; margin-top: 5px; display: none;
 }
 .field-error.show { display: block; }
+
+/* consistent keyboard focus rings across action buttons */
+.btn-hero:focus-visible, .btn-hero-outline:focus-visible,
+.btn-cta-wh:focus-visible, .btn-cta-out:focus-visible,
+.btn-sm:focus-visible, .btn-solid:focus-visible,
+.btn-outline:focus-visible, .checkin-btn:focus-visible {
+  outline: 2px solid var(--gold); outline-offset: 2px;
+}
 
 /* ── Score slider ── */
 .score-slider-wrap { margin-bottom: 8px; }
