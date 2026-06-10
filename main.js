@@ -870,3 +870,5 @@ document.addEventListener('DOMContentLoaded', () => {
   // Set today's date in check-in form
   document.getElementById('ci-date').valueAsDate = new Date();
 });
+// Header: transparent over the hero, solid once the page scrolls
+(function(){var onScroll=function(){var h=document.getElementById("site-head");if(h)h.classList.toggle("scrolled",window.scrollY>20);};window.addEventListener("scroll",onScroll,{passive:true});onScroll();})();

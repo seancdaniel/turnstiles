@@ -1458,13 +1458,13 @@ select.field-input { cursor: pointer; }
 .ticket-hero {
   position: relative;
   overflow: hidden;
-  padding: 130px 32px 76px;
+  padding: 150px 32px 76px;
   background:
     radial-gradient(ellipse 80% 50% at 50% -6%, rgba(231,206,138,0.20), transparent 60%),
     radial-gradient(ellipse 130% 95% at 50% 0%, #21384f 0%, #16293f 48%, #0E1E2E 100%);
   border-bottom: 1px solid var(--border-gold);
 }
-@media (max-width: 600px) { .ticket-hero { padding-top: 92px; } }
+@media (max-width: 600px) { .ticket-hero { padding-top: 112px; } }
 
 /* ---------- animated sky layer ---------- */
 .sky-fx { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
@@ -1544,14 +1544,14 @@ select.field-input { cursor: pointer; }
   26% { opacity: 0; transform: scale(4); }
   100%{ opacity: 0; transform: scale(4); }
 }
-.fw-1 { top: 30px; left: 14%; color: #E7CE8A; animation-delay: 0s;   }
-.fw-2 { top: 58px; left: 30%; color: #F1A6A0; animation-delay: 1.3s; }
-.fw-3 { top: 26px; left: 48%; color: #A6E3DE; animation-delay: 2.6s; }
-.fw-4 { top: 64px; left: 66%; color: #F2C879; animation-delay: 3.6s; }
-.fw-5 { top: 40px; left: 84%; color: #F1A6A0; animation-delay: 4.5s; }
-.fw-6 { top: 78px; left: 20%; color: #A6E3DE; animation-delay: 5.4s; }
-.fw-7 { top: 46px; left: 58%; color: #FFF3D0; animation-delay: 3.0s; }
-.fw-8 { top: 70px; left: 78%; color: #F2C879; animation-delay: 6.6s; }
+.fw-1 { top: 96px; left: 14%; color: #E7CE8A; animation-delay: 0s;   }
+.fw-2 { top: 124px; left: 30%; color: #F1A6A0; animation-delay: 1.3s; }
+.fw-3 { top: 92px; left: 48%; color: #A6E3DE; animation-delay: 2.6s; }
+.fw-4 { top: 132px; left: 66%; color: #F2C879; animation-delay: 3.6s; }
+.fw-5 { top: 104px; left: 84%; color: #F1A6A0; animation-delay: 4.5s; }
+.fw-6 { top: 136px; left: 20%; color: #A6E3DE; animation-delay: 5.4s; }
+.fw-7 { top: 108px; left: 58%; color: #FFF3D0; animation-delay: 3.0s; }
+.fw-8 { top: 128px; left: 78%; color: #F2C879; animation-delay: 6.6s; }
 /* bigger finale shells */
 .fw-4, .fw-7 { animation-name: fw-burst-big; }
 
@@ -1772,23 +1772,25 @@ select.field-input { cursor: pointer; }
 }
 
 /* ======================================================
-   SITE HEADER (landing) — floating glass pill
+   SITE HEADER (landing) — full-width, blends into the hero
    ====================================================== */
 .site-head {
-  position: sticky; top: 16px; z-index: 200;
-  width: calc(100% - 32px); max-width: 1200px;
-  margin: 16px auto 0;
-  border-radius: 999px;
-  background: rgba(16, 31, 47, 0.74);
-  -webkit-backdrop-filter: blur(22px) saturate(150%);
-          backdrop-filter: blur(22px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 16px 40px rgba(0,0,0,0.40);
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: transparent;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease,
+              -webkit-backdrop-filter 0.25s ease, backdrop-filter 0.25s ease;
+}
+.site-head.scrolled {
+  background: rgba(12, 25, 40, 0.85);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+          backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: 0 6px 28px rgba(0,0,0,0.32);
 }
 .site-head-inner {
+  max-width: 1240px; margin: 0 auto;
   display: flex; align-items: center; justify-content: space-between;
   gap: 16px;
-  padding: 0 10px 0 24px; height: 66px;
+  padding: 0 40px; height: 74px;
 }
 .sh-brand { display: flex; align-items: center; gap: 11px; text-decoration: none; flex-shrink: 0; border-radius: 8px; }
 .sh-logo { width: 34px; height: 34px; flex-shrink: 0; color: #E7CE8A; }
@@ -1847,8 +1849,9 @@ select.field-input { cursor: pointer; }
 
 /* mobile dropdown panel */
 .sh-mobile {
-  position: absolute; top: calc(100% + 10px); left: 0; right: 0;
-  background: rgba(16,31,47,0.94);
+  position: absolute; top: calc(100% - 6px); right: 16px; left: auto;
+  width: min(320px, calc(100vw - 32px));
+  background: rgba(12,25,40,0.96);
   -webkit-backdrop-filter: blur(22px) saturate(150%);
           backdrop-filter: blur(22px) saturate(150%);
   border: 1px solid rgba(255,255,255,0.10);
@@ -1874,9 +1877,8 @@ select.field-input { cursor: pointer; }
   .sh-burger { display: inline-flex; }
   .sh-actions .sh-signin { display: none; }
 }
-@media (max-width: 560px) {
-  .site-head { top: 10px; width: calc(100% - 18px); margin-top: 10px; }
-  .site-head-inner { padding: 0 8px 0 16px; height: 58px; }
+@media (max-width: 640px) {
+  .site-head-inner { padding: 0 16px; height: 64px; }
   .sh-wordmark { font-size: 22px; letter-spacing: 2px; }
   .sh-actions .sh-join { display: none; }
 }
