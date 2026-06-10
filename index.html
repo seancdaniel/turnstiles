@@ -4,13 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Turnstiles — Theme Park Visit Tracker</title>
+<meta name="description" content="Turnstiles is the passholder tracker for theme-park fans — log every visit, rate the food, share photos, and climb the community leaderboard.">
+<meta name="theme-color" content="#0a1826">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Turnstiles">
+<meta property="og:title" content="Turnstiles — Theme Park Visit Tracker">
+<meta property="og:description" content="Log every visit, rate the food, share photos, and climb the passholder leaderboard.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Turnstiles — Theme Park Visit Tracker">
+<meta name="twitter:description" content="Log every visit, rate the food, share photos, and climb the passholder leaderboard.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><rect width='48' height='48' rx='11' fill='%230E1E2E'/><g fill='none' stroke='%23E7CE8A' stroke-width='2'><circle cx='24' cy='24' r='15'/><ellipse cx='24' cy='24' rx='6' ry='15'/><ellipse cx='24' cy='24' rx='15' ry='6'/><line x1='9' y1='24' x2='39' y2='24'/><line x1='24' y1='9' x2='24' y2='39'/></g><circle cx='24' cy='24' r='3.2' fill='none' stroke='%23E7CE8A' stroke-width='2'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=12">
+  <link rel="stylesheet" href="styles.css?v=13">
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 
 <!-- ======================================================
      TOAST
@@ -29,7 +40,7 @@
   <div class="modal">
     <div class="modal-hd">
       <span class="modal-hd-title">Sign In</span>
-      <button class="modal-close" onclick="closeOverlay('overlay-signin')"><i class="ti ti-x"></i></button>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-signin')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
       <div class="field">
@@ -53,7 +64,7 @@
   <div class="modal modal-wide">
     <div class="modal-hd">
       <span class="modal-hd-title">Create Profile</span>
-      <button class="modal-close" onclick="closeOverlay('overlay-register')"><i class="ti ti-x"></i></button>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-register')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
       <div class="steps" id="reg-steps">
@@ -154,7 +165,7 @@
   <div class="modal modal-wide">
     <div class="modal-hd">
       <span class="modal-hd-title">Log a Check-In</span>
-      <button class="modal-close" onclick="closeOverlay('overlay-checkin')"><i class="ti ti-x"></i></button>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-checkin')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
       <div class="field-row">
@@ -232,7 +243,7 @@
   <div class="modal">
     <div class="modal-hd">
       <span class="modal-hd-title">Rate a Food Item</span>
-      <button class="modal-close" onclick="closeOverlay('overlay-food-review')"><i class="ti ti-x"></i></button>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-food-review')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
       <div class="field">
@@ -272,7 +283,7 @@
   <div class="modal">
     <div class="modal-hd">
       <span class="modal-hd-title">Share a Photo</span>
-      <button class="modal-close" onclick="closeOverlay('overlay-photo')"><i class="ti ti-x"></i></button>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-photo')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
       <div class="field">
@@ -1039,7 +1050,7 @@
       </div>
     </header>
 
-    <section class="ticket-hero">
+    <section class="ticket-hero" id="main" tabindex="-1">
       <!-- Animated dusk sky: twinkling stars & fireworks -->
       <div class="sky-fx" aria-hidden="true">
         <span class="fw fw-1"></span>
@@ -1139,6 +1150,6 @@
 <!-- ======================================================
      JAVASCRIPT
      ====================================================== -->
-<script src="main.js?v=5"></script>
+<script src="main.js?v=6"></script>
 </body>
 </html>

@@ -756,7 +756,7 @@ function renderPhotos() {
   }
   el.innerHTML = photos.map((p,i) => `
     <div class="photo-thumb" style="background:${p.dataUrl?'#000':PHOTO_BG[i%PHOTO_BG.length]};border:1px solid var(--border)">
-      ${p.dataUrl ? '<img src="'+p.dataUrl+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">' : '<span style="font-size:32px">'+parkEmoji(p.park)+'</span>'}
+      ${p.dataUrl ? '<img alt="Photo shared by a passholder" src="'+p.dataUrl+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">' : '<span style="font-size:32px">'+parkEmoji(p.park)+'</span>'}
       <div class="photo-overlay">
         <span class="photo-user">${p.avatar} ${p.username}</span>
         <span class="photo-score" title="${p.caption||p.park}">${p.park.split(' ')[0]}</span>

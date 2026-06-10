@@ -2018,3 +2018,6 @@ body {
 .bg-layer [stroke]:not([stroke="none"]) { stroke: rgba(231,206,138,0.85); }
 .bg-layer [fill="#0E1E2E"] { fill: rgba(231,206,138,0.6); }
 .bg-layer text { fill: rgba(231,206,138,0.85); }
+/* skip-to-content link */
+.skip-link{position:absolute;left:-9999px;top:0;z-index:1000;background:#E7CE8A;color:#14213a;font-family:Josefin Sans,sans-serif;font-weight:700;font-size:13px;padding:10px 16px;border-radius:0 0 8px 0;text-decoration:none}
+.skip-link:focus{left:0}
