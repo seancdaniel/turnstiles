@@ -872,3 +872,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // Header: transparent over the hero, solid once the page scrolls
 (function(){var onScroll=function(){var h=document.getElementById("site-head");if(h)h.classList.toggle("scrolled",window.scrollY>20);};window.addEventListener("scroll",onScroll,{passive:true});onScroll();})();
+
+// ---- Supabase connection ----
+const SUPABASE_URL = 'https://guglgdsmqbtcvkmvxwrc.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_IIjBhzSs6W-80OWArHjkZQ_ZGJ-Oxjo';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+sb.from('profiles').select('id').limit(1).then(function(res){ if(res.error) console.log('Supabase error: ' + res.error.message); else console.log('Supabase connected - tables reachable'); });
