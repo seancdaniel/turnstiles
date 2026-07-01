@@ -247,18 +247,28 @@
     </div>
     <div class="modal-body">
       <div class="field">
-        <label class="field-lbl">Item Name</label>
-        <input class="field-input" id="fr-name" placeholder="e.g. Dole Whip Float">
+        <label class="field-lbl">Find the item</label>
+        <input class="field-input" id="fr-search" autocomplete="off" placeholder="Search e.g. Dole Whip — pick it if it exists" oninput="foodSearch()">
+        <div id="fr-results" class="fr-results" style="display:none"></div>
+        <div id="fr-picked" class="fr-picked" style="display:none"></div>
       </div>
       <div class="field">
-        <label class="field-lbl">Park / Location</label>
-        <select class="field-input" id="fr-park">
+        <label class="field-lbl">Item Name</label>
+        <input class="field-input" id="fr-name" placeholder="e.g. Dole Whip Float" oninput="foodClearPick()">
+      </div>
+      <div class="field">
+        <label class="field-lbl">Park</label>
+        <select class="field-input" id="fr-park" onchange="foodClearPick()">
           <option>Magic Kingdom</option><option>EPCOT</option>
           <option>Hollywood Studios</option><option>Animal Kingdom</option>
           <option>Universal Studios Florida</option><option>Islands of Adventure</option>
           <option>Epic Universe</option><option>Blizzard Beach</option>
           <option>Typhoon Lagoon</option><option>Volcano Bay</option>
         </select>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Where (stand / restaurant)</label>
+        <input class="field-input" id="fr-spot" placeholder="e.g. Aloha Isle" oninput="foodClearPick()">
       </div>
       <div class="field">
         <div class="score-display" id="fr-score-display">8.5</div>
@@ -1154,5 +1164,6 @@
 <script src="main.js?v=8"></script>
 <script src="supabase-auth.js?v=1"></script>
 <script src="supabase-data.js?v=1"></script>
+<script src="supabase-food.js?v=1"></script>
 </body>
 </html>
