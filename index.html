@@ -273,12 +273,24 @@
       <div class="field">
         <div class="score-display" id="fr-score-display">8.5</div>
         <div class="score-display-sub">your score out of 10</div>
-        <input type="range" class="score-slider" id="fr-score" min="1" max="10" step="0.5" value="8.5" oninput="document.getElementById('fr-score-display').textContent=parseFloat(this.value).toFixed(1)">
+        <input type="range" class="score-slider" id="fr-score" min="0" max="10" step="0.1" value="8.5" oninput="document.getElementById('fr-score-display').textContent=parseFloat(this.value).toFixed(1)">
         <div class="score-slider-labels"><span>1 — Avoid</span><span>5 — Decent</span><span>10 — Must Try</span></div>
       </div>
       <div class="field">
         <label class="field-lbl">Review</label>
         <textarea class="field-input" id="fr-review" rows="3" style="resize:none;height:80px" placeholder="Tell the community what you thought..."></textarea>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Photo (optional)</label>
+        <div class="photo-upload-zone" onclick="document.getElementById('fr-photo-file').click()">
+          <div class="photo-upload-icon"><i class="ti ti-photo-plus"></i></div>
+          <div class="photo-upload-text">Add a photo of it</div>
+          <div class="photo-upload-sub">JPEG or PNG</div>
+        </div>
+        <input type="file" id="fr-photo-file" accept="image/*" style="display:none" onchange="handleFoodPhoto(event)">
+        <div id="fr-photo-preview" style="margin-top:8px;display:none">
+          <img id="fr-photo-img" alt="Food photo preview" style="width:100%;max-height:180px;object-fit:cover;border-radius:6px">
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -1164,6 +1176,6 @@
 <script src="main.js?v=8"></script>
 <script src="supabase-auth.js?v=1"></script>
 <script src="supabase-data.js?v=1"></script>
-<script src="supabase-food.js?v=1"></script>
+<script src="supabase-food.js?v=2"></script>
 </body>
 </html>

@@ -96,6 +96,19 @@ function resetFoodForm() {
   var p = document.getElementById('fr-picked'); if (p) p.style.display = 'none';
   var sc = document.getElementById('fr-score'); if (sc) sc.value = 8.5;
   var sd = document.getElementById('fr-score-display'); if (sd) sd.textContent = '8.5';
+  var pv = document.getElementById('fr-photo-preview'); if (pv) pv.style.display = 'none';
+  var pf = document.getElementById('fr-photo-file'); if (pf) pf.value = '';
+  var pi = document.getElementById('fr-photo-img'); if (pi) pi.removeAttribute('src');
+}
+
+function handleFoodPhoto(e) {
+  var file = e.target.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function (rd) {
+    document.getElementById('fr-photo-preview').style.display = 'block';
+    document.getElementById('fr-photo-img').src = rd.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 async function submitFoodReview() {
@@ -108,6 +121,11 @@ async function submitFoodReview() {
   var review = document.getElementById('fr-review').value.trim();
   var res = await sb.from('food_reviews').insert({ user_id: STATE.currentUser.id, item_name: name, park: park, spot: spot, score: score, review: review });
   if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
+  var _fp = document.getElementById('fr-photo-img');
+  if (_fp && _fp.src && _fp.src.indexOf('data:') === 0) {
+    var _small = await downscale(_fp.src);
+    await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: park, caption: name + (spot ? ' - ' + spot : ''), image_url: _small });
+  }
   closeOverlay('overlay-food-review');
   resetFoodForm();
   await loadData();
