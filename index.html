@@ -775,11 +775,13 @@
       <!-- Leaderboard tab -->
       <div id="ctab-leaderboard">
         <div class="section-head" style="margin-bottom:14px">
-          <div style="display:flex;gap:8px">
-            <button class="btn-sm primary" id="lb-btn-all" onclick="switchLbFilter('all',this)">All Parks</button>
-            <button class="btn-sm" id="lb-btn-disney" onclick="switchLbFilter('disney',this)">Disney</button>
-            <button class="btn-sm" id="lb-btn-universal" onclick="switchLbFilter('universal',this)">Universal</button>
-            <button class="btn-sm" id="lb-btn-water" onclick="switchLbFilter('water',this)">Water Parks</button>
+          <div style="display:flex;flex-direction:column;gap:8px;width:100%">
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn-sm primary" id="lb-btn-all" onclick="selectResort('all')">All Parks</button>
+              <button class="btn-sm" id="lb-btn-disney" onclick="selectResort('disney')">Disney</button>
+              <button class="btn-sm" id="lb-btn-universal" onclick="selectResort('universal')">Universal</button>
+            </div>
+            <div id="lb-park-row" style="display:none;gap:6px;flex-wrap:wrap"></div>
           </div>
         </div>
         <div class="light-card" id="leaderboard-list"></div>
@@ -1177,5 +1179,6 @@
 <script src="supabase-auth.js?v=1"></script>
 <script src="supabase-data.js?v=1"></script>
 <script src="supabase-food.js?v=2"></script>
+<script src="leaderboard.js?v=1"></script>
 </body>
 </html>
