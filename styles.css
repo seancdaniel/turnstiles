@@ -2035,3 +2035,14 @@ body {
 .fr-result-new { color: var(--coral); font-weight: 700; justify-content: flex-start; }
 .fr-picked { margin-top: 8px; font-size: 13px; color: var(--ink-mid); background: var(--coral-lt); padding: 8px 10px; border-radius: 6px; }
 .fr-picked a { color: var(--coral); cursor: pointer; text-decoration: underline; margin-left: 4px; }
+
+
+/* my food reviews (profile) */
+.myfr-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.myfr-row:last-child { border-bottom: none; }
+.myfr-emoji { font-size: 24px; flex-shrink: 0; }
+.myfr-info { flex: 1; min-width: 0; }
+.myfr-name { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 0.5px; color: var(--ink); }
+.myfr-loc { font-size: 11px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.5px; }
+.myfr-review { font-size: 12px; color: var(--ink-light); margin-top: 3px; font-style: italic; }
+.myfr-score { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--coral); flex-shrink: 0; min-width: 34px; text-align: right; }
