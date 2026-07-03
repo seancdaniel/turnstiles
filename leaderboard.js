@@ -39,7 +39,7 @@ function selectLbPark(filter) {
 function renderLbResortTabs() {
   ['all', 'disney', 'universal'].forEach(function (g) {
     var b = document.getElementById('lb-btn-' + g);
-    if (b) b.className = 'btn-sm' + (lbResort === g ? ' primary' : '');
+    if (b) b.className = 'lb-tab' + (lbResort === g ? ' active' : '');
   });
 }
 
@@ -52,7 +52,7 @@ function renderLbParkTabs() {
   var items = [{ v: lbResort, label: 'Overall ' + g.label }];
   g.parks.forEach(function (p) { items.push({ v: p, label: p }); });
   row.innerHTML = items.map(function (it) {
-    var active = (lbFilter === it.v) ? ' primary' : '';
-    return '<button class="btn-sm' + active + '" onclick="selectLbPark(\'' + it.v + '\')">' + escapeHtml(it.label) + '</button>';
+    var active = (lbFilter === it.v) ? ' active' : '';
+    return '<button class="lb-tab' + active + '" onclick="selectLbPark(\'' + it.v + '\')">' + escapeHtml(it.label) + '</button>';
   }).join('');
 }

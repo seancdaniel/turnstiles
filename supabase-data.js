@@ -19,6 +19,17 @@ function downscale(dataUrl, max) {
   });
 }
 
+// upload a downscaled data URL to the "photos" Storage bucket; returns a public URL (or null on failure)
+async function uploadPhoto(dataUrl, userId) {
+  try {
+    var blob = await (await fetch(dataUrl)).blob();
+    var path = userId + '/' + Date.now() + '-' + Math.random().toString(36).slice(2) + '.jpg';
+    var up = await sb.storage.from('photos').upload(path, blob, { contentType: 'image/jpeg' });
+    if (up.error) { console.log('photo upload error:', up.error.message); return null; }
+    return sb.storage.from('photos').getPublicUrl(path).data.publicUrl;
+  } catch (e) { console.log('photo upload error:', e); return null; }
+}
+
 function rerenderActive() {
   var active = document.querySelector('.screen.active');
   if (!active) return;
@@ -103,7 +114,8 @@ async function submitCheckin() {
   var photoImg = document.getElementById('ci-photo-img');
   if (photoImg && photoImg.src && photoImg.src.indexOf('data:') === 0) {
     var small = await downscale(photoImg.src);
-    await sb.from('photos').insert({ user_id: uid, park: park, caption: review || ('Check-in at ' + park), image_url: small });
+    var url = await uploadPhoto(small, uid);
+    if (url) await sb.from('photos').insert({ user_id: uid, park: park, caption: review || ('Check-in at ' + park), image_url: url });
   }
   closeOverlay('overlay-checkin');
   document.getElementById('ci-miles').value = '';
@@ -117,6 +129,16 @@ async function submitCheckin() {
   await loadData();
   showView('home');
   toast('Check-in at ' + park + ' logged!');
+}
+
+async function deleteCheckin(id) {
+  if (!STATE.currentUser) return;
+  if (!confirm('Delete this check-in? This cannot be undone.')) return;
+  var res = await sb.from('checkins').delete().eq('id', id).eq('user_id', STATE.currentUser.id);
+  if (res.error) { toast('Could not delete: ' + res.error.message, 'error'); return; }
+  await loadData();
+  showView('profile');
+  toast('Check-in deleted.');
 }
 
 async function submitFoodReview() {
@@ -142,7 +164,10 @@ async function submitPhoto() {
   var caption = document.getElementById('ph-caption').value.trim();
   var img = document.getElementById('ph-preview-img');
   var url = null;
-  if (img && img.src && img.src.indexOf('data:') === 0) url = await downscale(img.src);
+  if (img && img.src && img.src.indexOf('data:') === 0) {
+    var small = await downscale(img.src);
+    url = await uploadPhoto(small, STATE.currentUser.id);
+  }
   var res = await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: park, caption: caption || ('At ' + park), image_url: url });
   if (res.error) { toast('Could not share photo: ' + res.error.message, 'error'); return; }
   closeOverlay('overlay-photo');

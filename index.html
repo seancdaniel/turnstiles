@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=15">
+  <link rel="stylesheet" href="styles.css?v=16">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -336,6 +336,60 @@
     <div class="modal-footer">
       <button class="btn-sm" onclick="closeOverlay('overlay-photo')">Cancel</button>
       <button class="btn-sm primary" onclick="submitPhoto()">Share Photo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="overlay" id="overlay-edit-profile">
+  <div class="modal modal-wide">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Edit Profile</span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-edit-profile')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label class="field-lbl">Avatar</label>
+        <div class="auth-avatar-picker" id="edit-avatar-picker">
+          <div class="avatar-opt" data-emoji="🎢" onclick="editPickAvatar(this)">🎢</div>
+          <div class="avatar-opt" data-emoji="🏰" onclick="editPickAvatar(this)">🏰</div>
+          <div class="avatar-opt" data-emoji="🎡" onclick="editPickAvatar(this)">🎡</div>
+          <div class="avatar-opt" data-emoji="🎠" onclick="editPickAvatar(this)">🎠</div>
+          <div class="avatar-opt" data-emoji="🌍" onclick="editPickAvatar(this)">🌍</div>
+          <div class="avatar-opt" data-emoji="🦁" onclick="editPickAvatar(this)">🦁</div>
+          <div class="avatar-opt" data-emoji="🚀" onclick="editPickAvatar(this)">🚀</div>
+          <div class="avatar-opt" data-emoji="⚓" onclick="editPickAvatar(this)">⚓</div>
+          <div class="avatar-opt" data-emoji="🌋" onclick="editPickAvatar(this)">🌋</div>
+          <div class="avatar-opt" data-emoji="🎬" onclick="editPickAvatar(this)">🎬</div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-lbl">First Name</label>
+          <input class="field-input" id="ep-fname" placeholder="Sean">
+        </div>
+        <div class="field">
+          <label class="field-lbl">Last Name</label>
+          <input class="field-input" id="ep-lname" placeholder="Daniel">
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Username</label>
+        <input class="field-input" id="ep-username" placeholder="turnstile_king">
+        <div class="field-error" id="ep-user-err">That username is already taken.</div>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Bio</label>
+        <textarea class="field-input" id="ep-bio" rows="3" placeholder="Annual passholder since 2019. EPCOT is my happy place." style="resize:none;height:80px"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Home Location</label>
+        <input class="field-input" id="ep-location" placeholder="Orlando, FL">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeOverlay('overlay-edit-profile')">Cancel</button>
+      <button class="btn-sm primary" onclick="submitEditProfile()">Save Changes</button>
     </div>
   </div>
 </div>
@@ -776,12 +830,12 @@
       <div id="ctab-leaderboard">
         <div class="section-head" style="margin-bottom:14px">
           <div style="display:flex;flex-direction:column;gap:8px;width:100%">
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn-sm primary" id="lb-btn-all" onclick="selectResort('all')">All Parks</button>
-              <button class="btn-sm" id="lb-btn-disney" onclick="selectResort('disney')">Disney</button>
-              <button class="btn-sm" id="lb-btn-universal" onclick="selectResort('universal')">Universal</button>
+            <div class="lb-tabs">
+              <button class="lb-tab active" id="lb-btn-all" onclick="selectResort('all')">All Parks</button>
+              <button class="lb-tab" id="lb-btn-disney" onclick="selectResort('disney')">Disney</button>
+              <button class="lb-tab" id="lb-btn-universal" onclick="selectResort('universal')">Universal</button>
             </div>
-            <div id="lb-park-row" style="display:none;gap:6px;flex-wrap:wrap"></div>
+            <div id="lb-park-row" class="lb-tabs" style="display:none;flex-wrap:wrap"></div>
           </div>
         </div>
         <div class="light-card" id="leaderboard-list"></div>
@@ -1179,10 +1233,10 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=8"></script>
-<script src="supabase-auth.js?v=1"></script>
-<script src="supabase-data.js?v=1"></script>
-<script src="supabase-food.js?v=3"></script>
-<script src="leaderboard.js?v=1"></script>
+<script src="main.js?v=9"></script>
+<script src="supabase-auth.js?v=2"></script>
+<script src="supabase-data.js?v=2"></script>
+<script src="supabase-food.js?v=4"></script>
+<script src="leaderboard.js?v=2"></script>
 </body>
 </html>

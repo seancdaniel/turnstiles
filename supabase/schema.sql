@@ -117,3 +117,30 @@ alter table public.food_reviews add column if not exists spot text;
 
 drop policy if exists "update own food" on public.food_reviews;
 create policy "update own food" on public.food_reviews for update using (auth.uid() = user_id);
+
+drop policy if exists "delete own food" on public.food_reviews;
+create policy "delete own food" on public.food_reviews for delete using (auth.uid() = user_id);
+
+-- ============================================================
+-- MIGRATION — Supabase Storage bucket for photo uploads (adds a
+-- real "photos" bucket so uploads no longer sit as base64 blobs in
+-- the photos.image_url column). Safe to re-run. Existing base64
+-- rows keep working; only new uploads use Storage.
+-- Objects are stored as "<user_id>/<filename>" so the RLS policies
+-- below can check the folder name against auth.uid().
+-- ============================================================
+insert into storage.buckets (id, name, public)
+  values ('photos', 'photos', true)
+  on conflict (id) do nothing;
+
+drop policy if exists "photos storage public read" on storage.objects;
+create policy "photos storage public read" on storage.objects
+  for select using (bucket_id = 'photos');
+
+drop policy if exists "photos storage own insert" on storage.objects;
+create policy "photos storage own insert" on storage.objects
+  for insert with check (bucket_id = 'photos' and auth.uid()::text = (storage.foldername(name))[1]);
+
+drop policy if exists "photos storage own delete" on storage.objects;
+create policy "photos storage own delete" on storage.objects
+  for delete using (bucket_id = 'photos' and auth.uid()::text = (storage.foldername(name))[1]);

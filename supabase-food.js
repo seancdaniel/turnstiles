@@ -139,7 +139,8 @@ async function submitFoodReview() {
   var _fp = document.getElementById('fr-photo-img');
   if (_fp && _fp.src && _fp.src.indexOf('data:') === 0) {
     var _small = await downscale(_fp.src);
-    await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: park, caption: name + (spot ? ' - ' + spot : ''), image_url: _small });
+    var _url = await uploadPhoto(_small, STATE.currentUser.id);
+    if (_url) await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: park, caption: name + (spot ? ' - ' + spot : ''), image_url: _url });
   }
   closeOverlay('overlay-food-review');
   resetFoodForm();
@@ -201,8 +202,19 @@ function renderMyFoodReviews() {
       '<div class="myfr-info"><div class="myfr-name">' + escapeHtml(r.itemName) + '</div><div class="myfr-loc">' + escapeHtml(loc) + '</div>' + (r.review ? '<div class="myfr-review">' + escapeHtml(r.review) + '</div>' : '') + '</div>' +
       '<div class="myfr-score">' + Number(r.score).toFixed(1) + '</div>' +
       '<button class="btn-sm" onclick="editFoodReview(\'' + r.id + '\')">Edit</button>' +
+      '<button class="btn-sm danger" onclick="deleteFoodReview(\'' + r.id + '\')">Delete</button>' +
       '</div>';
   }).join('');
+}
+
+async function deleteFoodReview(id) {
+  if (!STATE.currentUser) return;
+  if (!confirm('Delete this food review? This cannot be undone.')) return;
+  var res = await sb.from('food_reviews').delete().eq('id', id).eq('user_id', STATE.currentUser.id);
+  if (res.error) { toast('Could not delete: ' + res.error.message, 'error'); return; }
+  await loadData();
+  showView('profile');
+  toast('Review deleted.');
 }
 
 function editFoodReview(id) {

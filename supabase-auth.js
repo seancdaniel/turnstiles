@@ -101,6 +101,61 @@ async function regNext() {
   }
 }
 
+// Edit profile (overrides the prompt()-based demo version in main.js)
+var editSelectedAvatar = null;
+
+function editPickAvatar(el) {
+  document.querySelectorAll('#edit-avatar-picker .avatar-opt').forEach(a => a.classList.remove('selected'));
+  el.classList.add('selected');
+  editSelectedAvatar = el.dataset.emoji;
+}
+
+function openEditProfile() {
+  const u = STATE.currentUser; if (!u) return;
+  editSelectedAvatar = u.avatar;
+  document.querySelectorAll('#edit-avatar-picker .avatar-opt').forEach(a => {
+    a.classList.toggle('selected', a.dataset.emoji === u.avatar);
+  });
+  document.getElementById('ep-fname').value = u.fname || '';
+  document.getElementById('ep-lname').value = u.lname || '';
+  document.getElementById('ep-username').value = u.username || '';
+  document.getElementById('ep-bio').value = u.bio || '';
+  document.getElementById('ep-location').value = u.location || '';
+  document.getElementById('ep-user-err').classList.remove('show');
+  openOverlay('overlay-edit-profile');
+}
+
+async function submitEditProfile() {
+  const u = STATE.currentUser; if (!u) return;
+  const fname = document.getElementById('ep-fname').value.trim();
+  const lname = document.getElementById('ep-lname').value.trim();
+  const username = document.getElementById('ep-username').value.trim();
+  const bio = document.getElementById('ep-bio').value.trim();
+  const location = document.getElementById('ep-location').value.trim();
+  const err = document.getElementById('ep-user-err');
+  err.classList.remove('show');
+  if (!fname || !username) { toast('First name and username are required.', 'error'); return; }
+  if (username !== u.username) {
+    const { data: taken } = await sb.from('profiles').select('id').eq('username', username).maybeSingle();
+    if (taken) { err.classList.add('show'); return; }
+  }
+  const { error } = await sb.from('profiles').update({
+    first_name: fname, last_name: lname, username: username,
+    avatar: editSelectedAvatar || u.avatar, bio: bio, location: location
+  }).eq('id', u.id);
+  if (error) { toast('Could not save: ' + error.message, 'error'); return; }
+  STATE.currentUser = Object.assign({}, u, {
+    fname: fname, lname: lname, username: username,
+    avatar: editSelectedAvatar || u.avatar, bio: bio, location: location
+  });
+  document.getElementById('nav-avatar').textContent = STATE.currentUser.avatar;
+  document.getElementById('nav-username').textContent = STATE.currentUser.username;
+  closeOverlay('overlay-edit-profile');
+  await loadData();
+  showView('profile');
+  toast('Profile updated!');
+}
+
 async function doSignOut() {
   await sb.auth.signOut();
   STATE.currentUser = null;

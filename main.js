@@ -808,7 +808,7 @@ function renderProfile() {
   }
   histEl.innerHTML = `<table class="visit-table">
     <thead><tr>
-      <th>Park</th><th>Date</th><th>Miles</th><th>Food Score</th><th>Foods Tried</th>
+      <th>Park</th><th>Date</th><th>Miles</th><th>Food Score</th><th>Foods Tried</th><th></th>
     </tr></thead>
     <tbody>
       ${my.slice(0,20).map(c=>`<tr>
@@ -817,6 +817,7 @@ function renderProfile() {
         <td>${c.miles?c.miles+' mi':'—'}</td>
         <td>${c.score?'<span class="visit-tag">'+c.score.toFixed(1)+'/10</span>':'—'}</td>
         <td style="font-size:12px;color:var(--ink-faint)">${(c.foods||[]).join(', ')||'—'}</td>
+        <td><button class="btn-sm danger" onclick="deleteCheckin('${c.id}')">Delete</button></td>
       </tr>`).join('')}
     </tbody>
   </table>`;

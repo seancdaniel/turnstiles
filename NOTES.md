@@ -34,15 +34,19 @@ without heavily rewriting main.js.
 
 ## Conventions / gotchas
 - After editing any .js/.css, bump its `?v=N` in index.html or the browser serves stale.
-- Photos are stored as downscaled base64 data URLs in `photos.image_url` (no Supabase Storage yet). Migrate to Storage if uploads grow.
+- Photos: new uploads are downscaled client-side then pushed to the `photos` Storage bucket via `uploadPhoto()`; `photos.image_url` stores the public Storage URL. Older rows created before this change still have base64 data URLs in `image_url` — both render identically via `<img src>`, no backfill needed.
 - STATE is a client cache; call `loadData()` after any write to refresh + rerender.
 - Multi-line edits to index.html/*.js were done via a small Python script (io.open read/replace/write) run through Bash — reliable for multi-line HTML.
 
 ## Roadmap (not done)
 1. **Geolocation check-in verification**: `navigator.geolocation.getCurrentPosition` (one-time) -> geofence vs park coords -> set `checkins.verified = true`. Needs HTTPS (Vercel has it). The `verified` column already exists.
-2. **Leaderboard tab styling**: resort/park filter buttons are plain `btn-sm`; make a nicer segmented/pill control.
 3. **Launch hardening**: re-enable email confirmation + set Supabase Site URL.
-4. Nice-to-haves: Supabase Storage for photos; delete-a-review; profile editing.
+
+### Done
+2. **Leaderboard tab styling** — resort/park filters now use the (previously unused) `.lb-tabs`/`.lb-tab` segmented-pill CSS instead of plain `btn-sm` buttons. See `leaderboard.js` `renderLbResortTabs`/`renderLbParkTabs`.
+4. **Delete-a-review** — Delete buttons on food reviews (profile -> My Food Reviews) and check-ins (profile -> Visit History), own rows only via RLS. `deleteFoodReview()` in `supabase-food.js`, `deleteCheckin()` in `supabase-data.js`. Required a new `delete own food` RLS policy on `food_reviews` (checkins already had one) — **run the updated migration block in `supabase/schema.sql` against the live project.**
+4. **Profile editing** — real modal (`overlay-edit-profile`) replaces the old `prompt()`-based edit: avatar, first/last name, username (uniqueness-checked), bio, location. `openEditProfile`/`submitEditProfile` in `supabase-auth.js`.
+4. **Supabase Storage for photos** — new uploads (check-in photo, food-review photo, community photo share) now go to a `photos` Storage bucket instead of base64 data URLs in the DB; `uploadPhoto()` in `supabase-data.js`. Existing base64 rows still render fine (no backfill needed). **Requires running the new Storage bucket + policy block in `supabase/schema.sql` against the live project before uploads will work** (creates the `photos` bucket, public-read + own-folder insert/delete policies).
 
 ## Resume in a new chat
 Open a new Claude Code session in `C:\Users\SeanDaniel\Desktop\Turnstiles` and say "read NOTES.md and the code, then continue." The repo is the source of truth.
