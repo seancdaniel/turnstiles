@@ -36,6 +36,7 @@ create table public.food_reviews (
   user_id     uuid not null references auth.users(id) on delete cascade,
   item_name   text not null,
   park        text not null,
+  spot        text,
   score       numeric not null,
   review      text,
   created_at  timestamptz default now()
@@ -100,8 +101,19 @@ create policy "delete own checkin"   on public.checkins for delete using (auth.u
 -- food_reviews
 create policy "food public read"     on public.food_reviews for select using (true);
 create policy "insert own food"      on public.food_reviews for insert with check (auth.uid() = user_id);
+create policy "update own food"      on public.food_reviews for update using (auth.uid() = user_id);
 
 -- photos
 create policy "photos public read"   on public.photos for select using (true);
 create policy "insert own photo"     on public.photos for insert with check (auth.uid() = user_id);
 create policy "delete own photo"     on public.photos for delete using (auth.uid() = user_id);
+
+-- ============================================================
+-- MIGRATION — run this block instead if the tables above already
+-- exist in your project (e.g. you ran this file before the food
+-- review "spot" field and Edit action were added). Safe to re-run.
+-- ============================================================
+alter table public.food_reviews add column if not exists spot text;
+
+drop policy if exists "update own food" on public.food_reviews;
+create policy "update own food" on public.food_reviews for update using (auth.uid() = user_id);
