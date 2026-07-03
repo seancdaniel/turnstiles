@@ -616,6 +616,22 @@ body {
   padding-bottom: 1px;
 }
 
+.subsection-title {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 21px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: #F3E7C8;
+  margin-bottom: 12px; padding-bottom: 11px;
+  border-bottom: 2px solid rgba(231,206,138,0.22);
+}
+.subsection-title i {
+  flex-shrink: 0; font-size: 13px; color: #2a1d07;
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, #F8E9B0, #D9B441);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
 /* ========== ORNAMENTAL DIVIDER ========== */
 .divider-ornament {
   max-width: 1300px; margin: 0 auto;
