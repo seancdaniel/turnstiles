@@ -415,6 +415,15 @@ body {
 }
 .btn-hero-outline:hover { background: var(--parchment-dk); }
 
+.btn-hero-outline {
+  color: #F3E7C8;
+  border-color: rgba(231,206,138,0.4);
+}
+.btn-hero-outline:hover {
+  background: rgba(231,206,138,0.10);
+  border-color: rgba(231,206,138,0.7);
+}
+
 /* ========== PASSPORT CARD ========== */
 .passport {
   background: white;
