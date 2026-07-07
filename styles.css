@@ -23,7 +23,7 @@
   --teal:        #1B8F89;
   --teal-lt:     #CFE9E4;
   /* Navy */
-  --navy:        #14273E;
+  --navy:        #1E354E;
   --navy-lt:     #D5E2EC;
   /* Borders */
   --border:      rgba(26,42,58,0.14);
@@ -1447,7 +1447,7 @@ select.field-input { cursor: pointer; }
   padding: 150px 32px 76px;
   background:
     radial-gradient(ellipse 80% 50% at 50% -6%, rgba(231,206,138,0.20), transparent 60%),
-    radial-gradient(ellipse 130% 95% at 50% 0%, #21384f 0%, #16293f 48%, #0E1E2E 100%);
+    radial-gradient(ellipse 130% 95% at 50% 0%, #2B465F 0%, #20374F 48%, #182C3E 100%);
   border-bottom: 1px solid var(--border-gold);
 }
 @media (max-width: 600px) { .ticket-hero { padding-top: 112px; } }
@@ -1674,7 +1674,7 @@ select.field-input { cursor: pointer; }
 .ticket-stub::before {
   content: '';
   position: absolute; left: -9px; top: 0; bottom: 0; width: 18px;
-  background: radial-gradient(circle at center, #0a1826 0 3px, rgba(10,24,38,0) 3.7px);
+  background: radial-gradient(circle at center, #142636 0 3px, rgba(20,38,54,0) 3.7px);
   background-size: 18px 15px;
   background-position: center -1px;
   background-repeat: repeat-y;
@@ -1735,7 +1735,7 @@ select.field-input { cursor: pointer; }
   }
   .ticket-stub::before {
     left: 0; right: 0; top: -9px; bottom: auto; width: auto; height: 18px;
-    background: radial-gradient(circle at center, #0a1826 0 3px, rgba(10,24,38,0) 3.7px);
+    background: radial-gradient(circle at center, #142636 0 3px, rgba(20,38,54,0) 3.7px);
     background-size: 15px 18px;
     background-position: -1px center;
     background-repeat: repeat-x;
@@ -1903,7 +1903,7 @@ body.guest #nav-home { display: none !important; }
 .about-card p { font-size: 14px; font-weight: 300; line-height: 1.65; color: var(--ink-light); }
 .about-cta {
   text-align: center;
-  background: linear-gradient(180deg, #16293f, #10202f);
+  background: linear-gradient(180deg, #20374F, #1A2E3F);
   border: 1px solid rgba(194,154,44,0.30); border-radius: 14px; padding: 46px 28px;
 }
 .about-cta h2 {
@@ -1923,13 +1923,13 @@ body {
   background:
     radial-gradient(120% 80% at 50% -10%, rgba(231,206,138,0.06), transparent 60%),
     radial-gradient(100% 90% at 50% 120%, rgba(27,143,137,0.10), transparent 65%),
-    #0a1826;
+    #142636;
   background-attachment: fixed;
 }
 
 /* ---- App top nav → illuminated dark ---- */
 .nav {
-  background: rgba(12,28,44,0.92);
+  background: rgba(22,42,60,0.92);
   border-bottom: 1px solid rgba(194,154,44,0.45);
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
