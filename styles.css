@@ -45,6 +45,7 @@ body {
 
 /* ========== BG SILHOUETTES ========== */
 .bg-layer {
+  display: none;
   position: fixed;
   inset: 0;
   pointer-events: none;
