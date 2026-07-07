@@ -333,20 +333,6 @@ function updateScoreDisplay(val) {
   document.getElementById('ci-score-display').textContent = parseFloat(val).toFixed(1) + ' / 10';
 }
 
-function foodKeydown(e) { if(e.key==='Enter') addFoodTag(); }
-
-function addFoodTag() {
-  const inp = document.getElementById('ci-food-input');
-  const val = inp.value.trim();
-  if(!val) return;
-  const list = document.getElementById('ci-food-tags');
-  const tag = document.createElement('span');
-  tag.className = 'food-tag-item';
-  tag.innerHTML = '🍽️ '+val+' <button class="food-tag-remove" onclick="this.parentElement.remove()">✕</button>';
-  list.appendChild(tag);
-  inp.value='';
-}
-
 function triggerPhotoUpload() {
   document.getElementById('ci-photo-input').click();
 }
@@ -384,26 +370,16 @@ function submitCheckin() {
   const miles = parseFloat(document.getElementById('ci-miles').value)||0;
   const score = parseFloat(document.getElementById('ci-score').value)||8.5;
   const review = document.getElementById('ci-review').value.trim();
-  const foods = [...document.querySelectorAll('#ci-food-tags .food-tag-item')].map(t=>t.textContent.replace('✕','').replace('🍽️','').trim());
   const photoImg = document.getElementById('ci-photo-img');
   const photo = photoImg.src && photoImg.src!==window.location.href ? photoImg.src : null;
 
   const checkin = {
     id: 'c'+STATE.nextId++,
     userId: STATE.currentUser.id,
-    park, date, miles, foods, score, review, photo,
+    park, date, miles, foods: [], score, review, photo,
     ts: Date.now()
   };
   STATE.checkins.unshift(checkin);
-
-  // Add food reviews automatically
-  foods.forEach(f => {
-    if(f) STATE.foodReviews.unshift({
-      id:'fr'+STATE.nextId++, userId:STATE.currentUser.id,
-      username:STATE.currentUser.username, itemName:f, park, score, review,
-      ts:Date.now(), _reviewCount:1
-    });
-  });
 
   // Add photo to community
   if(photo) {
@@ -417,7 +393,6 @@ function submitCheckin() {
   closeOverlay('overlay-checkin');
   // Reset form
   document.getElementById('ci-miles').value='';
-  document.getElementById('ci-food-tags').innerHTML='';
   document.getElementById('ci-review').value='';
   document.getElementById('ci-score').value=8.5;
   document.getElementById('ci-score-display').textContent='8.5 / 10';

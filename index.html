@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=17">
+  <link rel="stylesheet" href="styles.css?v=18">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -198,14 +198,6 @@
       <div class="field">
         <label class="field-lbl">Miles Walked</label>
         <input class="field-input" id="ci-miles" type="number" min="0" max="30" step="0.1" placeholder="e.g. 7.4">
-      </div>
-      <div class="field">
-        <label class="field-lbl">Food &amp; Drinks Tried</label>
-        <div class="food-tag-input-wrap">
-          <input class="field-input" id="ci-food-input" placeholder="e.g. Dole Whip Float" onkeydown="foodKeydown(event)">
-          <button class="btn-sm" onclick="addFoodTag()">Add</button>
-        </div>
-        <div class="food-tags-list" id="ci-food-tags"></div>
       </div>
       <div class="field">
         <label class="field-lbl">Score This Visit's Food — <span id="ci-score-display" style="color:var(--coral);font-weight:700">8.5 / 10</span></label>
@@ -1229,9 +1221,9 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=9"></script>
+<script src="main.js?v=10"></script>
 <script src="supabase-auth.js?v=2"></script>
-<script src="supabase-data.js?v=2"></script>
+<script src="supabase-data.js?v=3"></script>
 <script src="supabase-food.js?v=4"></script>
 <script src="leaderboard.js?v=2"></script>
 </body>

@@ -104,13 +104,9 @@ async function submitCheckin() {
   var miles = parseFloat(document.getElementById('ci-miles').value) || 0;
   var score = parseFloat(document.getElementById('ci-score').value) || 8.5;
   var review = document.getElementById('ci-review').value.trim();
-  var foods = Array.prototype.slice.call(document.querySelectorAll('#ci-food-tags .food-tag-item')).map(function (t) { return t.textContent.replace('\u{1F37D}', '').replace('✕', '').trim(); }).filter(Boolean);
   var uid = STATE.currentUser.id;
-  var res = await sb.from('checkins').insert({ user_id: uid, park: park, visit_date: date, miles: miles, score: score, review: review, foods: foods });
+  var res = await sb.from('checkins').insert({ user_id: uid, park: park, visit_date: date, miles: miles, score: score, review: review });
   if (res.error) { toast('Could not save check-in: ' + res.error.message, 'error'); return; }
-  if (foods.length) {
-    await sb.from('food_reviews').insert(foods.map(function (f) { return { user_id: uid, item_name: f, park: park, score: score, review: review }; }));
-  }
   var photoImg = document.getElementById('ci-photo-img');
   if (photoImg && photoImg.src && photoImg.src.indexOf('data:') === 0) {
     var small = await downscale(photoImg.src);
@@ -119,7 +115,6 @@ async function submitCheckin() {
   }
   closeOverlay('overlay-checkin');
   document.getElementById('ci-miles').value = '';
-  document.getElementById('ci-food-tags').innerHTML = '';
   document.getElementById('ci-review').value = '';
   document.getElementById('ci-score').value = 8.5;
   document.getElementById('ci-score-display').textContent = '8.5 / 10';
