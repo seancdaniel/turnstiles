@@ -190,19 +190,6 @@ body {
   display: inline-block;
 }
 
-.hero-starburst-inner::before {
-  content: '★  Who\'s Number 1  ★';
-  position: absolute;
-  top: -11px; left: 50%; transform: translateX(-50%);
-  font-family: 'Josefin Sans', sans-serif;
-  font-size: 8px; font-weight: 700;
-  letter-spacing: 2.5px; text-transform: uppercase;
-  color: var(--gold-lt);
-  background: var(--navy);
-  padding: 0 8px;
-  white-space: nowrap;
-}
-
 .hero-starburst-text {
   font-family: 'Special Elite', cursive;
   font-size: 11px;
