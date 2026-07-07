@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=22">
+  <link rel="stylesheet" href="styles.css?v=23">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -281,6 +281,26 @@
     <div class="modal-footer">
       <button class="btn-sm" onclick="closeOverlay('overlay-food-review')">Cancel</button>
       <button class="btn-sm primary" onclick="submitFoodReview()">Submit Review</button>
+    </div>
+  </div>
+</div>
+
+<!-- Food Item Detail Modal -->
+<div class="overlay" id="overlay-food-detail">
+  <div class="modal modal-wide">
+    <div class="modal-hd">
+      <span class="modal-hd-title"><span id="fd-emoji"></span> <span id="fd-title"></span></span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-food-detail')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="fd-summary">
+        <div class="fd-summary-loc" id="fd-loc"></div>
+        <div class="fd-summary-score">
+          <span class="fd-summary-avg" id="fd-avg"></span>
+          <span class="fd-summary-count" id="fd-count"></span>
+        </div>
+      </div>
+      <div id="fd-reviews-list"></div>
     </div>
   </div>
 </div>
@@ -1217,7 +1237,7 @@
 <script src="main.js?v=11"></script>
 <script src="supabase-auth.js?v=2"></script>
 <script src="supabase-data.js?v=4"></script>
-<script src="supabase-food.js?v=4"></script>
+<script src="supabase-food.js?v=5"></script>
 <script src="leaderboard.js?v=2"></script>
 </body>
 </html>

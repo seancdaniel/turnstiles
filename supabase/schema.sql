@@ -39,6 +39,7 @@ create table public.food_reviews (
   spot        text,
   score       numeric not null,
   review      text,
+  photo_url   text,
   created_at  timestamptz default now()
 );
 
@@ -114,6 +115,7 @@ create policy "delete own photo"     on public.photos for delete using (auth.uid
 -- review "spot" field and Edit action were added). Safe to re-run.
 -- ============================================================
 alter table public.food_reviews add column if not exists spot text;
+alter table public.food_reviews add column if not exists photo_url text;
 
 drop policy if exists "update own food" on public.food_reviews;
 create policy "update own food" on public.food_reviews for update using (auth.uid() = user_id);

@@ -919,7 +919,7 @@ body {
 .food-item {
   display: flex; align-items: center; gap: 12px;
   padding: 11px 18px; border-bottom: 1px solid var(--border);
-  transition: background 0.1s;
+  transition: background 0.1s; cursor: pointer;
 }
 .food-item:last-child { border-bottom: none; }
 .food-item:hover { background: var(--parchment); }
@@ -2041,3 +2041,20 @@ body {
 .myfr-loc { font-size: 11px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.5px; }
 .myfr-review { font-size: 12px; color: var(--ink-light); margin-top: 3px; font-style: italic; }
 .myfr-score { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--coral); flex-shrink: 0; min-width: 34px; text-align: right; }
+
+/* ── Food item detail modal ── */
+.fd-summary {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--border);
+}
+.fd-summary-loc { font-size: 12px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.5px; }
+.fd-summary-score { display: flex; align-items: baseline; gap: 8px; }
+.fd-summary-avg { font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: var(--gold); line-height: 1; }
+.fd-summary-count { font-size: 11px; color: var(--ink-faint); }
+.fd-review { padding: 14px 0; border-bottom: 1px solid var(--border); }
+.fd-review:last-child { border-bottom: none; }
+.fd-review-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.fd-review-user { font-size: 13px; font-weight: 700; color: var(--ink); }
+.fd-review-score { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--coral); }
+.fd-review-text { font-size: 13px; color: var(--ink-light); line-height: 1.5; }
+.fd-review-photo { display: block; width: 100%; max-height: 220px; object-fit: cover; border-radius: 6px; margin-top: 10px; }

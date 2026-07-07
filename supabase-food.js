@@ -29,8 +29,9 @@ async function loadData() {
     STATE.foodReviews = (r[2].data || []).map(function (f) {
       return { id: f.id, userId: f.user_id,
         username: (idMap[f.user_id] && idMap[f.user_id].username) || 'someone',
+        avatar: (idMap[f.user_id] && idMap[f.user_id].avatar) || '\u{1F3A2}',
         itemName: f.item_name, park: f.park, spot: f.spot || '', score: Number(f.score),
-        review: f.review || '', ts: new Date(f.created_at).getTime() };
+        review: f.review || '', photoUrl: f.photo_url || '', ts: new Date(f.created_at).getTime() };
     });
     STATE.photos = (r[3].data || []).map(function (ph) {
       return { id: ph.id, userId: ph.user_id,
@@ -124,8 +125,19 @@ async function submitFoodReview() {
   if (!name) { toast('Pick an item or enter a name.', 'error'); return; }
   var score = parseFloat(document.getElementById('fr-score').value);
   var review = document.getElementById('fr-review').value.trim();
+
+  var photoUrl = null;
+  var _fp = document.getElementById('fr-photo-img');
+  var _fpSrc = _fp && _fp.getAttribute('src');
+  if (_fpSrc && _fpSrc.indexOf('data:') === 0) {
+    var _small = await downscale(_fpSrc);
+    photoUrl = await uploadPhoto(_small, STATE.currentUser.id);
+  } else if (frEditId && _fpSrc) {
+    photoUrl = _fpSrc; // unchanged existing photo
+  }
+
   if (frEditId) {
-    var _up = await sb.from('food_reviews').update({ item_name: name, park: park, spot: spot, score: score, review: review }).eq('id', frEditId).eq('user_id', STATE.currentUser.id);
+    var _up = await sb.from('food_reviews').update({ item_name: name, park: park, spot: spot, score: score, review: review, photo_url: photoUrl }).eq('id', frEditId).eq('user_id', STATE.currentUser.id);
     if (_up.error) { toast('Could not update: ' + _up.error.message, 'error'); return; }
     closeOverlay('overlay-food-review');
     resetFoodForm();
@@ -134,14 +146,9 @@ async function submitFoodReview() {
     toast('Review updated!');
     return;
   }
-  var res = await sb.from('food_reviews').insert({ user_id: STATE.currentUser.id, item_name: name, park: park, spot: spot, score: score, review: review });
+  var res = await sb.from('food_reviews').insert({ user_id: STATE.currentUser.id, item_name: name, park: park, spot: spot, score: score, review: review, photo_url: photoUrl });
   if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
-  var _fp = document.getElementById('fr-photo-img');
-  if (_fp && _fp.src && _fp.src.indexOf('data:') === 0) {
-    var _small = await downscale(_fp.src);
-    var _url = await uploadPhoto(_small, STATE.currentUser.id);
-    if (_url) await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: park, caption: name + (spot ? ' - ' + spot : ''), image_url: _url });
-  }
+  if (photoUrl) await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: park, caption: name + (spot ? ' - ' + spot : ''), image_url: photoUrl });
   closeOverlay('overlay-food-review');
   resetFoodForm();
   await loadData();
@@ -174,7 +181,7 @@ function renderFood() {
     if (!items.length) { el.innerHTML = '<div class="empty-state"><div class="empty-state-sub">No food ratings yet.<br>Be the first to rate an item!</div></div>'; return; }
     el.innerHTML = items.map(function (item, i) {
       var loc = item.park + (item.spot ? ' · ' + item.spot : '');
-      return '<div class="food-item">' +
+      return '<div class="food-item" data-n="' + encodeURIComponent(item.itemName) + '" data-p="' + encodeURIComponent(item.park) + '" data-s="' + encodeURIComponent(item.spot) + '" onclick="openFoodDetailEl(this)">' +
         '<div class="food-rank">' + (i + 1) + '</div>' +
         '<div class="food-emoji">' + foodEmoji(item.itemName) + '</div>' +
         '<div class="food-info"><div class="food-name">' + escapeHtml(item.itemName) + '</div><div class="food-loc">' + escapeHtml(loc) + '</div></div>' +
@@ -184,6 +191,37 @@ function renderFood() {
   };
   renderList(byScore, document.getElementById('food-scores-list'));
   renderList(byPop, document.getElementById('food-popular-list'));
+}
+
+function openFoodDetailEl(el) {
+  openFoodDetail(decodeURIComponent(el.getAttribute('data-n')), decodeURIComponent(el.getAttribute('data-p')), decodeURIComponent(el.getAttribute('data-s')));
+}
+
+function openFoodDetail(name, park, spot) {
+  var key = name.toLowerCase() + '|' + park + '|' + (spot || '').toLowerCase();
+  var reviews = STATE.foodReviews.filter(function (r) {
+    var rKey = r.itemName.toLowerCase() + '|' + r.park + '|' + (r.spot || '').toLowerCase();
+    return rKey === key;
+  }).sort(function (a, b) { return b.ts - a.ts; });
+  if (!reviews.length) return;
+  var loc = park + (spot ? ' · ' + spot : '');
+  var avg = reviews.reduce(function (s, r) { return s + r.score; }, 0) / reviews.length;
+  document.getElementById('fd-emoji').textContent = foodEmoji(name);
+  document.getElementById('fd-title').textContent = name;
+  document.getElementById('fd-loc').textContent = loc;
+  document.getElementById('fd-avg').textContent = avg.toFixed(1);
+  document.getElementById('fd-count').textContent = reviews.length + ' review' + (reviews.length === 1 ? '' : 's');
+  document.getElementById('fd-reviews-list').innerHTML = reviews.map(function (r) {
+    return '<div class="fd-review">' +
+      '<div class="fd-review-hd">' +
+        '<span class="fd-review-user">' + (r.avatar || '\u{1F3A2}') + ' ' + escapeHtml(r.username) + '</span>' +
+        '<span class="fd-review-score">' + Number(r.score).toFixed(1) + '</span>' +
+      '</div>' +
+      (r.review ? '<div class="fd-review-text">' + escapeHtml(r.review) + '</div>' : '') +
+      (r.photoUrl ? '<img class="fd-review-photo" src="' + r.photoUrl + '" alt="Photo from ' + escapeHtml(r.username) + '\'s review">' : '') +
+      '</div>';
+  }).join('');
+  openOverlay('overlay-food-detail');
 }
 
 
@@ -229,6 +267,10 @@ function editFoodReview(id) {
   document.getElementById('fr-score').value = r.score;
   document.getElementById('fr-score-display').textContent = Number(r.score).toFixed(1);
   document.getElementById('fr-review').value = r.review || '';
+  var pv = document.getElementById('fr-photo-preview');
+  var pi = document.getElementById('fr-photo-img');
+  if (r.photoUrl) { pi.src = r.photoUrl; pv.style.display = 'block'; }
+  else { pi.removeAttribute('src'); pv.style.display = 'none'; }
   var results = document.getElementById('fr-results'); if (results) results.style.display = 'none';
   var picked = document.getElementById('fr-picked'); if (picked) picked.style.display = 'none';
   var t = document.querySelector('#overlay-food-review .modal-hd-title'); if (t) t.textContent = 'Edit Your Review';
