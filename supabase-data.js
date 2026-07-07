@@ -102,10 +102,9 @@ async function submitCheckin() {
   var park = document.getElementById('ci-park').value;
   var date = document.getElementById('ci-date').value || new Date().toISOString().split('T')[0];
   var miles = parseFloat(document.getElementById('ci-miles').value) || 0;
-  var score = parseFloat(document.getElementById('ci-score').value) || 8.5;
   var review = document.getElementById('ci-review').value.trim();
   var uid = STATE.currentUser.id;
-  var res = await sb.from('checkins').insert({ user_id: uid, park: park, visit_date: date, miles: miles, score: score, review: review });
+  var res = await sb.from('checkins').insert({ user_id: uid, park: park, visit_date: date, miles: miles, review: review });
   if (res.error) { toast('Could not save check-in: ' + res.error.message, 'error'); return; }
   var photoImg = document.getElementById('ci-photo-img');
   if (photoImg && photoImg.src && photoImg.src.indexOf('data:') === 0) {
@@ -116,8 +115,6 @@ async function submitCheckin() {
   closeOverlay('overlay-checkin');
   document.getElementById('ci-miles').value = '';
   document.getElementById('ci-review').value = '';
-  document.getElementById('ci-score').value = 8.5;
-  document.getElementById('ci-score-display').textContent = '8.5 / 10';
   document.getElementById('ci-photo-preview').style.display = 'none';
   document.getElementById('ci-photo-input').value = '';
   document.getElementById('ci-date').valueAsDate = new Date();

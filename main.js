@@ -329,10 +329,6 @@ document.addEventListener('click', e => {
 // ============================================================
 // CHECK-IN
 // ============================================================
-function updateScoreDisplay(val) {
-  document.getElementById('ci-score-display').textContent = parseFloat(val).toFixed(1) + ' / 10';
-}
-
 function triggerPhotoUpload() {
   document.getElementById('ci-photo-input').click();
 }
@@ -368,7 +364,6 @@ function submitCheckin() {
   const park = document.getElementById('ci-park').value;
   const date = document.getElementById('ci-date').value || new Date().toISOString().split('T')[0];
   const miles = parseFloat(document.getElementById('ci-miles').value)||0;
-  const score = parseFloat(document.getElementById('ci-score').value)||8.5;
   const review = document.getElementById('ci-review').value.trim();
   const photoImg = document.getElementById('ci-photo-img');
   const photo = photoImg.src && photoImg.src!==window.location.href ? photoImg.src : null;
@@ -376,7 +371,7 @@ function submitCheckin() {
   const checkin = {
     id: 'c'+STATE.nextId++,
     userId: STATE.currentUser.id,
-    park, date, miles, foods: [], score, review, photo,
+    park, date, miles, foods: [], score: null, review, photo,
     ts: Date.now()
   };
   STATE.checkins.unshift(checkin);
@@ -394,8 +389,6 @@ function submitCheckin() {
   // Reset form
   document.getElementById('ci-miles').value='';
   document.getElementById('ci-review').value='';
-  document.getElementById('ci-score').value=8.5;
-  document.getElementById('ci-score-display').textContent='8.5 / 10';
   document.getElementById('ci-photo-preview').style.display='none';
   document.getElementById('ci-photo-input').value='';
   document.getElementById('ci-date').valueAsDate = new Date();
