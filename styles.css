@@ -2058,3 +2058,120 @@ body {
 .fd-review-score { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--coral); }
 .fd-review-text { font-size: 13px; color: var(--ink-light); line-height: 1.5; }
 .fd-review-photo { display: block; width: 100%; max-height: 220px; object-fit: cover; border-radius: 6px; margin-top: 10px; }
+
+/* ======================================================
+   MOBILE RESPONSIVE — app nav, hero, grids, tables
+   ====================================================== */
+
+/* app nav: hamburger + dropdown panel (mirrors the landing .sh-mobile pattern) */
+.app-burger {
+  display: none;
+  width: 38px; height: 38px; flex-shrink: 0;
+  border: none; background: none; cursor: pointer;
+  flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  border-radius: 8px;
+}
+.app-burger:hover { background: rgba(255,255,255,0.08); }
+.app-burger span { width: 20px; height: 2px; border-radius: 2px; background: #F4EFE3; transition: transform 0.22s ease, opacity 0.22s ease; }
+.nav.menu-open .app-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav.menu-open .app-burger span:nth-child(2) { opacity: 0; }
+.nav.menu-open .app-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.app-burger:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.app-mobile-menu {
+  display: none;
+  flex-direction: column; gap: 2px;
+  position: absolute; top: 100%; left: 0; right: 0;
+  background: rgba(20,38,54,0.98); backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(194,154,44,0.45);
+  padding: 10px 20px 14px;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+}
+.nav.menu-open .app-mobile-menu { display: flex; }
+.app-mobile-menu a {
+  font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  color: rgba(255,255,255,0.75); text-decoration: none; padding: 12px 10px; border-radius: 6px;
+}
+.app-mobile-menu a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.app-mobile-menu a.active { color: #E7CE8A; }
+
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .app-burger { display: inline-flex; }
+  .nav-inner { padding: 0 20px; }
+}
+@media (max-width: 480px) {
+  .btn-solid-label { display: none; }
+  .btn-solid { padding: 8px 12px; }
+  .nav-user-name { display: none; }
+}
+
+/* home hero: stack the passport under the hero text, scale the marquee down */
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 32px; padding: 40px 20px 40px; }
+}
+.hero-name-outline { font-size: clamp(52px, 13vw, 120px); }
+.hero-tagline { font-size: clamp(20px, 6vw, 34px); }
+@media (max-width: 600px) {
+  .hero-ticket-row { flex-wrap: wrap; }
+  .hero-ticket-line { display: none; }
+  .hero-actions { flex-wrap: wrap; }
+  .hero-actions .btn-hero, .hero-actions .btn-hero-outline { flex: 1 1 100%; justify-content: center; }
+}
+@media (max-width: 640px) {
+  .hero-stats { display: grid; grid-template-columns: 1fr 1fr; }
+  .hero-stat { border-right: 1px solid var(--border-gold); border-bottom: 1px solid var(--border-gold); }
+  .hero-stat:nth-child(2n) { border-right: none; }
+  .hero-stat:nth-child(n+3) { border-bottom: none; }
+}
+
+/* section headers: let title + action button wrap instead of overflowing */
+.section-head { flex-wrap: wrap; gap: 12px; }
+
+/* form fields: stack two-column rows on narrow screens */
+@media (max-width: 480px) {
+  .field-row { grid-template-columns: 1fr; }
+}
+
+/* grids: fewer columns as space shrinks */
+.food-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.photos-cols { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+@media (max-width: 700px) {
+  .food-cols { grid-template-columns: 1fr; }
+  .photos-cols { grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width: 640px) {
+  .park-grid, .park-grid-3 { grid-template-columns: repeat(2,1fr); }
+  .stat-cards { grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width: 380px) {
+  .park-grid, .park-grid-3 { grid-template-columns: 1fr; }
+}
+
+/* wide tables: scroll within their card instead of blowing out the page */
+#visit-history-table { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* profile food-review rows: Edit/Delete drop to their own row as a unit on narrow screens */
+.myfr-row { flex-wrap: wrap; }
+.myfr-actions { display: flex; gap: 8px; margin-left: auto; }
+@media (max-width: 480px) {
+  .myfr-actions { flex: 1 1 100%; justify-content: flex-end; margin-left: 0; margin-top: 4px; }
+}
+
+/* toast: keep clear of the edges on narrow screens */
+@media (max-width: 480px) {
+  .toast { left: 16px; right: 16px; bottom: 16px; width: auto; max-width: calc(100vw - 32px); text-align: center; justify-content: center; }
+}
+
+/* CTA banners: stack text above actions, full-width buttons */
+@media (max-width: 760px) {
+  .cta-inner { flex-direction: column; align-items: flex-start; gap: 20px; padding: 36px 26px; }
+  .cta-actions { flex-wrap: wrap; width: 100%; }
+  .cta-actions button { flex: 1 1 auto; }
+}
+
+/* site footer: stack instead of overflowing the row */
+@media (max-width: 700px) {
+  .site-footer { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .footer-links { flex-wrap: wrap; gap: 10px 18px; }
+}

@@ -178,6 +178,22 @@ function closeMobileMenu() {
   if(b) { b.setAttribute('aria-expanded', 'false'); b.setAttribute('aria-label', 'Open menu'); }
 }
 
+// Mobile menu for the logged-in app nav
+function toggleAppMenu() {
+  const n = document.querySelector('.nav');
+  if(!n) return;
+  const open = n.classList.toggle('menu-open');
+  const b = n.querySelector('.app-burger');
+  if(b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function closeAppMenu() {
+  const n = document.querySelector('.nav');
+  if(!n) return;
+  n.classList.remove('menu-open');
+  const b = n.querySelector('.app-burger');
+  if(b) b.setAttribute('aria-expanded', 'false');
+}
+
 // ============================================================
 // AUTH
 // ============================================================

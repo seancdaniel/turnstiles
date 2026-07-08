@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=23">
+  <link rel="stylesheet" href="styles.css?v=29">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -438,7 +438,7 @@
             <button class="sh-join" onclick="openOverlay('overlay-register')">Create Account</button>
           </div>
           <button class="btn-solid" onclick="openOverlay('overlay-checkin')">
-            <i class="ti ti-plus"></i> Check In
+            <i class="ti ti-plus"></i> <span class="btn-solid-label">Check In</span>
           </button>
           <div class="nav-user" onclick="toggleDropdown()" id="nav-user-pill">
             <div class="nav-user-av" id="nav-avatar">🎢</div>
@@ -463,7 +463,17 @@
               <i class="ti ti-logout"></i> Sign Out
             </div>
           </div>
+          <button class="app-burger" aria-label="Open menu" aria-expanded="false" aria-controls="app-mobile-menu" onclick="toggleAppMenu()">
+            <span></span><span></span><span></span>
+          </button>
         </div>
+      </div>
+      <div class="app-mobile-menu" id="app-mobile-menu">
+        <a href="#" onclick="closeAppMenu();showView('home')">My Parks</a>
+        <a href="#" onclick="closeAppMenu();showView('community')">Leaderboard</a>
+        <a href="#" onclick="closeAppMenu();showView('food')">Food Scores</a>
+        <a href="#" onclick="closeAppMenu();showView('photos')">Photos</a>
+        <a href="#" onclick="closeAppMenu();showView('about')">About</a>
       </div>
     </nav>
   </header>
@@ -860,7 +870,7 @@
         <div><h2 class="section-title">FOOD SCORES</h2><p class="section-sub">Community-rated across all parks</p></div>
         <button class="btn-sm primary" onclick="actionOrSignup('overlay-food-review')"><i class="ti ti-plus" style="font-size:12px"></i> Rate an Item</button>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px">
+      <div class="food-cols">
         <div>
           <div class="subsection-title"><i class="ti ti-trophy"></i>Top Rated</div>
           <div class="light-card" id="food-scores-list"></div>
@@ -880,7 +890,7 @@
         <div><h2 class="section-title">COMMUNITY PHOTOS</h2><p class="section-sub">Shots from across the parks</p></div>
         <button class="btn-sm primary" onclick="actionOrSignup('overlay-photo')"><i class="ti ti-camera-plus" style="font-size:12px"></i> Share a Photo</button>
       </div>
-      <div id="photos-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"></div>
+      <div id="photos-grid" class="photos-cols"></div>
     </div>
   </div>
 
@@ -1234,10 +1244,10 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=11"></script>
+<script src="main.js?v=12"></script>
 <script src="supabase-auth.js?v=2"></script>
 <script src="supabase-data.js?v=4"></script>
-<script src="supabase-food.js?v=5"></script>
+<script src="supabase-food.js?v=6"></script>
 <script src="leaderboard.js?v=2"></script>
 </body>
 </html>

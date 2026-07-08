@@ -239,8 +239,10 @@ function renderMyFoodReviews() {
       '<div class="myfr-emoji">' + foodEmoji(r.itemName) + '</div>' +
       '<div class="myfr-info"><div class="myfr-name">' + escapeHtml(r.itemName) + '</div><div class="myfr-loc">' + escapeHtml(loc) + '</div>' + (r.review ? '<div class="myfr-review">' + escapeHtml(r.review) + '</div>' : '') + '</div>' +
       '<div class="myfr-score">' + Number(r.score).toFixed(1) + '</div>' +
-      '<button class="btn-sm" onclick="editFoodReview(\'' + r.id + '\')">Edit</button>' +
-      '<button class="btn-sm danger" onclick="deleteFoodReview(\'' + r.id + '\')">Delete</button>' +
+      '<div class="myfr-actions">' +
+        '<button class="btn-sm" onclick="editFoodReview(\'' + r.id + '\')">Edit</button>' +
+        '<button class="btn-sm danger" onclick="deleteFoodReview(\'' + r.id + '\')">Delete</button>' +
+      '</div>' +
       '</div>';
   }).join('');
 }
