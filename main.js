@@ -619,7 +619,7 @@ function renderLeaderboard() {
   el.innerHTML = lb.map((row,i) => {
     const isYou = u && row.userId===u.id;
     const tierColor = {Platinum:'var(--gold)',Gold:'var(--gold)',Silver:'#888',Bronze:'var(--coral)'};
-    return `<div class="lb-row${isYou?' you':''}">
+    return `<div class="lb-row${isYou?' you':''}" onclick="openUserProfile('${row.userId}')">
       <span class="lb-rank ${rankColors[i]||''}">${i+1}</span>
       <div class="lb-av" style="background:var(--coral-lt);color:var(--coral)">${row.avatar}</div>
       <div class="lb-info">
@@ -647,10 +647,12 @@ function renderCommunityFeed() {
       if(!user) return '';
       return `<div class="feed-card">
         <div class="feed-top">
-          <div class="feed-av" style="background:var(--coral-lt);color:var(--coral)">${user.avatar}</div>
-          <div class="feed-meta">
-            <div class="feed-username">${user.username}</div>
-            <div class="feed-parkname">${parkEmoji(c.park)} ${c.park}</div>
+          <div class="feed-user-link user-link" onclick="openUserProfile('${user.id}')" style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0">
+            <div class="feed-av" style="background:var(--coral-lt);color:var(--coral)">${user.avatar}</div>
+            <div class="feed-meta">
+              <div class="feed-username">${user.username}</div>
+              <div class="feed-parkname">${parkEmoji(c.park)} ${c.park}</div>
+            </div>
           </div>
           <div class="feed-time">${timeAgo(c.ts)}</div>
         </div>
@@ -742,7 +744,7 @@ function renderPhotos() {
     <div class="photo-thumb" style="background:${p.dataUrl?'#000':PHOTO_BG[i%PHOTO_BG.length]};border:1px solid var(--border)">
       ${p.dataUrl ? '<img alt="Photo shared by a passholder" src="'+p.dataUrl+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">' : '<span style="font-size:32px">'+parkEmoji(p.park)+'</span>'}
       <div class="photo-overlay">
-        <span class="photo-user">${p.avatar} ${p.username}</span>
+        <span class="photo-user user-link" onclick="event.stopPropagation();openUserProfile('${p.userId}')">${p.avatar} ${p.username}</span>
         <span class="photo-score" title="${p.caption||p.park}">${p.park.split(' ')[0]}</span>
       </div>
     </div>

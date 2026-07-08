@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=29">
+  <link rel="stylesheet" href="styles.css?v=31">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -341,6 +341,41 @@
     <div class="modal-footer">
       <button class="btn-sm" onclick="closeOverlay('overlay-photo')">Cancel</button>
       <button class="btn-sm primary" onclick="submitPhoto()">Share Photo</button>
+    </div>
+  </div>
+</div>
+
+<!-- View a Community Member's Profile (read-only) -->
+<div class="overlay" id="overlay-user-profile">
+  <div class="modal modal-wide">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Profile</span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-user-profile')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body" style="padding:0">
+      <div class="profile-header-card" style="border-radius:0;margin-bottom:0">
+        <div class="profile-hd-inner">
+          <div class="profile-avatar" id="up-avatar">🎢</div>
+          <div class="profile-info">
+            <div class="profile-display-name" id="up-name">Name</div>
+            <div class="profile-username" id="up-username">@username</div>
+            <div class="profile-bio" id="up-bio">No bio yet.</div>
+          </div>
+        </div>
+        <div class="profile-badges" id="up-badges"></div>
+      </div>
+      <div style="padding:24px">
+        <div class="stat-cards">
+          <div class="stat-card"><div class="stat-card-num" id="up-stat-visits">0</div><div class="stat-card-lbl">Total Visits</div></div>
+          <div class="stat-card"><div class="stat-card-num" id="up-stat-miles">0.0</div><div class="stat-card-lbl">Miles Walked</div></div>
+          <div class="stat-card"><div class="stat-card-num" id="up-stat-foods">0</div><div class="stat-card-lbl">Foods Tried</div></div>
+          <div class="stat-card"><div class="stat-card-num" id="up-stat-avg">—</div><div class="stat-card-lbl">Avg Food Score</div></div>
+        </div>
+        <div class="up-section-title">Recent Visits</div>
+        <div class="light-card" id="up-visits" style="margin-bottom:20px"></div>
+        <div class="up-section-title">Food Reviews</div>
+        <div class="light-card" id="up-food-reviews"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -1244,10 +1279,10 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=12"></script>
+<script src="main.js?v=13"></script>
 <script src="supabase-auth.js?v=2"></script>
-<script src="supabase-data.js?v=4"></script>
-<script src="supabase-food.js?v=6"></script>
+<script src="supabase-data.js?v=5"></script>
+<script src="supabase-food.js?v=7"></script>
 <script src="leaderboard.js?v=2"></script>
 </body>
 </html>

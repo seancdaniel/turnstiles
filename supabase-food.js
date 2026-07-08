@@ -214,7 +214,7 @@ function openFoodDetail(name, park, spot) {
   document.getElementById('fd-reviews-list').innerHTML = reviews.map(function (r) {
     return '<div class="fd-review">' +
       '<div class="fd-review-hd">' +
-        '<span class="fd-review-user">' + (r.avatar || '\u{1F3A2}') + ' ' + escapeHtml(r.username) + '</span>' +
+        '<span class="fd-review-user user-link" onclick="openUserProfile(\'' + r.userId + '\')">' + (r.avatar || '\u{1F3A2}') + ' ' + escapeHtml(r.username) + '</span>' +
         '<span class="fd-review-score">' + Number(r.score).toFixed(1) + '</span>' +
       '</div>' +
       (r.review ? '<div class="fd-review-text">' + escapeHtml(r.review) + '</div>' : '') +

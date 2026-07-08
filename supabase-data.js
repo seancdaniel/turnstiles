@@ -30,6 +30,71 @@ async function uploadPhoto(dataUrl, userId) {
   } catch (e) { console.log('photo upload error:', e); return null; }
 }
 
+// read-only view of another passholder's profile (or your own -> jump to the real editable page)
+function openUserProfile(userId) {
+  if (STATE.currentUser && userId === STATE.currentUser.id) { showView('profile'); return; }
+  var u = STATE.users.find(function (x) { return x.id === userId; });
+  if (!u) return;
+
+  var my = STATE.checkins.filter(function (c) { return c.userId === userId; });
+  var miles = my.reduce(function (s, c) { return s + (c.miles || 0); }, 0);
+  var foods = [];
+  var seenFood = {};
+  my.forEach(function (c) { (c.foods || []).forEach(function (f) { if (!seenFood[f]) { seenFood[f] = true; foods.push(f); } }); });
+  var scores = my.filter(function (c) { return c.score != null; }).map(function (c) { return c.score; });
+  var avg = scores.length ? (scores.reduce(function (a, b) { return a + b; }, 0) / scores.length).toFixed(1) : '—';
+  var tier = getTier(my.length);
+
+  document.getElementById('up-avatar').textContent = u.avatar;
+  document.getElementById('up-name').textContent = (u.fname + ' ' + (u.lname || '')).trim() || u.username;
+  document.getElementById('up-username').textContent = '@' + u.username;
+  document.getElementById('up-bio').textContent = u.bio || 'No bio yet.';
+  document.getElementById('up-stat-visits').textContent = my.length;
+  document.getElementById('up-stat-miles').textContent = miles.toFixed(1);
+  document.getElementById('up-stat-foods').textContent = foods.length;
+  document.getElementById('up-stat-avg').textContent = avg;
+
+  var badges = [tier.name + ' Tier'];
+  if (my.length >= 1) badges.push('First Visit');
+  if (my.length >= 10) badges.push('Regular');
+  if (my.length >= 50) badges.push('Gold Passholder');
+  var parkSet = {}; my.forEach(function (c) { parkSet[c.park] = true; });
+  if (Object.keys(parkSet).length >= 4) badges.push('Park Hopper');
+  if (foods.length >= 10) badges.push('Foodie');
+  document.getElementById('up-badges').innerHTML = badges.map(function (b) {
+    var gold = /Gold|Park|Foodie/.test(b) ? ' gold' : '';
+    return '<span class="badge' + gold + '">' + escapeHtml(b) + '</span>';
+  }).join('');
+
+  var visitsEl = document.getElementById('up-visits');
+  var recent = my.slice().sort(function (a, b) { return b.ts - a.ts; }).slice(0, 10);
+  if (!recent.length) {
+    visitsEl.innerHTML = '<div class="empty-state"><div class="empty-state-sub">No visits logged yet.</div></div>';
+  } else {
+    visitsEl.innerHTML = '<table class="visit-table"><thead><tr><th>Park</th><th>Date</th><th>Miles</th><th>Food Score</th></tr></thead><tbody>' +
+      recent.map(function (c) {
+        return '<tr><td>' + parkEmoji(c.park) + ' ' + escapeHtml(c.park) + '</td><td>' + formatDate(c.date) + '</td><td>' + (c.miles ? c.miles + ' mi' : '—') + '</td><td>' + (c.score ? '<span class="visit-tag">' + c.score.toFixed(1) + '/10</span>' : '—') + '</td></tr>';
+      }).join('') + '</tbody></table>';
+  }
+
+  var reviewsEl = document.getElementById('up-food-reviews');
+  var myReviews = STATE.foodReviews.filter(function (r) { return r.userId === userId; });
+  if (!myReviews.length) {
+    reviewsEl.innerHTML = '<div class="empty-state"><div class="empty-state-sub">No food reviews yet.</div></div>';
+  } else {
+    reviewsEl.innerHTML = myReviews.map(function (r) {
+      var loc = r.park + (r.spot ? ' · ' + r.spot : '');
+      return '<div class="myfr-row">' +
+        '<div class="myfr-emoji">' + foodEmoji(r.itemName) + '</div>' +
+        '<div class="myfr-info"><div class="myfr-name">' + escapeHtml(r.itemName) + '</div><div class="myfr-loc">' + escapeHtml(loc) + '</div>' + (r.review ? '<div class="myfr-review">' + escapeHtml(r.review) + '</div>' : '') + '</div>' +
+        '<div class="myfr-score">' + Number(r.score).toFixed(1) + '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  openOverlay('overlay-user-profile');
+}
+
 function rerenderActive() {
   var active = document.querySelector('.screen.active');
   if (!active) return;
