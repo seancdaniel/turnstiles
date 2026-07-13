@@ -482,9 +482,6 @@
             <i class="ti ti-chevron-down" style="font-size:12px;color:var(--ink-faint)"></i>
           </div>
           <div class="dropdown" id="user-dropdown">
-            <div class="dropdown-item" onclick="showView('profile');closeDropdown()">
-              <i class="ti ti-user"></i> My Profile
-            </div>
             <div class="dropdown-item" onclick="openOverlay('overlay-checkin');closeDropdown()">
               <i class="ti ti-circle-plus"></i> Log Check-In
             </div>
@@ -741,8 +738,7 @@
       <!-- PARK SELECTOR -->
       <section class="section-wrap" id="parks">
         <div class="section-head">
-          <div><h2 class="section-title">SELECT A PARK</h2><p class="section-sub">Log a check-in or view visit history</p></div>
-          <a href="#" class="section-link" onclick="showView('profile')">My history <i class="ti ti-arrow-right"></i></a>
+          <div><h2 class="section-title">SELECT A PARK</h2><p class="section-sub">Log a check-in for any park</p></div>
         </div>
         <div class="tabs">
           <button class="tab active" onclick="switchParkTab(this,'disney')">Disney World</button>
@@ -823,16 +819,50 @@
         </div>
       </section>
 
-      <!-- RECENT ACTIVITY -->
+      <!-- PROFILE (merged into the same page as My Parks) -->
       <section class="section-wrap" style="padding-bottom:52px">
-        <div class="section-head">
-          <div><h2 class="section-title">YOUR RECENT ACTIVITY</h2><p class="section-sub">Your latest check-ins</p></div>
+        <div class="profile-header-card">
+          <div class="profile-hd-inner">
+            <div class="profile-avatar" id="profile-avatar-big">🎢</div>
+            <div class="profile-info">
+              <div class="profile-display-name" id="profile-display-name">Your Name</div>
+              <div class="profile-username" id="profile-username">@username</div>
+              <div class="profile-bio" id="profile-bio">No bio yet.</div>
+            </div>
+            <button class="btn-sm" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:white" onclick="openEditProfile()">
+              <i class="ti ti-pencil" style="font-size:11px"></i> Edit Profile
+            </button>
+          </div>
+          <div class="profile-badges" id="profile-badges">
+            <span class="badge">Bronze Tier</span>
+          </div>
         </div>
-        <div id="recent-activity-list">
-          <div class="empty-state">
-            <div class="empty-state-icon">🎢</div>
-            <div class="empty-state-title">No Check-Ins Yet</div>
-            <div class="empty-state-sub">Log your first visit using the Check In button above.</div>
+
+        <div class="stat-cards">
+          <div class="stat-card"><div class="stat-card-num" id="prof-stat-visits">0</div><div class="stat-card-lbl">Total Visits</div></div>
+          <div class="stat-card"><div class="stat-card-num" id="prof-stat-miles">0.0</div><div class="stat-card-lbl">Miles Walked</div></div>
+          <div class="stat-card"><div class="stat-card-num" id="prof-stat-foods">0</div><div class="stat-card-lbl">Foods Tried</div></div>
+          <div class="stat-card"><div class="stat-card-num" id="prof-stat-avg">—</div><div class="stat-card-lbl">Avg Food Score</div></div>
+        </div>
+
+        <div class="section-head" style="margin-bottom:14px">
+          <div><h2 class="section-title">MY FOOD REVIEWS</h2><p class="section-sub">Ratings you've left - Edit to update</p></div>
+        </div>
+        <div class="light-card" id="my-food-reviews" style="margin-bottom:26px"></div>
+        <div class="section-head" style="margin-bottom:14px">
+          <div><h2 class="section-title">WANT TO TRY</h2><p class="section-sub">Saved from Food Scores - rate it once you've tried it</p></div>
+        </div>
+        <div class="light-card" id="my-food-favorites" style="margin-bottom:26px"></div>
+        <div class="section-head" style="margin-bottom:14px">
+          <div><h2 class="section-title">VISIT HISTORY</h2><p class="section-sub">Every check-in you've logged</p></div>
+        </div>
+        <div class="light-card">
+          <div id="visit-history-table">
+            <div class="empty-state">
+              <div class="empty-state-icon">🎟️</div>
+              <div class="empty-state-title">No Visits Yet</div>
+              <div class="empty-state-sub">Your logged check-ins will appear here.</div>
+            </div>
           </div>
         </div>
       </section>
@@ -927,56 +957,6 @@
         <button class="btn-sm primary" onclick="actionOrSignup('overlay-photo')"><i class="ti ti-camera-plus" style="font-size:12px"></i> Share a Photo</button>
       </div>
       <div id="photos-grid" class="photos-cols"></div>
-    </div>
-  </div>
-
-  <!-- ── PROFILE VIEW ── -->
-  <div id="view-profile" class="screen">
-    <div style="max-width:1300px;margin:0 auto;padding:48px 32px">
-      <div class="profile-header-card">
-        <div class="profile-hd-inner">
-          <div class="profile-avatar" id="profile-avatar-big">🎢</div>
-          <div class="profile-info">
-            <div class="profile-display-name" id="profile-display-name">Your Name</div>
-            <div class="profile-username" id="profile-username">@username</div>
-            <div class="profile-bio" id="profile-bio">No bio yet.</div>
-          </div>
-          <button class="btn-sm" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:white" onclick="openEditProfile()">
-            <i class="ti ti-pencil" style="font-size:11px"></i> Edit Profile
-          </button>
-        </div>
-        <div class="profile-badges" id="profile-badges">
-          <span class="badge">Bronze Tier</span>
-        </div>
-      </div>
-
-      <div class="stat-cards">
-        <div class="stat-card"><div class="stat-card-num" id="prof-stat-visits">0</div><div class="stat-card-lbl">Total Visits</div></div>
-        <div class="stat-card"><div class="stat-card-num" id="prof-stat-miles">0.0</div><div class="stat-card-lbl">Miles Walked</div></div>
-        <div class="stat-card"><div class="stat-card-num" id="prof-stat-foods">0</div><div class="stat-card-lbl">Foods Tried</div></div>
-        <div class="stat-card"><div class="stat-card-num" id="prof-stat-avg">—</div><div class="stat-card-lbl">Avg Food Score</div></div>
-      </div>
-
-      <div class="section-head" style="margin-bottom:14px">
-        <div><h2 class="section-title">MY FOOD REVIEWS</h2><p class="section-sub">Ratings you've left - Edit to update</p></div>
-      </div>
-      <div class="light-card" id="my-food-reviews" style="margin-bottom:26px"></div>
-      <div class="section-head" style="margin-bottom:14px">
-        <div><h2 class="section-title">WANT TO TRY</h2><p class="section-sub">Saved from Food Scores - rate it once you've tried it</p></div>
-      </div>
-      <div class="light-card" id="my-food-favorites" style="margin-bottom:26px"></div>
-      <div class="section-head" style="margin-bottom:14px">
-        <div><h2 class="section-title">VISIT HISTORY</h2><p class="section-sub">Every check-in you've logged</p></div>
-      </div>
-      <div class="light-card">
-        <div id="visit-history-table">
-          <div class="empty-state">
-            <div class="empty-state-icon">🎟️</div>
-            <div class="empty-state-title">No Visits Yet</div>
-            <div class="empty-state-sub">Your logged check-ins will appear here.</div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -1284,9 +1264,9 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=14"></script>
-<script src="supabase-auth.js?v=2"></script>
-<script src="supabase-data.js?v=6"></script>
+<script src="main.js?v=15"></script>
+<script src="supabase-auth.js?v=3"></script>
+<script src="supabase-data.js?v=7"></script>
 <script src="supabase-food.js?v=8"></script>
 <script src="leaderboard.js?v=2"></script>
 </body>

@@ -99,11 +99,10 @@ function rerenderActive() {
   var active = document.querySelector('.screen.active');
   if (!active) return;
   var id = active.id;
-  if (id === 'view-home' && STATE.currentUser) { updatePassport(); updateParkCounts(); renderRecentActivity(); }
+  if (id === 'view-home' && STATE.currentUser) { updatePassport(); updateParkCounts(); renderProfile(); }
   if (id === 'view-community') renderCommunity();
   if (id === 'view-food') renderFood();
   if (id === 'view-photos') renderPhotos();
-  if (id === 'view-profile' && STATE.currentUser) renderProfile();
 }
 
 async function loadData() {
@@ -147,7 +146,7 @@ function enterApp(user) {
   document.getElementById('nav-username').textContent = user.username;
   document.getElementById('landing-shell').style.display = 'none';
   document.getElementById('app-shell').style.display = 'block';
-  updatePassport(); updateParkCounts(); renderRecentActivity();
+  updatePassport(); updateParkCounts();
   showView('home');
   loadData();
 }

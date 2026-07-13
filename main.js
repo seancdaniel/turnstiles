@@ -116,8 +116,10 @@ function resetTicket() {
 }
 
 function showView(name) {
+  // "profile" was merged into the "home" page - keep old callers working
+  if(name==='profile') name='home';
   // Guests can browse public sections; personal pages require an account
-  if(isGuest() && (name==='home' || name==='profile')) { openOverlay('overlay-register'); return; }
+  if(isGuest() && name==='home') { openOverlay('overlay-register'); return; }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
@@ -126,7 +128,7 @@ function showView(name) {
   if(name==='community') renderCommunity();
   if(name==='food') renderFood();
   if(name==='photos') renderPhotos();
-  if(name==='profile') renderProfile();
+  if(name==='home') renderProfile();
   window.scrollTo(0,0);
 }
 
@@ -228,7 +230,6 @@ function loginAs(user) {
   document.getElementById('app-shell').style.display = 'block';
   updatePassport();
   updateParkCounts();
-  renderRecentActivity();
   showView('home');
   toast('Welcome back, ' + user.fname + '! 🎢');
 }
@@ -412,7 +413,6 @@ function submitCheckin() {
 
   updatePassport();
   updateParkCounts();
-  renderRecentActivity();
   toast('Check-in at ' + park + ' logged! 🎟️');
 }
 
@@ -550,35 +550,6 @@ function formatDate(d) {
   if(!d) return '';
   const dt = new Date(d+'T12:00:00');
   return dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-}
-
-// ============================================================
-// RECENT ACTIVITY
-// ============================================================
-function renderRecentActivity() {
-  const my = userCheckins().slice(0,6);
-  const el = document.getElementById('recent-activity-list');
-  if(!my.length) {
-    el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎢</div><div class="empty-state-title">No Check-Ins Yet</div><div class="empty-state-sub">Log your first visit using the Check In button above.</div></div>';
-    return;
-  }
-  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' +
-    my.map(c => `<div class="feed-card">
-      <div class="feed-top">
-        <div class="feed-av" style="background:var(--coral-lt);color:var(--coral)">${STATE.currentUser.avatar}</div>
-        <div class="feed-meta">
-          <div class="feed-username">${STATE.currentUser.username}</div>
-          <div class="feed-parkname">${parkEmoji(c.park)} ${c.park} · Visit #${userCheckins().filter(x=>x.park===c.park).reverse().indexOf(c)+1}</div>
-        </div>
-        <div class="feed-time">${timeAgo(c.ts)}</div>
-      </div>
-      <div class="feed-pills">
-        ${c.miles?'<span class="pill pill-walk"><i class="ti ti-shoe"></i> '+c.miles+' mi</span>':''}
-        ${(c.foods||[]).slice(0,2).map(f=>'<span class="pill pill-food"><i class="ti ti-tools-kitchen-2"></i> '+f+'</span>').join('')}
-        ${c.score?'<span class="pill pill-score"><i class="ti ti-star"></i> '+c.score.toFixed(1)+' / 10</span>':''}
-        ${c.photo?'<span class="pill pill-photo"><i class="ti ti-camera"></i> Photo</span>':''}
-      </div>
-    </div>`).join('') + '</div>';
 }
 
 // ============================================================

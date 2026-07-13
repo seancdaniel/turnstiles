@@ -25,7 +25,6 @@ function enterApp(user) {
   document.getElementById('app-shell').style.display = 'block';
   updatePassport();
   updateParkCounts();
-  renderRecentActivity();
   showView('home');
 }
 
