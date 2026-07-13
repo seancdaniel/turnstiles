@@ -15,7 +15,8 @@ async function loadData() {
       sb.from('profiles').select('*'),
       sb.from('checkins').select('*').order('created_at', { ascending: false }),
       sb.from('food_reviews').select('*').order('created_at', { ascending: false }),
-      sb.from('photos').select('*').order('created_at', { ascending: false })
+      sb.from('photos').select('*').order('created_at', { ascending: false }),
+      sb.from('food_favorites').select('*').order('created_at', { ascending: false })
     ]);
     var profiles = r[0].data || [];
     var idMap = {};
@@ -39,6 +40,10 @@ async function loadData() {
         avatar: (idMap[ph.user_id] && idMap[ph.user_id].avatar) || '\u{1F3A2}',
         park: ph.park, caption: ph.caption || '', dataUrl: ph.image_url || null,
         ts: new Date(ph.created_at).getTime() };
+    });
+    STATE.foodFavorites = (r[4].data || []).map(function (f) {
+      return { id: f.id, userId: f.user_id, itemName: f.item_name, park: f.park,
+        spot: f.spot || '', ts: new Date(f.created_at).getTime() };
     });
     rerenderActive();
   } catch (e) { console.log('loadData error:', e); }
@@ -149,6 +154,11 @@ async function submitFoodReview() {
   var res = await sb.from('food_reviews').insert({ user_id: STATE.currentUser.id, item_name: name, park: park, spot: spot, score: score, review: review, photo_url: photoUrl });
   if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
   if (photoUrl) await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: park, caption: name + (spot ? ' - ' + spot : ''), image_url: photoUrl });
+  var matchingFavorite = STATE.foodFavorites.find(function (f) {
+    return f.userId === STATE.currentUser.id && f.itemName.toLowerCase() === name.toLowerCase() &&
+      f.park === park && (f.spot || '') === spot;
+  });
+  if (matchingFavorite) await sb.from('food_favorites').delete().eq('id', matchingFavorite.id);
   closeOverlay('overlay-food-review');
   resetFoodForm();
   await loadData();
@@ -197,6 +207,8 @@ function openFoodDetailEl(el) {
   openFoodDetail(decodeURIComponent(el.getAttribute('data-n')), decodeURIComponent(el.getAttribute('data-p')), decodeURIComponent(el.getAttribute('data-s')));
 }
 
+var fdCurrent = null;
+
 function openFoodDetail(name, park, spot) {
   var key = name.toLowerCase() + '|' + park + '|' + (spot || '').toLowerCase();
   var reviews = STATE.foodReviews.filter(function (r) {
@@ -206,6 +218,8 @@ function openFoodDetail(name, park, spot) {
   if (!reviews.length) return;
   var loc = park + (spot ? ' · ' + spot : '');
   var avg = reviews.reduce(function (s, r) { return s + r.score; }, 0) / reviews.length;
+  fdCurrent = { name: name, park: park, spot: spot || '' };
+  updateFdFavButton();
   document.getElementById('fd-emoji').textContent = foodEmoji(name);
   document.getElementById('fd-title').textContent = name;
   document.getElementById('fd-loc').textContent = loc;
@@ -222,6 +236,87 @@ function openFoodDetail(name, park, spot) {
       '</div>';
   }).join('');
   openOverlay('overlay-food-detail');
+}
+
+function isFavorited(name, park, spot) {
+  if (!STATE.currentUser) return false;
+  return STATE.foodFavorites.some(function (f) {
+    return f.userId === STATE.currentUser.id && f.itemName.toLowerCase() === name.toLowerCase() &&
+      f.park === park && (f.spot || '') === (spot || '');
+  });
+}
+
+function updateFdFavButton() {
+  var btn = document.getElementById('fd-fav-btn');
+  if (!btn || !fdCurrent) return;
+  var fav = isFavorited(fdCurrent.name, fdCurrent.park, fdCurrent.spot);
+  btn.textContent = fav ? '★ Saved to Want to Try' : '☆ Want to Try';
+  btn.className = 'btn-sm' + (fav ? ' primary' : '');
+}
+
+async function toggleFavoriteCurrent() {
+  if (!STATE.currentUser) { openOverlay('overlay-register'); return; }
+  if (!fdCurrent) return;
+  var fav = STATE.foodFavorites.find(function (f) {
+    return f.userId === STATE.currentUser.id && f.itemName.toLowerCase() === fdCurrent.name.toLowerCase() &&
+      f.park === fdCurrent.park && (f.spot || '') === fdCurrent.spot;
+  });
+  if (fav) {
+    var _del = await sb.from('food_favorites').delete().eq('id', fav.id);
+    if (_del.error) { toast('Could not remove: ' + _del.error.message, 'error'); return; }
+    toast('Removed from your Want to Try list.');
+  } else {
+    var _ins = await sb.from('food_favorites').insert({ user_id: STATE.currentUser.id, item_name: fdCurrent.name, park: fdCurrent.park, spot: fdCurrent.spot || null });
+    if (_ins.error) { toast('Could not save: ' + _ins.error.message, 'error'); return; }
+    toast('Added to your Want to Try list!');
+  }
+  await loadData();
+  updateFdFavButton();
+}
+
+function renderFoodFavorites() {
+  var el = document.getElementById('my-food-favorites');
+  if (!el || !STATE.currentUser) return;
+  var mine = STATE.foodFavorites.filter(function (f) { return f.userId === STATE.currentUser.id; });
+  if (!mine.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-state-sub">Nothing on your list yet.<br>Save an item from Food Scores to remember it for next time.</div></div>';
+    return;
+  }
+  el.innerHTML = mine.map(function (f) {
+    var loc = f.park + (f.spot ? ' · ' + f.spot : '');
+    return '<div class="myfr-row">' +
+      '<div class="myfr-emoji">' + foodEmoji(f.itemName) + '</div>' +
+      '<div class="myfr-info"><div class="myfr-name">' + escapeHtml(f.itemName) + '</div><div class="myfr-loc">' + escapeHtml(loc) + '</div></div>' +
+      '<div class="myfr-actions">' +
+        '<button class="btn-sm primary" onclick="rateFavorite(\'' + f.id + '\')">Rate It</button>' +
+        '<button class="btn-sm danger" onclick="removeFavorite(\'' + f.id + '\')">Remove</button>' +
+      '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function rateFavorite(id) {
+  var f = STATE.foodFavorites.find(function (x) { return x.id === id; });
+  if (!f) return;
+  resetFoodForm();
+  document.getElementById('fr-search').value = f.itemName;
+  document.getElementById('fr-name').value = f.itemName;
+  document.getElementById('fr-park').value = f.park;
+  document.getElementById('fr-spot').value = f.spot || '';
+  var picked = document.getElementById('fr-picked');
+  picked.innerHTML = 'Rating <strong>' + escapeHtml(f.itemName) + '</strong> — ' + escapeHtml(f.park + (f.spot ? ' · ' + f.spot : '')) + ' <a onclick="foodClearPick()">change</a>';
+  picked.style.display = 'block';
+  openOverlay('overlay-food-review');
+}
+
+async function removeFavorite(id) {
+  if (!STATE.currentUser) return;
+  if (!confirm('Remove this item from your Want to Try list?')) return;
+  var res = await sb.from('food_favorites').delete().eq('id', id).eq('user_id', STATE.currentUser.id);
+  if (res.error) { toast('Could not remove: ' + res.error.message, 'error'); return; }
+  await loadData();
+  showView('profile');
+  toast('Removed from your Want to Try list.');
 }
 
 
@@ -281,5 +376,5 @@ function editFoodReview(id) {
 
 if (typeof renderProfile === 'function') {
   var _origRenderProfile = renderProfile;
-  renderProfile = function () { _origRenderProfile(); renderMyFoodReviews(); };
+  renderProfile = function () { _origRenderProfile(); renderMyFoodReviews(); renderFoodFavorites(); };
 }

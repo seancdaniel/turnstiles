@@ -300,6 +300,7 @@
           <span class="fd-summary-count" id="fd-count"></span>
         </div>
       </div>
+      <button class="btn-sm" id="fd-fav-btn" onclick="toggleFavoriteCurrent()" style="margin-bottom:16px">☆ Want to Try</button>
       <div id="fd-reviews-list"></div>
     </div>
   </div>
@@ -961,6 +962,10 @@
       </div>
       <div class="light-card" id="my-food-reviews" style="margin-bottom:26px"></div>
       <div class="section-head" style="margin-bottom:14px">
+        <div><h2 class="section-title">WANT TO TRY</h2><p class="section-sub">Saved from Food Scores - rate it once you've tried it</p></div>
+      </div>
+      <div class="light-card" id="my-food-favorites" style="margin-bottom:26px"></div>
+      <div class="section-head" style="margin-bottom:14px">
         <div><h2 class="section-title">VISIT HISTORY</h2><p class="section-sub">Every check-in you've logged</p></div>
       </div>
       <div class="light-card">
@@ -1279,10 +1284,10 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=13"></script>
+<script src="main.js?v=14"></script>
 <script src="supabase-auth.js?v=2"></script>
-<script src="supabase-data.js?v=5"></script>
-<script src="supabase-food.js?v=7"></script>
+<script src="supabase-data.js?v=6"></script>
+<script src="supabase-food.js?v=8"></script>
 <script src="leaderboard.js?v=2"></script>
 </body>
 </html>

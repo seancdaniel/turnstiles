@@ -1,7 +1,7 @@
 /* Turnstiles - Supabase data layer (real reads + writes; overrides demo) */
 
 // drop the demo seed; we use real data now
-STATE.users = []; STATE.checkins = []; STATE.foodReviews = []; STATE.photos = [];
+STATE.users = []; STATE.checkins = []; STATE.foodReviews = []; STATE.photos = []; STATE.foodFavorites = [];
 
 function downscale(dataUrl, max) {
   max = max || 1000;

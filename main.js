@@ -9,6 +9,7 @@ const STATE = {
   checkins: [],      // {id, userId, park, date, miles, foods, score, review, photo, ts}
   foodReviews: [],   // {id, userId, username, itemName, park, score, review, ts}
   photos: [],        // {id, userId, username, avatar, park, caption, dataUrl, ts}
+  foodFavorites: [], // {id, userId, itemName, park, spot, ts} - "want to try" reminders
   nextId: 1,
 };
 
