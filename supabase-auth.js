@@ -67,6 +67,24 @@ async function regSubmit() {
   toast('Welcome to Turnstiles, ' + fname + '!');
 }
 
+// Mirrors the Supabase Auth password policy (Settings -> Minimum password length /
+// Password requirements). Keep these two in sync if that policy ever changes.
+function checkPasswordStrength() {
+  const pass = document.getElementById('reg-pass').value;
+  const checks = {
+    len: pass.length >= 10,
+    lower: /[a-z]/.test(pass),
+    upper: /[A-Z]/.test(pass),
+    digit: /[0-9]/.test(pass),
+    symbol: /[^A-Za-z0-9]/.test(pass)
+  };
+  Object.keys(checks).forEach(k => {
+    const el = document.querySelector('#reg-pass-reqs .pw-req[data-req="' + k + '"]');
+    if (el) el.classList.toggle('met', checks[k]);
+  });
+  return checks;
+}
+
 async function regNext() {
   const err = document.getElementById('reg-user-err');
   const perr = document.getElementById('reg-pass-err');
@@ -79,7 +97,8 @@ async function regNext() {
     const pass2 = document.getElementById('reg-pass2').value;
     if (!fname || !username || !email || !pass) { toast('Please fill in all required fields.', 'error'); return; }
     if (pass !== pass2) { perr.classList.add('show'); return; }
-    if (pass.length < 6) { toast('Password must be at least 6 characters.', 'error'); return; }
+    const strength = checkPasswordStrength();
+    if (!Object.keys(strength).every(k => strength[k])) { toast('Password does not meet the requirements below.', 'error'); return; }
     const { data: taken } = await sb.from('profiles').select('id').eq('username', username).maybeSingle();
     if (taken) { err.classList.add('show'); return; }
     regStep = 2;

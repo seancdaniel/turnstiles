@@ -1128,6 +1128,16 @@ select.field-input { cursor: pointer; }
 }
 .field-error.show { display: block; }
 
+.pw-requirements { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: -8px 0 16px; }
+.pw-req {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.3px;
+  color: var(--ink-faint); display: flex; align-items: center; gap: 4px;
+  transition: color 0.15s;
+}
+.pw-req::before { content: '○'; font-size: 9px; }
+.pw-req.met { color: var(--teal); }
+.pw-req.met::before { content: '✓'; }
+
 /* consistent keyboard focus rings across action buttons */
 .btn-hero:focus-visible, .btn-hero-outline:focus-visible,
 .btn-cta-wh:focus-visible, .btn-cta-out:focus-visible,

@@ -328,6 +328,7 @@ function resetRegForm() {
   document.getElementById('reg-step-3').className='step-item';
   document.getElementById('reg-back-btn').style.display='none';
   document.getElementById('reg-next-btn').textContent='Next →';
+  document.querySelectorAll('#reg-pass-reqs .pw-req').forEach(el=>el.classList.remove('met'));
   selectedAvatar='🎢';
 }
 

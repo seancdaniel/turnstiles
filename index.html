@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=31">
+  <link rel="stylesheet" href="styles.css?v=32">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -97,12 +97,19 @@
         <div class="field-row">
           <div class="field">
             <label class="field-lbl">Password</label>
-            <input class="field-input" id="reg-pass" type="password" placeholder="••••••••">
+            <input class="field-input" id="reg-pass" type="password" placeholder="••••••••" oninput="checkPasswordStrength()">
           </div>
           <div class="field">
             <label class="field-lbl">Confirm Password</label>
             <input class="field-input" id="reg-pass2" type="password" placeholder="••••••••">
           </div>
+        </div>
+        <div class="pw-requirements" id="reg-pass-reqs">
+          <span class="pw-req" data-req="len">10+ characters</span>
+          <span class="pw-req" data-req="lower">Lowercase letter</span>
+          <span class="pw-req" data-req="upper">Uppercase letter</span>
+          <span class="pw-req" data-req="digit">Number</span>
+          <span class="pw-req" data-req="symbol">Symbol</span>
         </div>
         <div class="field-error" id="reg-pass-err">Passwords do not match</div>
       </div>
@@ -1264,8 +1271,8 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=15"></script>
-<script src="supabase-auth.js?v=3"></script>
+<script src="main.js?v=16"></script>
+<script src="supabase-auth.js?v=4"></script>
 <script src="supabase-data.js?v=7"></script>
 <script src="supabase-food.js?v=8"></script>
 <script src="leaderboard.js?v=2"></script>
