@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=32">
+  <link rel="stylesheet" href="styles.css?v=33">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -249,18 +249,51 @@
         <input class="field-input" id="fr-name" placeholder="e.g. Dole Whip Float" oninput="foodClearPick()">
       </div>
       <div class="field">
-        <label class="field-lbl">Park</label>
+        <label class="field-lbl">Park or Resort</label>
         <select class="field-input" id="fr-park" onchange="foodClearPick()">
-          <option>Magic Kingdom</option><option>EPCOT</option>
-          <option>Hollywood Studios</option><option>Animal Kingdom</option>
-          <option>Universal Studios Florida</option><option>Islands of Adventure</option>
-          <option>Epic Universe</option><option>Blizzard Beach</option>
-          <option>Typhoon Lagoon</option><option>Volcano Bay</option>
+          <optgroup label="Disney World">
+            <option>Magic Kingdom</option>
+            <option>EPCOT</option>
+            <option>Hollywood Studios</option>
+            <option>Animal Kingdom</option>
+          </optgroup>
+          <optgroup label="Universal Orlando">
+            <option>Universal Studios Florida</option>
+            <option>Islands of Adventure</option>
+            <option>Epic Universe</option>
+          </optgroup>
+          <optgroup label="Water Parks">
+            <option>Blizzard Beach</option>
+            <option>Typhoon Lagoon</option>
+            <option>Volcano Bay</option>
+          </optgroup>
+          <optgroup label="Disney Resorts">
+            <option>Disney's Animal Kingdom Lodge</option>
+            <option>Disney's Beach Club Resort</option>
+            <option>Disney's BoardWalk Inn</option>
+            <option>Disney's Contemporary Resort</option>
+            <option>Disney's Grand Floridian Resort &amp; Spa</option>
+            <option>Disney's Polynesian Village Resort</option>
+            <option>Disney's Riviera Resort</option>
+            <option>Disney's Wilderness Lodge</option>
+            <option>Disney's Yacht Club Resort</option>
+            <option>Disney's Caribbean Beach Resort</option>
+            <option>Disney's Coronado Springs Resort</option>
+            <option>Disney's Port Orleans - French Quarter</option>
+            <option>Disney's Port Orleans - Riverside</option>
+            <option>Disney's All-Star Movies Resort</option>
+            <option>Disney's All-Star Music Resort</option>
+            <option>Disney's All-Star Sports Resort</option>
+            <option>Disney's Art of Animation Resort</option>
+            <option>Disney's Pop Century Resort</option>
+            <option>Disney's Fort Wilderness Resort &amp; Campground</option>
+            <option>Walt Disney World Swan &amp; Dolphin</option>
+          </optgroup>
         </select>
       </div>
       <div class="field">
         <label class="field-lbl">Where (stand / restaurant)</label>
-        <input class="field-input" id="fr-spot" placeholder="e.g. Aloha Isle" oninput="foodClearPick()">
+        <input class="field-input" id="fr-spot" placeholder="e.g. Aloha Isle or Kona Cafe" oninput="foodClearPick()">
       </div>
       <div class="field">
         <div class="score-display" id="fr-score-display">8.5</div>

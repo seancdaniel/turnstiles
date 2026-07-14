@@ -2118,11 +2118,13 @@ body {
   .nav-links { display: none; }
   .app-burger { display: inline-flex; }
   .nav-inner { padding: 0 20px; }
+  .nav-guest-actions .sh-signin { display: none; }
 }
 @media (max-width: 480px) {
   .btn-solid-label { display: none; }
   .btn-solid { padding: 8px 12px; }
   .nav-user-name { display: none; }
+  .nav-guest-actions .sh-join { padding: 9px 14px; font-size: 12px; }
 }
 
 /* home hero: stack the passport under the hero text, scale the marquee down */
