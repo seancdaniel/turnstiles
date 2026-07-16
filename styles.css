@@ -1400,6 +1400,24 @@ select.field-input { cursor: pointer; }
 }
 .badge.gold { background: rgba(29,160,154,0.2); border-color: rgba(29,160,154,0.4); color: var(--gold-lt); }
 
+/* ── Rank tier emblems (Monthly / Yearly) ── */
+.tier-emblem {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 50%;
+  font-size: 12px; line-height: 1; flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+  vertical-align: middle;
+}
+.tier-emblem-sm { width: 16px; height: 16px; font-size: 9px; }
+.tier-emblem-empty {
+  /* solid, background-agnostic - this one shows up on both light (food review) and dark (profile) surfaces */
+  background: #9CA3AF; color: #fff;
+  font-size: 10px; font-weight: 700;
+}
+.tier-badge { display: inline-flex; align-items: center; gap: 6px; }
+.tier-badge-label { opacity: 0.6; font-weight: 400; letter-spacing: 0.5px; }
+.tier-badge-empty { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.45); }
+
 /* ── Empty state ── */
 .empty-state {
   text-align: center; padding: 48px 24px;

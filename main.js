@@ -478,11 +478,70 @@ function userCheckins(userId) {
   return STATE.checkins.filter(c => c.userId === (userId||STATE.currentUser?.id));
 }
 
-function getTier(visits) {
-  if(visits>=100) return {name:'Platinum',stars:'★★★★★'};
-  if(visits>=50)  return {name:'Gold',    stars:'★★★★'};
-  if(visits>=20)  return {name:'Silver',  stars:'★★★'};
-  return                  {name:'Bronze', stars:'★'};
+// ============================================================
+// RANK TIERS — two tracks: Monthly (resets 1st of month) and
+// Yearly (resets Jan 1st). Both driven purely by check-in count
+// within that window; nothing is ever archived, "this month/year"
+// is just a filter on checkins.date.
+// ============================================================
+const MONTHLY_TIERS = [
+  {name:'Bronze',      min:1,  color:'#CD7F32', icon:'🥉'},
+  {name:'Silver',      min:3,  color:'#9CA3AF', icon:'🥈'},
+  {name:'Gold',        min:5,  color:'#D4AF37', icon:'🥇'},
+  {name:'Platinum',    min:7,  color:'#2DD4BF', icon:'💠'},
+  {name:'Diamond',     min:9,  color:'#60A5FA', icon:'💎'},
+  {name:'Master',      min:11, color:'#A855F7', icon:'🏆'},
+  {name:'Grandmaster', min:13, color:'#F59E0B', icon:'👑'}
+];
+const YEARLY_TIERS = [
+  {name:'Dopey',           min:1,   color:'#7BAE7F', icon:'😆'},
+  {name:'Park Hopper',     min:5,   color:'#4FA8D8', icon:'🎟️'},
+  {name:'Skipper',         min:12,  color:'#3C9B8F', icon:'⛵'},
+  {name:'Galaxy Defender', min:25,  color:'#4C4FA0', icon:'👽'},
+  {name:'Galactic Hero',   min:45,  color:'#8B5CF6', icon:'🚀'},
+  {name:'Tri-Wizard Cup',  min:75,  color:'#B8860B', icon:'🪄'},
+  {name:'Club 33',         min:120, color:'#1A1A1A', icon:'⚜️'}
+];
+
+function tierFromCount(count, ladder) {
+  let result = null;
+  for (const t of ladder) { if (count >= t.min) result = t; }
+  return result; // null = below the first tier (0 qualifying visits)
+}
+function getMonthlyTier(count) { return tierFromCount(count, MONTHLY_TIERS); }
+function getYearlyTier(count) { return tierFromCount(count, YEARLY_TIERS); }
+
+function checkinsInMonth(userId, year, month) {
+  return STATE.checkins.filter(c => {
+    if (c.userId !== userId || !c.date) return false;
+    const d = new Date(c.date + 'T00:00:00');
+    return d.getFullYear() === year && d.getMonth() === month;
+  }).length;
+}
+function checkinsInYear(userId, year) {
+  return STATE.checkins.filter(c => {
+    if (c.userId !== userId || !c.date) return false;
+    return new Date(c.date + 'T00:00:00').getFullYear() === year;
+  }).length;
+}
+function checkinsThisMonth(userId) {
+  const now = new Date();
+  return checkinsInMonth(userId, now.getFullYear(), now.getMonth());
+}
+function checkinsThisYear(userId) {
+  const now = new Date();
+  return checkinsInYear(userId, now.getFullYear());
+}
+
+// small icon-only emblem (leaderboard rows, food review authors)
+function tierEmblem(tier, fallbackLabel) {
+  if (!tier) return '<span class="tier-emblem tier-emblem-empty" title="Unranked' + (fallbackLabel ? ' - ' + fallbackLabel : '') + '">—</span>';
+  return '<span class="tier-emblem" style="background:' + tier.color + '" title="' + tier.name + (fallbackLabel ? ' (' + fallbackLabel + ')' : '') + '">' + tier.icon + '</span>';
+}
+// full labeled badge (profile pages)
+function tierBadge(tier, label) {
+  if (!tier) return '<span class="badge tier-badge-empty">Unranked ' + label + '</span>';
+  return '<span class="badge tier-badge"><span class="tier-emblem tier-emblem-sm" style="background:' + tier.color + '">' + tier.icon + '</span> ' + tier.name + ' <span class="tier-badge-label">' + label + '</span></span>';
 }
 
 function updatePassport() {
@@ -507,9 +566,9 @@ function updatePassport() {
   // Passport card
   document.getElementById('passport-name').textContent = (u.fname+' '+u.lname[0]+'.').toUpperCase();
   document.getElementById('passport-avatar').textContent = u.avatar;
-  const tier = getTier(total);
-  document.getElementById('passport-tier').textContent = tier.name+' Tier';
-  document.getElementById('passport-stars').textContent = tier.stars;
+  const yearlyTier = getYearlyTier(checkinsThisYear(u.id));
+  document.getElementById('passport-tier').textContent = yearlyTier ? yearlyTier.name : 'Unranked';
+  document.getElementById('passport-stars').textContent = yearlyTier ? yearlyTier.icon : '—';
   document.getElementById('passport-rank').textContent = rank ? '#'+rank : '—';
   document.getElementById('pf-since').textContent = u.joinYear;
   document.getElementById('pf-avg-food').textContent = avgScore;
@@ -572,9 +631,7 @@ function buildLeaderboard(filter) {
       if(filterParks && !filterParks.includes(c.park)) return false;
       return true;
     });
-    return {userId:u.id, username:u.username, avatar:u.avatar,
-             fname:u.fname, visits:mine.length,
-             tier:getTier(STATE.checkins.filter(c=>c.userId===u.id).length).name};
+    return {userId:u.id, username:u.username, avatar:u.avatar, fname:u.fname, visits:mine.length};
   }).sort((a,b)=>b.visits-a.visits);
 }
 
@@ -593,13 +650,14 @@ function renderLeaderboard() {
   const rankColors = ['gold','silver','bronze'];
   el.innerHTML = lb.map((row,i) => {
     const isYou = u && row.userId===u.id;
-    const tierColor = {Platinum:'var(--gold)',Gold:'var(--gold)',Silver:'#888',Bronze:'var(--coral)'};
+    const monthlyTier = getMonthlyTier(checkinsThisMonth(row.userId));
+    const yearlyTier = getYearlyTier(checkinsThisYear(row.userId));
     return `<div class="lb-row${isYou?' you':''}" onclick="openUserProfile('${row.userId}')">
       <span class="lb-rank ${rankColors[i]||''}">${i+1}</span>
       <div class="lb-av" style="background:var(--coral-lt);color:var(--coral)">${row.avatar}</div>
       <div class="lb-info">
         <div class="lb-username">${row.username}${isYou?'<span class="you-tag">YOU</span>':''}</div>
-        <div class="lb-detail">${row.tier} Tier</div>
+        <div class="lb-detail">${tierEmblem(monthlyTier,'Monthly')} ${tierEmblem(yearlyTier,'Yearly')}</div>
       </div>
       <div class="lb-visits-wrap">
         <div class="lb-visits" style="${isYou?'color:var(--coral)':''}">${row.visits}</div>
@@ -740,7 +798,8 @@ function renderProfile() {
   const foods = [...new Set(my.flatMap(c=>c.foods||[]))];
   const scores = my.filter(c=>c.score).map(c=>c.score);
   const avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '—';
-  const tier = getTier(my.length);
+  const monthlyTier = getMonthlyTier(checkinsThisMonth(u.id));
+  const yearlyTier = getYearlyTier(checkinsThisYear(u.id));
 
   document.getElementById('profile-avatar-big').textContent = u.avatar;
   document.getElementById('profile-display-name').textContent = u.fname + ' ' + u.lname;
@@ -751,15 +810,15 @@ function renderProfile() {
   document.getElementById('prof-stat-foods').textContent = foods.length;
   document.getElementById('prof-stat-avg').textContent = avg;
 
-  const badges = [`${tier.name} Tier`];
+  const badges = [];
   if(my.length>=1) badges.push('First Visit');
   if(my.length>=10) badges.push('Regular');
   if(my.length>=50) badges.push('Gold Passholder');
   if([...new Set(my.map(c=>c.park))].length>=4) badges.push('Park Hopper');
   if(foods.length>=10) badges.push('Foodie');
-  document.getElementById('profile-badges').innerHTML = badges.map(b =>
-    `<span class="badge${b.includes('Gold')||b.includes('Park')||b.includes('Foodie')?' gold':''}">${b}</span>`
-  ).join('');
+  document.getElementById('profile-badges').innerHTML =
+    tierBadge(monthlyTier, 'Monthly') + tierBadge(yearlyTier, 'Yearly') +
+    badges.map(b => `<span class="badge${b.includes('Gold')||b.includes('Park')||b.includes('Foodie')?' gold':''}">${b}</span>`).join('');
 
   // Visit history table
   const histEl = document.getElementById('visit-history-table');

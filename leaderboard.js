@@ -17,8 +17,7 @@ function buildLeaderboard(filter) {
       if (parks && parks.indexOf(c.park) < 0) return false;
       return true;
     });
-    return { userId: u.id, username: u.username, avatar: u.avatar, fname: u.fname,
-      visits: mine.length, tier: getTier(STATE.checkins.filter(function (c) { return c.userId === u.id; }).length).name };
+    return { userId: u.id, username: u.username, avatar: u.avatar, fname: u.fname, visits: mine.length };
   }).sort(function (a, b) { return b.visits - a.visits; });
 }
 

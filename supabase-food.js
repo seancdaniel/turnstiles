@@ -234,9 +234,11 @@ function openFoodDetail(name, park, spot) {
   document.getElementById('fd-avg').textContent = avg.toFixed(1);
   document.getElementById('fd-count').textContent = reviews.length + ' review' + (reviews.length === 1 ? '' : 's');
   document.getElementById('fd-reviews-list').innerHTML = reviews.map(function (r) {
+    var mTier = getMonthlyTier(checkinsThisMonth(r.userId));
+    var yTier = getYearlyTier(checkinsThisYear(r.userId));
     return '<div class="fd-review">' +
       '<div class="fd-review-hd">' +
-        '<span class="fd-review-user user-link" onclick="openUserProfile(\'' + r.userId + '\')">' + (r.avatar || '\u{1F3A2}') + ' ' + escapeHtml(r.username) + '</span>' +
+        '<span class="fd-review-user user-link" onclick="openUserProfile(\'' + r.userId + '\')">' + (r.avatar || '\u{1F3A2}') + ' ' + escapeHtml(r.username) + ' ' + tierEmblem(mTier, 'Monthly') + ' ' + tierEmblem(yTier, 'Yearly') + '</span>' +
         '<span class="fd-review-score">' + Number(r.score).toFixed(1) + '</span>' +
       '</div>' +
       (r.review ? '<div class="fd-review-text">' + escapeHtml(r.review) + '</div>' : '') +
