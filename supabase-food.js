@@ -16,7 +16,8 @@ async function loadData() {
       sb.from('checkins').select('*').order('created_at', { ascending: false }),
       sb.from('food_reviews').select('*').order('created_at', { ascending: false }),
       sb.from('photos').select('*').order('created_at', { ascending: false }),
-      sb.from('food_favorites').select('*').order('created_at', { ascending: false })
+      sb.from('food_favorites').select('*').order('created_at', { ascending: false }),
+      sb.from('wait_times').select('*').order('created_at', { ascending: false })
     ]);
     var profiles = r[0].data || [];
     var idMap = {};
@@ -44,6 +45,13 @@ async function loadData() {
     STATE.foodFavorites = (r[4].data || []).map(function (f) {
       return { id: f.id, userId: f.user_id, itemName: f.item_name, park: f.park,
         spot: f.spot || '', ts: new Date(f.created_at).getTime() };
+    });
+    STATE.waitTimes = (r[5].data || []).map(function (w) {
+      return { id: w.id, userId: w.user_id,
+        username: (idMap[w.user_id] && idMap[w.user_id].username) || 'someone',
+        avatar: (idMap[w.user_id] && idMap[w.user_id].avatar) || '\u{1F3A2}',
+        park: w.park, ride: w.ride, postedWait: w.posted_wait, actualWait: w.actual_wait,
+        ts: new Date(w.created_at).getTime() };
     });
     rerenderActive();
   } catch (e) { console.log('loadData error:', e); }

@@ -10,6 +10,7 @@ const STATE = {
   foodReviews: [],   // {id, userId, username, itemName, park, score, review, ts}
   photos: [],        // {id, userId, username, avatar, park, caption, dataUrl, ts}
   foodFavorites: [], // {id, userId, itemName, park, spot, ts} - "want to try" reminders
+  waitTimes: [],     // {id, userId, username, avatar, park, ride, postedWait, actualWait, ts}
   nextId: 1,
 };
 
@@ -128,6 +129,7 @@ function showView(name) {
   if(name==='community') renderCommunity();
   if(name==='food') renderFood();
   if(name==='photos') renderPhotos();
+  if(name==='waittimes') renderWaitTimes();
   if(name==='home') renderProfile();
   window.scrollTo(0,0);
 }

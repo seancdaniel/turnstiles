@@ -1,0 +1,174 @@
+/* Turnstiles - wait times: posted vs. actual, per ride, "today" feed + "yesterday" averages */
+
+var RIDES_BY_PARK = {
+  'Magic Kingdom': [
+    'Seven Dwarfs Mine Train', 'Space Mountain', 'Big Thunder Mountain Railroad',
+    "Tiana's Bayou Adventure", 'Pirates of the Caribbean', 'Haunted Mansion', 'Jungle Cruise',
+    "It's a Small World", "Peter Pan's Flight", 'The Many Adventures of Winnie the Pooh',
+    'Under the Sea - Journey of the Little Mermaid', "Buzz Lightyear's Space Ranger Spin",
+    'TRON Lightcycle / Run', 'Astro Orbiter', 'The Barnstormer', 'Dumbo the Flying Elephant',
+    'Mad Tea Party', "Walt Disney's Enchanted Tiki Room"
+  ],
+  'EPCOT': [
+    'Guardians of the Galaxy: Cosmic Rewind', 'Test Track', 'Mission: SPACE', 'Frozen Ever After',
+    "Remy's Ratatouille Adventure", "Soarin' Around the World", 'Living with the Land',
+    'Spaceship Earth', 'The Seas with Nemo & Friends', 'Journey Into Imagination with Figment',
+    'Gran Fiesta Tour Starring The Three Caballeros'
+  ],
+  'Hollywood Studios': [
+    'Star Wars: Rise of the Resistance', 'Millennium Falcon: Smugglers Run',
+    "Mickey & Minnie's Runaway Railway", 'Slinky Dog Dash', 'Toy Story Mania!',
+    'Alien Swirling Saucers', "Rock 'n' Roller Coaster", 'The Twilight Zone Tower of Terror',
+    'Star Tours - The Adventures Continue'
+  ],
+  'Animal Kingdom': [
+    'Avatar Flight of Passage', "Na'vi River Journey", 'Expedition Everest',
+    'Kilimanjaro Safaris', 'Kali River Rapids', 'DINOSAUR', "It's Tough to Be a Bug!"
+  ],
+  'Universal Studios Florida': [
+    'Harry Potter and the Escape from Gringotts', 'Revenge of the Mummy',
+    'Transformers: The Ride 3D', 'MEN IN BLACK Alien Attack', 'E.T. Adventure',
+    'Hollywood Rip Ride Rockit', 'Fast & Furious: Supercharged', "Kang & Kodos' Twirl 'n' Hurl"
+  ],
+  'Islands of Adventure': [
+    'Harry Potter and the Forbidden Journey', "Hagrid's Magical Creatures Motorbike Adventure",
+    'Jurassic World VelociCoaster', 'Jurassic Park River Adventure',
+    'The Amazing Adventures of Spider-Man', 'Skull Island: Reign of Kong', "Doctor Doom's Fearfall",
+    'The Incredible Hulk Coaster', "Popeye & Bluto's Bilge-Rat Barges", "Dudley Do-Right's Ripsaw Falls"
+  ],
+  'Epic Universe': [
+    'Stardust Racers', 'Curse of the Werewolf', 'Harry Potter and the Battle at the Ministry',
+    'Constellation Carousel', "Mario Kart: Bowser's Challenge", "Yoshi's Adventure",
+    "Hiccup's Wing Gliders", "Dragon Racer's Rally"
+  ],
+  'Blizzard Beach': [
+    'Summit Plummet', 'Slush Gusher', 'Teamboat Springs', 'Snow Stormers', 'Toboggan Racers'
+  ],
+  'Typhoon Lagoon': [
+    "Crush 'n' Gusher", 'Humunga Kowabunga', 'Mayday Falls', 'Keelhaul Falls', 'Bay Slides'
+  ],
+  'Volcano Bay': [
+    'Krakatau Aqua Coaster', "Ko'okiri Body Plunge", 'Puihi', 'Taniwha Tubes'
+  ]
+};
+
+function updateRideOptions() {
+  var park = document.getElementById('wt-park').value;
+  var sel = document.getElementById('wt-ride');
+  var rides = RIDES_BY_PARK[park];
+  if (!rides) { sel.innerHTML = '<option value="">Choose a park first</option>'; return; }
+  sel.innerHTML = '<option value="">Select a ride...</option>' +
+    rides.map(function (r) { return '<option>' + escapeHtml(r) + '</option>'; }).join('');
+}
+
+function isSameLocalDay(ts, dayOffset) {
+  var d = new Date(ts);
+  var ref = new Date();
+  ref.setDate(ref.getDate() + dayOffset);
+  return d.getFullYear() === ref.getFullYear() && d.getMonth() === ref.getMonth() && d.getDate() === ref.getDate();
+}
+
+async function submitWaitTime() {
+  if (!STATE.currentUser) { openOverlay('overlay-register'); return; }
+  var park = document.getElementById('wt-park').value;
+  var ride = document.getElementById('wt-ride').value;
+  var posted = parseInt(document.getElementById('wt-posted').value, 10);
+  var actual = parseInt(document.getElementById('wt-actual').value, 10);
+  if (!park || !ride) { toast('Pick a park and a ride.', 'error'); return; }
+  if (isNaN(posted) || isNaN(actual) || posted < 0 || actual < 0) { toast('Enter both wait times in minutes.', 'error'); return; }
+  var res = await sb.from('wait_times').insert({ user_id: STATE.currentUser.id, park: park, ride: ride, posted_wait: posted, actual_wait: actual });
+  if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
+  closeOverlay('overlay-wait-time');
+  document.getElementById('wt-park').value = '';
+  document.getElementById('wt-ride').innerHTML = '<option value="">Choose a park first</option>';
+  document.getElementById('wt-posted').value = '';
+  document.getElementById('wt-actual').value = '';
+  await loadData();
+  showView('waittimes');
+  toast(ride + ' wait time logged!');
+}
+
+async function deleteWaitTime(id) {
+  if (!STATE.currentUser) return;
+  if (!confirm('Delete this wait time entry?')) return;
+  var res = await sb.from('wait_times').delete().eq('id', id).eq('user_id', STATE.currentUser.id);
+  if (res.error) { toast('Could not delete: ' + res.error.message, 'error'); return; }
+  await loadData();
+  showView('waittimes');
+  toast('Wait time deleted.');
+}
+
+var waitTimesTab = 'today';
+function switchWaitTimesTab(btn, tab) {
+  waitTimesTab = tab;
+  document.querySelectorAll('#view-waittimes .page-tab').forEach(function (b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('wttab-today').style.display = tab === 'today' ? 'block' : 'none';
+  document.getElementById('wttab-yesterday').style.display = tab === 'yesterday' ? 'block' : 'none';
+}
+
+function renderWaitTimes() {
+  renderWaitTimesToday();
+  renderWaitTimesYesterday();
+}
+
+function renderWaitTimesToday() {
+  var el = document.getElementById('wt-today-list');
+  if (!el) return;
+  var today = STATE.waitTimes.filter(function (w) { return isSameLocalDay(w.ts, 0); })
+    .sort(function (a, b) { return b.ts - a.ts; });
+  if (!today.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏱️</div><div class="empty-state-title">No Wait Times Logged Today</div><div class="empty-state-sub">Be the first to log one from the line!</div></div>';
+    return;
+  }
+  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' +
+    today.map(function (w) {
+      var mine = STATE.currentUser && w.userId === STATE.currentUser.id;
+      return '<div class="feed-card">' +
+        '<div class="feed-top">' +
+          '<div class="feed-user-link user-link" onclick="openUserProfile(\'' + w.userId + '\')" style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0">' +
+            '<div class="feed-av" style="background:var(--coral-lt);color:var(--coral)">' + w.avatar + '</div>' +
+            '<div class="feed-meta">' +
+              '<div class="feed-username">' + escapeHtml(w.username) + '</div>' +
+              '<div class="feed-parkname">' + parkEmoji(w.park) + ' ' + escapeHtml(w.ride) + ' · ' + escapeHtml(w.park) + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="feed-time">' + timeAgo(w.ts) + '</div>' +
+        '</div>' +
+        '<div class="feed-pills">' +
+          '<span class="pill pill-walk"><i class="ti ti-clipboard-list"></i> Posted ' + w.postedWait + ' min</span>' +
+          '<span class="pill pill-score"><i class="ti ti-clock"></i> Actual ' + w.actualWait + ' min</span>' +
+          (mine ? '<button class="btn-sm danger" onclick="deleteWaitTime(\'' + w.id + '\')" style="margin-left:auto">Delete</button>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('') + '</div>';
+}
+
+function renderWaitTimesYesterday() {
+  var el = document.getElementById('wt-yesterday-list');
+  if (!el) return;
+  var yesterday = STATE.waitTimes.filter(function (w) { return isSameLocalDay(w.ts, -1); });
+  if (!yesterday.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-state-sub">No wait times were logged yesterday.</div></div>';
+    return;
+  }
+  var map = {};
+  yesterday.forEach(function (w) {
+    var key = w.park + '|' + w.ride;
+    if (!map[key]) map[key] = { park: w.park, ride: w.ride, posted: [], actual: [] };
+    map[key].posted.push(w.postedWait);
+    map[key].actual.push(w.actualWait);
+  });
+  var avg = function (arr) { return Math.round(arr.reduce(function (a, b) { return a + b; }, 0) / arr.length); };
+  var rows = Object.keys(map).map(function (k) {
+    var m = map[k];
+    return { park: m.park, ride: m.ride, count: m.posted.length, avgPosted: avg(m.posted), avgActual: avg(m.actual) };
+  }).sort(function (a, b) { return b.count - a.count; });
+  el.innerHTML = rows.map(function (r) {
+    return '<div class="food-item">' +
+      '<div class="food-emoji">' + parkEmoji(r.park) + '</div>' +
+      '<div class="food-info"><div class="food-name">' + escapeHtml(r.ride) + '</div><div class="food-loc">' + escapeHtml(r.park) + ' · ' + r.count + ' report' + (r.count === 1 ? '' : 's') + '</div></div>' +
+      '<div class="food-score-block"><div class="food-score-num">' + r.avgPosted + '<span style="font-size:14px;color:var(--ink-faint)"> / ' + r.avgActual + '</span></div><div class="food-rev-count">posted / actual</div></div>' +
+      '</div>';
+  }).join('');
+}

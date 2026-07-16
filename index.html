@@ -386,6 +386,60 @@
   </div>
 </div>
 
+<!-- Log a Wait Time -->
+<div class="overlay" id="overlay-wait-time">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Log a Wait Time</span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-wait-time')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label class="field-lbl">Park</label>
+        <select class="field-input" id="wt-park" onchange="updateRideOptions()">
+          <option value="">Select a park...</option>
+          <optgroup label="Disney World">
+            <option>Magic Kingdom</option>
+            <option>EPCOT</option>
+            <option>Hollywood Studios</option>
+            <option>Animal Kingdom</option>
+          </optgroup>
+          <optgroup label="Universal Orlando">
+            <option>Universal Studios Florida</option>
+            <option>Islands of Adventure</option>
+            <option>Epic Universe</option>
+          </optgroup>
+          <optgroup label="Water Parks">
+            <option>Blizzard Beach</option>
+            <option>Typhoon Lagoon</option>
+            <option>Volcano Bay</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Ride</label>
+        <select class="field-input" id="wt-ride">
+          <option value="">Choose a park first</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-lbl">Posted Wait (min)</label>
+          <input class="field-input" id="wt-posted" type="number" min="0" max="300" placeholder="e.g. 45">
+        </div>
+        <div class="field">
+          <label class="field-lbl">Actual Wait (min)</label>
+          <input class="field-input" id="wt-actual" type="number" min="0" max="300" placeholder="e.g. 38">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeOverlay('overlay-wait-time')">Cancel</button>
+      <button class="btn-sm primary" onclick="submitWaitTime()">Submit</button>
+    </div>
+  </div>
+</div>
+
 <!-- View a Community Member's Profile (read-only) -->
 <div class="overlay" id="overlay-user-profile">
   <div class="modal modal-wide">
@@ -506,6 +560,7 @@
           <li><a href="#" onclick="showView('community')" id="nav-community">Leaderboard</a></li>
           <li><a href="#" onclick="showView('food')" id="nav-food">Food Scores</a></li>
           <li><a href="#" onclick="showView('photos')" id="nav-photos">Photos</a></li>
+          <li><a href="#" onclick="showView('waittimes')" id="nav-waittimes">Wait Times</a></li>
           <li><a href="#" onclick="showView('about')" id="nav-about">About</a></li>
         </ul>
         <div class="nav-actions">
@@ -531,6 +586,9 @@
             <div class="dropdown-item" onclick="openOverlay('overlay-photo');closeDropdown()">
               <i class="ti ti-camera"></i> Share a Photo
             </div>
+            <div class="dropdown-item" onclick="openOverlay('overlay-wait-time');closeDropdown()">
+              <i class="ti ti-clock"></i> Log a Wait Time
+            </div>
             <div class="dropdown-divider"></div>
             <div class="dropdown-item danger" onclick="doSignOut()">
               <i class="ti ti-logout"></i> Sign Out
@@ -546,6 +604,7 @@
         <a href="#" onclick="closeAppMenu();showView('community')">Leaderboard</a>
         <a href="#" onclick="closeAppMenu();showView('food')">Food Scores</a>
         <a href="#" onclick="closeAppMenu();showView('photos')">Photos</a>
+        <a href="#" onclick="closeAppMenu();showView('waittimes')">Wait Times</a>
         <a href="#" onclick="closeAppMenu();showView('about')">About</a>
       </div>
     </nav>
@@ -1000,6 +1059,30 @@
     </div>
   </div>
 
+  <!-- ── WAIT TIMES VIEW ── -->
+  <div id="view-waittimes" class="screen">
+    <div style="max-width:1300px;margin:0 auto;padding:48px 32px">
+      <div class="section-head">
+        <div><h2 class="section-title">WAIT TIMES</h2><p class="section-sub">Posted vs. actual, straight from the line</p></div>
+        <button class="btn-sm primary" onclick="actionOrSignup('overlay-wait-time')"><i class="ti ti-plus" style="font-size:12px"></i> Log a Wait Time</button>
+      </div>
+      <div class="page-tabs">
+        <button class="page-tab active" onclick="switchWaitTimesTab(this,'today')">Today</button>
+        <button class="page-tab" onclick="switchWaitTimesTab(this,'yesterday')">Yesterday's Averages</button>
+      </div>
+
+      <!-- Today tab: live, ungrouped, no averaging -->
+      <div id="wttab-today">
+        <div id="wt-today-list"></div>
+      </div>
+
+      <!-- Yesterday tab: per-ride averages once the day is over -->
+      <div id="wttab-yesterday" style="display:none">
+        <div class="light-card" id="wt-yesterday-list"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── ABOUT VIEW ── -->
   <div id="view-about" class="screen">
     <div class="about-wrap">
@@ -1181,6 +1264,7 @@
           <a href="#" onclick="guestBrowse('community')">Leaderboard</a>
           <a href="#" onclick="guestBrowse('food')">Food Scores</a>
           <a href="#" onclick="guestBrowse('photos')">Photos</a>
+          <a href="#" onclick="guestBrowse('waittimes')">Wait Times</a>
           <a href="#" onclick="guestBrowse('about')">About</a>
         </nav>
         <div class="sh-actions">
@@ -1195,6 +1279,7 @@
         <a href="#" onclick="closeMobileMenu();guestBrowse('community')">Leaderboard</a>
         <a href="#" onclick="closeMobileMenu();guestBrowse('food')">Food Scores</a>
         <a href="#" onclick="closeMobileMenu();guestBrowse('photos')">Photos</a>
+        <a href="#" onclick="closeMobileMenu();guestBrowse('waittimes')">Wait Times</a>
         <a href="#" onclick="closeMobileMenu();guestBrowse('about')">About</a>
         <div class="sh-mobile-actions">
           <button class="sh-signin" onclick="closeMobileMenu();openOverlay('overlay-signin')">Sign In</button>
@@ -1304,10 +1389,11 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=16"></script>
+<script src="main.js?v=17"></script>
 <script src="supabase-auth.js?v=4"></script>
-<script src="supabase-data.js?v=7"></script>
-<script src="supabase-food.js?v=8"></script>
+<script src="supabase-data.js?v=8"></script>
+<script src="supabase-food.js?v=9"></script>
+<script src="supabase-waittimes.js?v=1"></script>
 <script src="leaderboard.js?v=2"></script>
 </body>
 </html>

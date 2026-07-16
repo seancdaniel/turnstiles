@@ -1,7 +1,7 @@
 /* Turnstiles - Supabase data layer (real reads + writes; overrides demo) */
 
 // drop the demo seed; we use real data now
-STATE.users = []; STATE.checkins = []; STATE.foodReviews = []; STATE.photos = []; STATE.foodFavorites = [];
+STATE.users = []; STATE.checkins = []; STATE.foodReviews = []; STATE.photos = []; STATE.foodFavorites = []; STATE.waitTimes = [];
 
 function downscale(dataUrl, max) {
   max = max || 1000;
@@ -103,6 +103,7 @@ function rerenderActive() {
   if (id === 'view-community') renderCommunity();
   if (id === 'view-food') renderFood();
   if (id === 'view-photos') renderPhotos();
+  if (id === 'view-waittimes') renderWaitTimes();
 }
 
 async function loadData() {

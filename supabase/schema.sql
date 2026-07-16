@@ -63,6 +63,17 @@ create table public.food_favorites (
   created_at  timestamptz default now()
 );
 
+-- WAIT TIMES (posted board time vs. actual time, per ride)
+create table public.wait_times (
+  id           uuid primary key default gen_random_uuid(),
+  user_id      uuid not null references auth.users(id) on delete cascade,
+  park         text not null,
+  ride         text not null,
+  posted_wait  int not null,
+  actual_wait  int not null,
+  created_at   timestamptz default now()
+);
+
 -- ============================================================
 -- Auto-create a profile row whenever someone signs up.
 -- Sign-up sends username/first_name/etc. as user metadata.
@@ -98,6 +109,7 @@ alter table public.checkins       enable row level security;
 alter table public.food_reviews   enable row level security;
 alter table public.photos         enable row level security;
 alter table public.food_favorites enable row level security;
+alter table public.wait_times     enable row level security;
 
 -- profiles
 create policy "profiles are public"  on public.profiles for select using (true);
@@ -124,6 +136,11 @@ create policy "delete own photo"     on public.photos for delete using (auth.uid
 create policy "favorites are own"    on public.food_favorites for select using (auth.uid() = user_id);
 create policy "insert own favorite"  on public.food_favorites for insert with check (auth.uid() = user_id);
 create policy "delete own favorite"  on public.food_favorites for delete using (auth.uid() = user_id);
+
+-- wait_times
+create policy "wait times public read" on public.wait_times for select using (true);
+create policy "insert own wait time"   on public.wait_times for insert with check (auth.uid() = user_id);
+create policy "delete own wait time"   on public.wait_times for delete using (auth.uid() = user_id);
 
 -- ============================================================
 -- MIGRATION — run this block instead if the tables above already
@@ -184,3 +201,26 @@ create policy "insert own favorite" on public.food_favorites for insert with che
 
 drop policy if exists "delete own favorite" on public.food_favorites;
 create policy "delete own favorite" on public.food_favorites for delete using (auth.uid() = user_id);
+
+-- ============================================================
+-- MIGRATION — Wait Times (posted vs. actual, per ride). Safe to re-run.
+-- ============================================================
+create table if not exists public.wait_times (
+  id           uuid primary key default gen_random_uuid(),
+  user_id      uuid not null references auth.users(id) on delete cascade,
+  park         text not null,
+  ride         text not null,
+  posted_wait  int not null,
+  actual_wait  int not null,
+  created_at   timestamptz default now()
+);
+alter table public.wait_times enable row level security;
+
+drop policy if exists "wait times public read" on public.wait_times;
+create policy "wait times public read" on public.wait_times for select using (true);
+
+drop policy if exists "insert own wait time" on public.wait_times;
+create policy "insert own wait time" on public.wait_times for insert with check (auth.uid() = user_id);
+
+drop policy if exists "delete own wait time" on public.wait_times;
+create policy "delete own wait time" on public.wait_times for delete using (auth.uid() = user_id);
