@@ -10,6 +10,7 @@ create table public.profiles (
   first_name  text,
   last_name   text,
   avatar      text default '🎢',
+  avatar_url  text, -- uploaded profile photo (Storage URL); takes precedence over `avatar` emoji when set
   bio         text,
   location    text,
   join_year   int default extract(year from now()),
@@ -224,3 +225,10 @@ create policy "insert own wait time" on public.wait_times for insert with check 
 
 drop policy if exists "delete own wait time" on public.wait_times;
 create policy "delete own wait time" on public.wait_times for delete using (auth.uid() = user_id);
+
+-- ============================================================
+-- MIGRATION — uploaded profile photo, alongside the emoji avatar.
+-- Safe to re-run. Reuses the existing "photos" Storage bucket/
+-- policies (own-folder insert/delete) - no new bucket needed.
+-- ============================================================
+alter table public.profiles add column if not exists avatar_url text;

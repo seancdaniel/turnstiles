@@ -46,7 +46,7 @@ function openUserProfile(userId) {
   var monthlyTier = getMonthlyTier(checkinsThisMonth(userId));
   var yearlyTier = getYearlyTier(checkinsThisYear(userId));
 
-  document.getElementById('up-avatar').textContent = u.avatar;
+  document.getElementById('up-avatar').innerHTML = avatarHtml(u.avatarUrl, u.avatar);
   document.getElementById('up-name').textContent = (u.fname + ' ' + (u.lname || '')).trim() || u.username;
   document.getElementById('up-username').textContent = '@' + u.username;
   document.getElementById('up-bio').textContent = u.bio || 'No bio yet.';
@@ -146,7 +146,7 @@ async function loadData() {
 function enterApp(user) {
   STATE.currentUser = user;
   document.body.classList.remove('guest');
-  document.getElementById('nav-avatar').textContent = user.avatar;
+  document.getElementById('nav-avatar').innerHTML = avatarHtml(user.avatarUrl, user.avatar);
   document.getElementById('nav-username').textContent = user.username;
   document.getElementById('landing-shell').style.display = 'none';
   document.getElementById('app-shell').style.display = 'block';

@@ -4,7 +4,7 @@ function profileToUser(p, email) {
   return {
     id: p.id, username: p.username,
     fname: p.first_name || '', lname: p.last_name || '',
-    email: email || '', avatar: p.avatar || '\u{1F3A2}',
+    email: email || '', avatar: p.avatar || '\u{1F3A2}', avatarUrl: p.avatar_url || '',
     bio: p.bio || '', location: p.location || '',
     parks: [], joinYear: p.join_year || new Date().getFullYear()
   };
@@ -19,7 +19,7 @@ async function fetchProfile(userId) {
 function enterApp(user) {
   STATE.currentUser = user;
   document.body.classList.remove('guest');
-  document.getElementById('nav-avatar').textContent = user.avatar;
+  document.getElementById('nav-avatar').innerHTML = avatarHtml(user.avatarUrl, user.avatar);
   document.getElementById('nav-username').textContent = user.username;
   document.getElementById('landing-shell').style.display = 'none';
   document.getElementById('app-shell').style.display = 'block';
@@ -57,7 +57,18 @@ async function regSubmit() {
   });
   if (error) { toast(error.message, 'error'); return; }
   if (data.user) {
-    await sb.from('profiles').update({ bio: bio || 'Theme park enthusiast.', location: loc }).eq('id', data.user.id);
+    const profileUpdate = { bio: bio || 'Theme park enthusiast.', location: loc };
+    // only attempt the Storage upload if we actually have a session (email confirmation
+    // could be on, in which case there's no session yet and the upload would just fail RLS)
+    if (regAvatarMode === 'photo' && data.session) {
+      const previewSrc = document.getElementById('reg-avatar-preview-img').getAttribute('src');
+      if (previewSrc && previewSrc.indexOf('data:') === 0) {
+        const small = await downscale(previewSrc);
+        const url = await uploadPhoto(small, data.user.id);
+        if (url) profileUpdate.avatar_url = url;
+      }
+    }
+    await sb.from('profiles').update(profileUpdate).eq('id', data.user.id);
   }
   if (!data.session) { closeOverlay('overlay-register'); resetRegForm(); toast('Account created! Check your email to confirm, then sign in.'); return; }
   const profile = await fetchProfile(data.user.id);
@@ -121,11 +132,25 @@ async function regNext() {
 
 // Edit profile (overrides the prompt()-based demo version in main.js)
 var editSelectedAvatar = null;
+var epAvatarMode = 'emoji'; // 'emoji' | 'photo' - whichever the user last interacted with
 
 function editPickAvatar(el) {
   document.querySelectorAll('#edit-avatar-picker .avatar-opt').forEach(a => a.classList.remove('selected'));
   el.classList.add('selected');
   editSelectedAvatar = el.dataset.emoji;
+  epAvatarMode = 'emoji';
+  document.getElementById('ep-avatar-preview').style.display = 'none';
+}
+
+function handleEpAvatarPhoto(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = r => {
+    epAvatarMode = 'photo';
+    document.getElementById('ep-avatar-preview').style.display = 'block';
+    document.getElementById('ep-avatar-preview-img').src = r.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 function openEditProfile() {
@@ -134,6 +159,18 @@ function openEditProfile() {
   document.querySelectorAll('#edit-avatar-picker .avatar-opt').forEach(a => {
     a.classList.toggle('selected', a.dataset.emoji === u.avatar);
   });
+  const preview = document.getElementById('ep-avatar-preview');
+  const previewImg = document.getElementById('ep-avatar-preview-img');
+  document.getElementById('ep-avatar-file').value = '';
+  if (u.avatarUrl) {
+    epAvatarMode = 'photo';
+    previewImg.src = u.avatarUrl;
+    preview.style.display = 'block';
+  } else {
+    epAvatarMode = 'emoji';
+    previewImg.removeAttribute('src');
+    preview.style.display = 'none';
+  }
   document.getElementById('ep-fname').value = u.fname || '';
   document.getElementById('ep-lname').value = u.lname || '';
   document.getElementById('ep-username').value = u.username || '';
@@ -157,16 +194,30 @@ async function submitEditProfile() {
     const { data: taken } = await sb.from('profiles').select('id').eq('username', username).maybeSingle();
     if (taken) { err.classList.add('show'); return; }
   }
+
+  // resolve the avatar photo: new upload, keep existing, or clear (emoji mode)
+  let avatarUrl = null;
+  if (epAvatarMode === 'photo') {
+    const previewSrc = document.getElementById('ep-avatar-preview-img').getAttribute('src');
+    if (previewSrc && previewSrc.indexOf('data:') === 0) {
+      const small = await downscale(previewSrc);
+      avatarUrl = await uploadPhoto(small, u.id);
+      if (!avatarUrl) { toast('Could not upload photo - profile not saved.', 'error'); return; }
+    } else if (previewSrc) {
+      avatarUrl = previewSrc; // unchanged existing photo
+    }
+  }
+
   const { error } = await sb.from('profiles').update({
     first_name: fname, last_name: lname, username: username,
-    avatar: editSelectedAvatar || u.avatar, bio: bio, location: location
+    avatar: editSelectedAvatar || u.avatar, avatar_url: avatarUrl, bio: bio, location: location
   }).eq('id', u.id);
   if (error) { toast('Could not save: ' + error.message, 'error'); return; }
   STATE.currentUser = Object.assign({}, u, {
     fname: fname, lname: lname, username: username,
-    avatar: editSelectedAvatar || u.avatar, bio: bio, location: location
+    avatar: editSelectedAvatar || u.avatar, avatarUrl: avatarUrl || '', bio: bio, location: location
   });
-  document.getElementById('nav-avatar').textContent = STATE.currentUser.avatar;
+  document.getElementById('nav-avatar').innerHTML = avatarHtml(STATE.currentUser.avatarUrl, STATE.currentUser.avatar);
   document.getElementById('nav-username').textContent = STATE.currentUser.username;
   closeOverlay('overlay-edit-profile');
   await loadData();

@@ -141,7 +141,7 @@ function renderWaitTimesToday() {
       return '<div class="feed-card">' +
         '<div class="feed-top">' +
           '<div class="feed-user-link user-link" onclick="openUserProfile(\'' + w.userId + '\')" style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0">' +
-            '<div class="feed-av" style="background:var(--coral-lt);color:var(--coral)">' + w.avatar + '</div>' +
+            '<div class="feed-av" style="background:var(--coral-lt);color:var(--coral)">' + avatarHtml(w.avatarUrl, w.avatar) + '</div>' +
             '<div class="feed-meta">' +
               '<div class="feed-username">' + escapeHtml(w.username) + '</div>' +
               '<div class="feed-parkname">' + parkEmoji(w.park) + ' ' + escapeHtml(w.ride) + ' · ' + escapeHtml(w.park) + '</div>' +

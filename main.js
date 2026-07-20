@@ -204,6 +204,7 @@ function closeAppMenu() {
 // ============================================================
 let regStep = 1;
 let selectedAvatar = '🎢';
+let regAvatarMode = 'emoji'; // 'emoji' | 'photo' - whichever the user last interacted with
 
 function openSignIn() { openOverlay('overlay-signin'); }
 
@@ -246,9 +247,22 @@ function doSignOut() {
 
 // Registration flow
 function pickAvatar(el) {
-  document.querySelectorAll('.avatar-opt').forEach(a => a.classList.remove('selected'));
+  document.querySelectorAll('#avatar-picker .avatar-opt').forEach(a => a.classList.remove('selected'));
   el.classList.add('selected');
   selectedAvatar = el.dataset.emoji;
+  regAvatarMode = 'emoji';
+  document.getElementById('reg-avatar-preview').style.display = 'none';
+}
+
+function handleRegAvatarPhoto(e) {
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = r => {
+    regAvatarMode = 'photo';
+    document.getElementById('reg-avatar-preview').style.display = 'block';
+    document.getElementById('reg-avatar-preview-img').src = r.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 function regNext() {
@@ -332,6 +346,11 @@ function resetRegForm() {
   document.getElementById('reg-next-btn').textContent='Next →';
   document.querySelectorAll('#reg-pass-reqs .pw-req').forEach(el=>el.classList.remove('met'));
   selectedAvatar='🎢';
+  regAvatarMode='emoji';
+  document.querySelectorAll('#avatar-picker .avatar-opt').forEach(a=>a.classList.toggle('selected', a.dataset.emoji==='🎢'));
+  document.getElementById('reg-avatar-preview').style.display='none';
+  document.getElementById('reg-avatar-preview-img').removeAttribute('src');
+  document.getElementById('reg-avatar-file').value='';
 }
 
 // ============================================================
@@ -565,7 +584,7 @@ function updatePassport() {
 
   // Passport card
   document.getElementById('passport-name').textContent = (u.fname+' '+u.lname[0]+'.').toUpperCase();
-  document.getElementById('passport-avatar').textContent = u.avatar;
+  document.getElementById('passport-avatar').innerHTML = avatarHtml(u.avatarUrl, u.avatar);
   const yearlyTier = getYearlyTier(checkinsThisYear(u.id));
   document.getElementById('passport-tier').textContent = yearlyTier ? yearlyTier.name : 'Unranked';
   document.getElementById('passport-stars').textContent = yearlyTier ? yearlyTier.icon : '—';
@@ -631,7 +650,7 @@ function buildLeaderboard(filter) {
       if(filterParks && !filterParks.includes(c.park)) return false;
       return true;
     });
-    return {userId:u.id, username:u.username, avatar:u.avatar, fname:u.fname, visits:mine.length};
+    return {userId:u.id, username:u.username, avatar:u.avatar, avatarUrl:u.avatarUrl, fname:u.fname, visits:mine.length};
   }).sort((a,b)=>b.visits-a.visits);
 }
 
@@ -654,7 +673,7 @@ function renderLeaderboard() {
     const yearlyTier = getYearlyTier(checkinsThisYear(row.userId));
     return `<div class="lb-row${isYou?' you':''}" onclick="openUserProfile('${row.userId}')">
       <span class="lb-rank ${rankColors[i]||''}">${i+1}</span>
-      <div class="lb-av" style="background:var(--coral-lt);color:var(--coral)">${row.avatar}</div>
+      <div class="lb-av" style="background:var(--coral-lt);color:var(--coral)">${avatarHtml(row.avatarUrl, row.avatar)}</div>
       <div class="lb-info">
         <div class="lb-username">${row.username}${isYou?'<span class="you-tag">YOU</span>':''}</div>
         <div class="lb-detail">${tierEmblem(monthlyTier,'Monthly')} ${tierEmblem(yearlyTier,'Yearly')}</div>
@@ -681,7 +700,7 @@ function renderCommunityFeed() {
       return `<div class="feed-card">
         <div class="feed-top">
           <div class="feed-user-link user-link" onclick="openUserProfile('${user.id}')" style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0">
-            <div class="feed-av" style="background:var(--coral-lt);color:var(--coral)">${user.avatar}</div>
+            <div class="feed-av" style="background:var(--coral-lt);color:var(--coral)">${avatarHtml(user.avatarUrl, user.avatar)}</div>
             <div class="feed-meta">
               <div class="feed-username">${user.username}</div>
               <div class="feed-parkname">${parkEmoji(c.park)} ${c.park}</div>
@@ -777,7 +796,7 @@ function renderPhotos() {
     <div class="photo-thumb" style="background:${p.dataUrl?'#000':PHOTO_BG[i%PHOTO_BG.length]};border:1px solid var(--border)">
       ${p.dataUrl ? '<img alt="Photo shared by a passholder" src="'+p.dataUrl+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">' : '<span style="font-size:32px">'+parkEmoji(p.park)+'</span>'}
       <div class="photo-overlay">
-        <span class="photo-user user-link" onclick="event.stopPropagation();openUserProfile('${p.userId}')">${p.avatar} ${p.username}</span>
+        <span class="photo-user user-link" onclick="event.stopPropagation();openUserProfile('${p.userId}')">${avatarHtml(p.avatarUrl, p.avatar, 'avatar-img-inline')} ${p.username}</span>
         <span class="photo-score" title="${p.caption||p.park}">${p.park.split(' ')[0]}</span>
       </div>
     </div>
@@ -801,7 +820,7 @@ function renderProfile() {
   const monthlyTier = getMonthlyTier(checkinsThisMonth(u.id));
   const yearlyTier = getYearlyTier(checkinsThisYear(u.id));
 
-  document.getElementById('profile-avatar-big').textContent = u.avatar;
+  document.getElementById('profile-avatar-big').innerHTML = avatarHtml(u.avatarUrl, u.avatar);
   document.getElementById('profile-display-name').textContent = u.fname + ' ' + u.lname;
   document.getElementById('profile-username').textContent = '@'+u.username;
   document.getElementById('profile-bio').textContent = u.bio||'No bio yet.';
@@ -865,6 +884,14 @@ function switchParkTab(btn, tab) {
 // ============================================================
 // HELPERS
 // ============================================================
+// renders an uploaded profile photo if present, else falls back to the emoji.
+// Callers just need width/height/border-radius on the containing element -
+// the <img> fills it via object-fit + border-radius:inherit.
+function avatarHtml(avatarUrl, emoji, extraClass) {
+  if (avatarUrl) return '<img class="avatar-img' + (extraClass ? ' ' + extraClass : '') + '" src="' + avatarUrl + '" alt="">';
+  return escapeHtml(emoji || '\u{1F3A2}');
+}
+
 function parkEmoji(park) {
   const map={'Magic Kingdom':'🏰','EPCOT':'🌍','Hollywood Studios':'🎬','Animal Kingdom':'🦁',
     'Universal Studios Florida':'🎥','Islands of Adventure':'⚓','Epic Universe':'🌌',

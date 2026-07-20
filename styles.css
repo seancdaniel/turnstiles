@@ -1285,6 +1285,14 @@ select.field-input { cursor: pointer; }
 .avatar-opt:hover { border-color: var(--coral); }
 .avatar-opt.selected { border-color: var(--coral); background: var(--coral-lt); }
 
+/* uploaded profile photo — fills whatever container it's dropped into
+   (border-radius:inherit picks up the container's shape automatically) */
+.avatar-img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+.avatar-img-inline {
+  display: inline-block; width: 16px; height: 16px; border-radius: 50%;
+  object-fit: cover; vertical-align: middle; margin-right: 2px;
+}
+
 /* ── Profile avatar circle ── */
 .profile-avatar {
   width: 64px; height: 64px; border-radius: 8px;

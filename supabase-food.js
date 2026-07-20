@@ -32,6 +32,7 @@ async function loadData() {
       return { id: f.id, userId: f.user_id,
         username: (idMap[f.user_id] && idMap[f.user_id].username) || 'someone',
         avatar: (idMap[f.user_id] && idMap[f.user_id].avatar) || '\u{1F3A2}',
+        avatarUrl: (idMap[f.user_id] && idMap[f.user_id].avatarUrl) || '',
         itemName: f.item_name, park: f.park, spot: f.spot || '', score: Number(f.score),
         review: f.review || '', photoUrl: f.photo_url || '', ts: new Date(f.created_at).getTime() };
     });
@@ -39,6 +40,7 @@ async function loadData() {
       return { id: ph.id, userId: ph.user_id,
         username: (idMap[ph.user_id] && idMap[ph.user_id].username) || 'someone',
         avatar: (idMap[ph.user_id] && idMap[ph.user_id].avatar) || '\u{1F3A2}',
+        avatarUrl: (idMap[ph.user_id] && idMap[ph.user_id].avatarUrl) || '',
         park: ph.park, caption: ph.caption || '', dataUrl: ph.image_url || null,
         ts: new Date(ph.created_at).getTime() };
     });
@@ -50,6 +52,7 @@ async function loadData() {
       return { id: w.id, userId: w.user_id,
         username: (idMap[w.user_id] && idMap[w.user_id].username) || 'someone',
         avatar: (idMap[w.user_id] && idMap[w.user_id].avatar) || '\u{1F3A2}',
+        avatarUrl: (idMap[w.user_id] && idMap[w.user_id].avatarUrl) || '',
         park: w.park, ride: w.ride, postedWait: w.posted_wait, actualWait: w.actual_wait,
         ts: new Date(w.created_at).getTime() };
     });
@@ -238,7 +241,7 @@ function openFoodDetail(name, park, spot) {
     var yTier = getYearlyTier(checkinsThisYear(r.userId));
     return '<div class="fd-review">' +
       '<div class="fd-review-hd">' +
-        '<span class="fd-review-user user-link" onclick="openUserProfile(\'' + r.userId + '\')">' + (r.avatar || '\u{1F3A2}') + ' ' + escapeHtml(r.username) + ' ' + tierEmblem(mTier, 'Monthly') + ' ' + tierEmblem(yTier, 'Yearly') + '</span>' +
+        '<span class="fd-review-user user-link" onclick="openUserProfile(\'' + r.userId + '\')">' + avatarHtml(r.avatarUrl, r.avatar, 'avatar-img-inline') + ' ' + escapeHtml(r.username) + ' ' + tierEmblem(mTier, 'Monthly') + ' ' + tierEmblem(yTier, 'Yearly') + '</span>' +
         '<span class="fd-review-score">' + Number(r.score).toFixed(1) + '</span>' +
       '</div>' +
       (r.review ? '<div class="fd-review-text">' + escapeHtml(r.review) + '</div>' : '') +

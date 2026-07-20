@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=34">
+  <link rel="stylesheet" href="styles.css?v=35">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -129,6 +129,18 @@
             <div class="avatar-opt" data-emoji="⚓" onclick="pickAvatar(this)">⚓</div>
             <div class="avatar-opt" data-emoji="🌋" onclick="pickAvatar(this)">🌋</div>
             <div class="avatar-opt" data-emoji="🎬" onclick="pickAvatar(this)">🎬</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-lbl">Or Upload a Photo (optional)</label>
+          <div class="photo-upload-zone" onclick="document.getElementById('reg-avatar-file').click()">
+            <div class="photo-upload-icon"><i class="ti ti-camera-plus"></i></div>
+            <div class="photo-upload-text">Click to upload a profile photo</div>
+            <div class="photo-upload-sub">JPEG or PNG - pick an emoji above to switch back</div>
+          </div>
+          <input type="file" id="reg-avatar-file" accept="image/*" style="display:none" onchange="handleRegAvatarPhoto(event)">
+          <div id="reg-avatar-preview" style="margin-top:8px;display:none">
+            <img id="reg-avatar-preview-img" alt="Avatar photo preview" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid var(--border-gold)">
           </div>
         </div>
         <div class="field">
@@ -496,6 +508,18 @@
           <div class="avatar-opt" data-emoji="⚓" onclick="editPickAvatar(this)">⚓</div>
           <div class="avatar-opt" data-emoji="🌋" onclick="editPickAvatar(this)">🌋</div>
           <div class="avatar-opt" data-emoji="🎬" onclick="editPickAvatar(this)">🎬</div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Or Upload a Photo (optional)</label>
+        <div class="photo-upload-zone" onclick="document.getElementById('ep-avatar-file').click()">
+          <div class="photo-upload-icon"><i class="ti ti-camera-plus"></i></div>
+          <div class="photo-upload-text">Click to upload a profile photo</div>
+          <div class="photo-upload-sub">JPEG or PNG - pick an emoji above to switch back</div>
+        </div>
+        <input type="file" id="ep-avatar-file" accept="image/*" style="display:none" onchange="handleEpAvatarPhoto(event)">
+        <div id="ep-avatar-preview" style="margin-top:8px;display:none">
+          <img id="ep-avatar-preview-img" alt="Avatar photo preview" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid var(--border-gold)">
         </div>
       </div>
       <div class="field-row">
@@ -1389,11 +1413,11 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=18"></script>
-<script src="supabase-auth.js?v=4"></script>
-<script src="supabase-data.js?v=9"></script>
-<script src="supabase-food.js?v=10"></script>
-<script src="supabase-waittimes.js?v=2"></script>
-<script src="leaderboard.js?v=3"></script>
+<script src="main.js?v=19"></script>
+<script src="supabase-auth.js?v=5"></script>
+<script src="supabase-data.js?v=10"></script>
+<script src="supabase-food.js?v=11"></script>
+<script src="supabase-waittimes.js?v=3"></script>
+<script src="leaderboard.js?v=4"></script>
 </body>
 </html>
