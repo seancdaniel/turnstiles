@@ -7,7 +7,10 @@ var RIDES_BY_PARK = {
     "It's a Small World", "Peter Pan's Flight", 'The Many Adventures of Winnie the Pooh',
     'Under the Sea - Journey of the Little Mermaid', "Buzz Lightyear's Space Ranger Spin",
     'TRON Lightcycle / Run', 'Astro Orbiter', 'The Barnstormer', 'Dumbo the Flying Elephant',
-    'Mad Tea Party', "Walt Disney's Enchanted Tiki Room"
+    'Mad Tea Party', "Walt Disney's Enchanted Tiki Room", 'Magic Carpets of Aladdin',
+    'Liberty Square Riverboat', 'Prince Charming Regal Carrousel', "Mickey's PhilharMagic",
+    'Tomorrowland Speedway', "Walt Disney's Carousel of Progress", 'Monsters, Inc. Laugh Floor',
+    'Walt Disney World Railroad'
   ],
   'EPCOT': [
     'Guardians of the Galaxy: Cosmic Rewind', 'Test Track', 'Mission: SPACE', 'Frozen Ever After',
@@ -19,36 +22,47 @@ var RIDES_BY_PARK = {
     'Star Wars: Rise of the Resistance', 'Millennium Falcon: Smugglers Run',
     "Mickey & Minnie's Runaway Railway", 'Slinky Dog Dash', 'Toy Story Mania!',
     'Alien Swirling Saucers', "Rock 'n' Roller Coaster", 'The Twilight Zone Tower of Terror',
-    'Star Tours - The Adventures Continue'
+    'Star Tours - The Adventures Continue', 'Muppet*Vision 3D'
   ],
   'Animal Kingdom': [
     'Avatar Flight of Passage', "Na'vi River Journey", 'Expedition Everest',
-    'Kilimanjaro Safaris', 'Kali River Rapids', 'DINOSAUR', "It's Tough to Be a Bug!"
+    'Kilimanjaro Safaris', 'Kali River Rapids', 'DINOSAUR', "It's Tough to Be a Bug!",
+    'TriceraTop Spin'
   ],
   'Universal Studios Florida': [
     'Harry Potter and the Escape from Gringotts', 'Revenge of the Mummy',
     'Transformers: The Ride 3D', 'MEN IN BLACK Alien Attack', 'E.T. Adventure',
-    'Hollywood Rip Ride Rockit', 'Fast & Furious: Supercharged', "Kang & Kodos' Twirl 'n' Hurl"
+    'Hollywood Rip Ride Rockit', 'Fast & Furious: Supercharged', "Kang & Kodos' Twirl 'n' Hurl",
+    'Despicable Me Minion Mayhem', 'Race Through New York Starring Jimmy Fallon',
+    "Woody Woodpecker's Nuthouse Coaster"
   ],
   'Islands of Adventure': [
     'Harry Potter and the Forbidden Journey', "Hagrid's Magical Creatures Motorbike Adventure",
     'Jurassic World VelociCoaster', 'Jurassic Park River Adventure',
     'The Amazing Adventures of Spider-Man', 'Skull Island: Reign of Kong', "Doctor Doom's Fearfall",
-    'The Incredible Hulk Coaster', "Popeye & Bluto's Bilge-Rat Barges", "Dudley Do-Right's Ripsaw Falls"
+    'The Incredible Hulk Coaster', "Popeye & Bluto's Bilge-Rat Barges", "Dudley Do-Right's Ripsaw Falls",
+    'Flight of the Hippogriff', 'Storm Force Accelatron', 'Pteranodon Flyers',
+    'The Cat in the Hat', 'One Fish, Two Fish, Red Fish, Blue Fish', 'Caro-Seuss-el',
+    'The High in the Sky Seuss Trolley Train Ride!'
   ],
   'Epic Universe': [
-    'Stardust Racers', 'Curse of the Werewolf', 'Harry Potter and the Battle at the Ministry',
-    'Constellation Carousel', "Mario Kart: Bowser's Challenge", "Yoshi's Adventure",
-    "Hiccup's Wing Gliders", "Dragon Racer's Rally"
+    'Stardust Racers', 'Curse of the Werewolf', 'Monsters Unchained: The Frankenstein Experiment',
+    'Harry Potter and the Battle at the Ministry', 'Constellation Carousel',
+    "Mario Kart: Bowser's Challenge", "Yoshi's Adventure", "Hiccup's Wing Gliders",
+    "Dragon Racer's Rally"
   ],
   'Blizzard Beach': [
-    'Summit Plummet', 'Slush Gusher', 'Teamboat Springs', 'Snow Stormers', 'Toboggan Racers'
+    'Summit Plummet', 'Slush Gusher', 'Teamboat Springs', 'Snow Stormers', 'Toboggan Racers',
+    'Runoff Rapids'
   ],
   'Typhoon Lagoon': [
-    "Crush 'n' Gusher", 'Humunga Kowabunga', 'Mayday Falls', 'Keelhaul Falls', 'Bay Slides'
+    "Crush 'n' Gusher", 'Humunga Kowabunga', 'Mayday Falls', 'Keelhaul Falls', 'Bay Slides',
+    'Gang Plank Falls'
   ],
   'Volcano Bay': [
-    'Krakatau Aqua Coaster', "Ko'okiri Body Plunge", 'Puihi', 'Taniwha Tubes'
+    'Krakatau Aqua Coaster', "Ko'okiri Body Plunge", 'Puihi', 'Taniwha Tubes',
+    'Kala & Tai Nui Serpentine Body Slides', 'Honu ika Moana', 'Ohyah and Ohno', 'Maku',
+    'Punga Racers'
   ]
 };
 
