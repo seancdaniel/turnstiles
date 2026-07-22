@@ -1654,6 +1654,15 @@ select.field-input { cursor: pointer; }
   color: var(--ink-light); margin-bottom: 6px;
 }
 
+.beta-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--coral); background: var(--coral-lt);
+  border: 1px solid rgba(184,61,43,0.3); border-radius: 999px;
+  padding: 4px 12px; margin-bottom: 12px;
+}
+
 .ticket-wordmark {
   font-family: 'Bebas Neue', sans-serif;
   font-size: clamp(64px, 9vw, 132px);
