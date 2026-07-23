@@ -1967,6 +1967,9 @@ body.guest #nav-home { display: none !important; }
 }
 .about-cta p { font-size: 14px; color: rgba(231,206,138,0.7); margin-bottom: 22px; }
 .about-cta .btn-hero { display: inline-flex; }
+.about-donate { margin-top: 18px; }
+.about-donate > i { font-size: 26px; color: #E7CE8A; display: block; margin-bottom: 10px; }
+.about-donate .btn-hero-outline { display: inline-flex; align-items: center; gap: 8px; }
 @media (max-width: 680px) { .about-grid { grid-template-columns: 1fr; } }
 
 /* ======================================================
