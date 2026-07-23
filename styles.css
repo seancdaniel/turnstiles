@@ -1936,7 +1936,8 @@ body.guest #nav-home { display: none !important; }
    ABOUT VIEW
    ====================================================== */
 .about-wrap { max-width: 1000px; margin: 0 auto; padding: 64px 32px 76px; }
-.about-hero { text-align: center; max-width: 740px; margin: 0 auto 46px; }
+.about-top { display: flex; align-items: stretch; gap: 36px; margin-bottom: 46px; }
+.about-hero { text-align: left; max-width: none; margin: 0; flex: 1 1 56%; display: flex; flex-direction: column; justify-content: center; }
 .about-eyebrow {
   font-family: 'Special Elite', cursive; font-size: 12px; letter-spacing: 3px;
   text-transform: uppercase; color: #E7CE8A; margin-bottom: 16px;
@@ -1967,9 +1968,37 @@ body.guest #nav-home { display: none !important; }
 }
 .about-cta p { font-size: 14px; color: rgba(231,206,138,0.7); margin-bottom: 22px; }
 .about-cta .btn-hero { display: inline-flex; }
-.about-donate { margin-top: 18px; }
-.about-donate > i { font-size: 26px; color: #E7CE8A; display: block; margin-bottom: 10px; }
-.about-donate .btn-hero-outline { display: inline-flex; align-items: center; gap: 8px; }
+.about-donate {
+  position: relative; overflow: hidden;
+  flex: 1 1 320px; max-width: 360px;
+  border-radius: 14px; padding: 34px 30px;
+  background: linear-gradient(135deg, var(--coral) 0%, var(--gold) 100%);
+  box-shadow: 0 16px 34px rgba(184,61,43,0.30);
+  display: flex; flex-direction: column; justify-content: center;
+}
+.about-donate-cup { position: absolute; right: -20px; bottom: -18px; width: 175px; height: 175px; opacity: 0.22; pointer-events: none; }
+.about-donate > i { position: relative; z-index: 1; font-size: 24px; color: white; display: block; margin-bottom: 10px; }
+.about-donate h2 {
+  position: relative; z-index: 1;
+  font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 1px;
+  color: white; margin-bottom: 8px;
+}
+.about-donate p { position: relative; z-index: 1; font-size: 14px; font-weight: 300; line-height: 1.6; color: rgba(255,255,255,0.92); margin-bottom: 20px; }
+.about-donate .btn-donate {
+  position: relative; z-index: 1; align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Josefin Sans', sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--coral-dk); background: white;
+  border: none; padding: 13px 24px; border-radius: 3px; cursor: pointer;
+  transition: all 0.15s;
+}
+.about-donate .btn-donate:hover { background: var(--gold-pale); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); }
+@media (max-width: 780px) {
+  .about-top { flex-direction: column; }
+  .about-hero { text-align: center; }
+  .about-donate { max-width: none; }
+}
 @media (max-width: 680px) { .about-grid { grid-template-columns: 1fr; } }
 
 /* ======================================================
