@@ -2030,14 +2030,28 @@ body.guest #nav-home { display: none !important; }
   box-shadow: 0 16px 34px rgba(184,61,43,0.30);
   display: flex; flex-direction: column; justify-content: center;
 }
-.about-donate-cup { position: absolute; right: -20px; bottom: -18px; width: 175px; height: 175px; opacity: 0.22; pointer-events: none; }
+.about-donate::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url('img/coffee-cup.png');
+  background-repeat: no-repeat;
+  background-position: right -10px bottom -25px;
+  background-size: 62% auto;
+  opacity: 0.45;
+  pointer-events: none;
+}
 .about-donate > i { position: relative; z-index: 1; font-size: 24px; color: white; display: block; margin-bottom: 10px; }
 .about-donate h2 {
   position: relative; z-index: 1;
   font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 1px;
   color: white; margin-bottom: 8px;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.25);
 }
-.about-donate p { position: relative; z-index: 1; font-size: 14px; font-weight: 300; line-height: 1.6; color: rgba(255,255,255,0.92); margin-bottom: 20px; }
+.about-donate p {
+  position: relative; z-index: 1; font-size: 14px; font-weight: 300; line-height: 1.6;
+  color: rgba(255,255,255,0.92); margin-bottom: 20px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
 .about-donate .btn-donate {
   position: relative; z-index: 1; align-self: flex-start;
   display: inline-flex; align-items: center; gap: 8px;
