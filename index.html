@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=40">
+  <link rel="stylesheet" href="styles.css?v=39">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -823,34 +823,46 @@
               <button class="btn-hero-outline" onclick="showView('community')">Browse Community</button>
             </div>
           </div>
-        </div>
-        <!-- Passport (real ticket artwork, live stats overlaid) -->
-        <div class="passport-showcase">
-          <div class="passport">
-            <span id="passport-stars" style="display:none">★</span>
-            <div class="pp-patch pp-patch-name">
-              <div class="pp-avatar" id="passport-avatar" style="display:none">🎢</div>
-              <div class="pp-name" id="passport-name">YOUR NAME</div>
-            </div>
-            <div class="pp-patch pp-patch-tier">
-              <span class="pp-tier-badge" id="passport-tier">Bronze Tier</span>
-              <span class="pp-rank">Ranked <strong id="passport-rank">#—</strong></span>
-            </div>
-            <div class="pp-patch pp-patch-rows">
-              <div class="park-bars" id="passport-park-bars">
-                <div class="pp-empty">No visits logged yet.<br>Hit "Log a Check-In" to get started!</div>
+          <!-- Passport -->
+          <aside class="passport">
+            <div class="passport-frame">
+              <div class="passport-main">
+                <div class="pp-top-row">
+                  <div class="pp-eyebrow"><span>★</span> Annual Passholder <span>★</span></div>
+                  <div class="pp-stamp" title="Yearly Tier"><span id="passport-stars">★</span></div>
+                </div>
+                <div class="pp-name-row">
+                  <div class="pp-avatar" id="passport-avatar">🎢</div>
+                  <div class="pp-name" id="passport-name">YOUR NAME</div>
+                </div>
+                <div class="pp-tier-row">
+                  <span class="pp-tier-badge" id="passport-tier">Bronze Tier</span>
+                  <span class="pp-rank">Ranked <strong id="passport-rank">#—</strong></span>
+                </div>
+                <div class="passport-tear"></div>
+                <div class="pp-section-lbl"><span>★</span> Visits by Park <span>★</span></div>
+                <div class="park-bars" id="passport-park-bars">
+                  <div style="text-align:center;padding:16px 0;font-size:12px;color:var(--ink-faint);font-weight:300;letter-spacing:0.5px">
+                    No visits logged yet.<br>Hit "Log a Check-In" to get started!
+                  </div>
+                </div>
+                <div class="passport-footer">
+                  <div class="pf-stat"><i class="ti ti-calendar"></i><div class="pf-num" id="pf-since">—</div><div class="pf-lbl">Member Since</div></div>
+                  <div class="pf-div"></div>
+                  <div class="pf-stat"><i class="ti ti-tools-kitchen-2"></i><div class="pf-num" id="pf-avg-food">—</div><div class="pf-lbl">Avg Food Score</div></div>
+                  <div class="pf-div"></div>
+                  <div class="pf-stat"><i class="ti ti-camera"></i><div class="pf-num" id="pf-photos">0</div><div class="pf-lbl">Photos Shared</div></div>
+                </div>
+              </div>
+              <div class="pp-stub">
+                <div class="pp-perf"></div>
+                <div class="stub-star">★</div>
+                <div class="pp-stub-text">ADMIT<br>ONE</div>
+                <div class="pp-stub-line"></div>
+                <div class="pp-stub-fine">VALID FOR<br>PARK ADMISSION</div>
               </div>
             </div>
-            <div class="pp-patch pp-patch-footer">
-              <div class="passport-footer">
-                <div class="pf-stat"><i class="ti ti-calendar"></i><div class="pf-num" id="pf-since">—</div><div class="pf-lbl">Member Since</div></div>
-                <div class="pf-div"></div>
-                <div class="pf-stat"><i class="ti ti-tools-kitchen-2"></i><div class="pf-num" id="pf-avg-food">—</div><div class="pf-lbl">Avg Food Score</div></div>
-                <div class="pf-div"></div>
-                <div class="pf-stat"><i class="ti ti-camera"></i><div class="pf-num" id="pf-photos">0</div><div class="pf-lbl">Photos Shared</div></div>
-              </div>
-            </div>
-          </div>
+          </aside>
         </div>
       </section>
 
