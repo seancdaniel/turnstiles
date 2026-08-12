@@ -1043,6 +1043,11 @@
         <div class="section-head" style="margin-bottom:14px">
           <div style="display:flex;flex-direction:column;gap:8px;width:100%">
             <div class="lb-tabs">
+              <button class="lb-tab" id="lb-period-month" onclick="selectLbPeriod('month')">This Month</button>
+              <button class="lb-tab" id="lb-period-year" onclick="selectLbPeriod('year')">This Year</button>
+              <button class="lb-tab active" id="lb-period-all" onclick="selectLbPeriod('all')">All-Time</button>
+            </div>
+            <div class="lb-tabs">
               <button class="lb-tab active" id="lb-btn-all" onclick="selectResort('all')">All Parks</button>
               <button class="lb-tab" id="lb-btn-disney" onclick="selectResort('disney')">Disney</button>
               <button class="lb-tab" id="lb-btn-universal" onclick="selectResort('universal')">Universal</button>
@@ -1430,11 +1435,11 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=19"></script>
+<script src="main.js?v=20"></script>
 <script src="supabase-auth.js?v=5"></script>
 <script src="supabase-data.js?v=10"></script>
 <script src="supabase-food.js?v=11"></script>
 <script src="supabase-waittimes.js?v=3"></script>
-<script src="leaderboard.js?v=4"></script>
+<script src="leaderboard.js?v=5"></script>
 </body>
 </html>

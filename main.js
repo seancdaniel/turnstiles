@@ -663,10 +663,12 @@ function switchLbFilter(f, btn) {
 }
 
 function renderLeaderboard() {
-  const lb = buildLeaderboard(lbFilter);
+  const period = (typeof lbPeriod !== 'undefined') ? lbPeriod : 'all';
+  const lb = buildLeaderboard(lbFilter, period);
   const el = document.getElementById('leaderboard-list');
   const u = STATE.currentUser;
   const rankColors = ['gold','silver','bronze'];
+  const visitsLbl = period==='month' ? 'this month' : period==='year' ? 'this year' : 'all-time';
   el.innerHTML = lb.map((row,i) => {
     const isYou = u && row.userId===u.id;
     const monthlyTier = getMonthlyTier(checkinsThisMonth(row.userId));
@@ -680,7 +682,7 @@ function renderLeaderboard() {
       </div>
       <div class="lb-visits-wrap">
         <div class="lb-visits" style="${isYou?'color:var(--coral)':''}">${row.visits}</div>
-        <div class="lb-visits-lbl">visits</div>
+        <div class="lb-visits-lbl">${visitsLbl}</div>
       </div>
     </div>`;
   }).join('') || '<div class="empty-state"><div class="empty-state-sub">No data yet.</div></div>';
