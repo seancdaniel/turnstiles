@@ -858,7 +858,7 @@ function renderProfile() {
         <td>${c.miles?c.miles+' mi':'<button class="btn-sm" onclick="openAddMiles(\''+c.id+'\')">Add Miles</button>'}</td>
         <td>${c.score?'<span class="visit-tag">'+c.score.toFixed(1)+'/10</span>':'—'}</td>
         <td style="font-size:12px;color:var(--ink-faint)">${(c.foods||[]).join(', ')||'—'}</td>
-        <td><button class="btn-sm danger" onclick="deleteCheckin('${c.id}')">Delete</button></td>
+        <td style="white-space:nowrap"><button class="btn-sm" onclick="editCheckin('${c.id}')">Edit</button> <button class="btn-sm danger" onclick="deleteCheckin('${c.id}')">Delete</button></td>
       </tr>`).join('')}
     </tbody>
   </table>`;

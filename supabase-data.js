@@ -165,15 +165,62 @@ function guestBrowse(name) {
   loadData();
 }
 
+var ciEditId = null;
+
+// shared reset for the check-in modal - clears edit state so a fresh "Log a Check-In"
+// never accidentally reopens mid-edit, and edit mode never leaks stale review/photo text
+function resetCheckinForm() {
+  ciEditId = null;
+  document.getElementById('ci-review').value = '';
+  document.getElementById('ci-photo-preview').style.display = 'none';
+  document.getElementById('ci-photo-img').removeAttribute('src');
+  document.getElementById('ci-photo-input').value = '';
+  var t = document.querySelector('#overlay-checkin .modal-hd-title'); if (t) t.textContent = 'Log a Check-In';
+  var b = document.querySelector('#overlay-checkin .modal-footer .btn-sm.primary'); if (b) b.textContent = 'Submit Check-In';
+}
+
+function newCheckin() {
+  resetCheckinForm();
+  document.getElementById('ci-date').valueAsDate = new Date();
+  openOverlay('overlay-checkin');
+}
+
+function quickCheckin(park) {
+  resetCheckinForm();
+  document.getElementById('ci-park').value = park;
+  document.getElementById('ci-date').valueAsDate = new Date();
+  openOverlay('overlay-checkin');
+}
+
+function editCheckin(id) {
+  if (!STATE.currentUser) return;
+  var c = STATE.checkins.find(function (x) { return x.id === id; });
+  if (!c) return;
+  resetCheckinForm();
+  ciEditId = id;
+  document.getElementById('ci-park').value = c.park;
+  document.getElementById('ci-date').value = c.date;
+  document.getElementById('ci-review').value = c.review || '';
+  var t = document.querySelector('#overlay-checkin .modal-hd-title'); if (t) t.textContent = 'Edit Check-In';
+  var b = document.querySelector('#overlay-checkin .modal-footer .btn-sm.primary'); if (b) b.textContent = 'Save Changes';
+  openOverlay('overlay-checkin');
+}
+
 async function submitCheckin() {
   if (!STATE.currentUser) { openOverlay('overlay-register'); return; }
   var park = document.getElementById('ci-park').value;
   var date = document.getElementById('ci-date').value || new Date().toISOString().split('T')[0];
   var review = document.getElementById('ci-review').value.trim();
   var uid = STATE.currentUser.id;
-  // miles isn't collected here on purpose — added later via openAddMiles() once the visit is over; defaults to 0 in the DB until then.
-  var res = await sb.from('checkins').insert({ user_id: uid, park: park, visit_date: date, review: review });
-  if (res.error) { toast('Could not save check-in: ' + res.error.message, 'error'); return; }
+  var wasEdit = !!ciEditId;
+  var res;
+  if (wasEdit) {
+    // miles isn't touched here - it's edited separately via openAddMiles()/the Complete Check-In flow
+    res = await sb.from('checkins').update({ park: park, visit_date: date, review: review }).eq('id', ciEditId).eq('user_id', uid);
+  } else {
+    res = await sb.from('checkins').insert({ user_id: uid, park: park, visit_date: date, review: review });
+  }
+  if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
   var photoImg = document.getElementById('ci-photo-img');
   if (photoImg && photoImg.src && photoImg.src.indexOf('data:') === 0) {
     var small = await downscale(photoImg.src);
@@ -181,13 +228,11 @@ async function submitCheckin() {
     if (url) await sb.from('photos').insert({ user_id: uid, park: park, caption: review || ('Check-in at ' + park), image_url: url });
   }
   closeOverlay('overlay-checkin');
-  document.getElementById('ci-review').value = '';
-  document.getElementById('ci-photo-preview').style.display = 'none';
-  document.getElementById('ci-photo-input').value = '';
+  resetCheckinForm();
   document.getElementById('ci-date').valueAsDate = new Date();
   await loadData();
   showView('home');
-  toast('Check-in at ' + park + ' logged!');
+  toast(wasEdit ? 'Check-in updated!' : 'Check-in at ' + park + ' logged!');
 }
 
 var amEditId = null;

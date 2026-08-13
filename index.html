@@ -627,7 +627,7 @@
             <button class="sh-signin" onclick="openOverlay('overlay-signin')">Sign In</button>
             <button class="sh-join" onclick="openOverlay('overlay-register')">Create Account</button>
           </div>
-          <button class="btn-solid" onclick="openOverlay('overlay-checkin')">
+          <button class="btn-solid" onclick="newCheckin()">
             <i class="ti ti-plus"></i> <span class="btn-solid-label">Check In</span>
           </button>
           <div class="nav-user" onclick="toggleDropdown()" id="nav-user-pill">
@@ -636,7 +636,7 @@
             <i class="ti ti-chevron-down" style="font-size:12px;color:var(--ink-faint)"></i>
           </div>
           <div class="dropdown" id="user-dropdown">
-            <div class="dropdown-item" onclick="openOverlay('overlay-checkin');closeDropdown()">
+            <div class="dropdown-item" onclick="newCheckin();closeDropdown()">
               <i class="ti ti-circle-plus"></i> Log Check-In
             </div>
             <div class="dropdown-item" onclick="openOverlay('overlay-food-review');closeDropdown()">
@@ -854,7 +854,7 @@
               <div class="hero-stat"><div class="hero-stat-num" id="stat-rank">#—</div><div class="hero-stat-lbl">Community Rank</div></div>
             </div>
             <div class="hero-actions">
-              <button class="btn-hero" onclick="openOverlay('overlay-checkin')"><i class="ti ti-circle-plus"></i> Log a Check-In</button>
+              <button class="btn-hero" onclick="newCheckin()"><i class="ti ti-circle-plus"></i> Log a Check-In</button>
               <button class="btn-hero-outline" onclick="showView('community')">Browse Community</button>
             </div>
           </div>
@@ -1485,9 +1485,9 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=21"></script>
+<script src="main.js?v=22"></script>
 <script src="supabase-auth.js?v=5"></script>
-<script src="supabase-data.js?v=12"></script>
+<script src="supabase-data.js?v=13"></script>
 <script src="supabase-food.js?v=11"></script>
 <script src="supabase-waittimes.js?v=3"></script>
 <script src="leaderboard.js?v=5"></script>
