@@ -2055,7 +2055,7 @@ body.guest #nav-home { display: none !important; }
 .about-donate::before {
   content: '';
   position: absolute; inset: 0;
-  background-image: url('img/coffee-cup.png');
+  background-image: url('img/margarita.png');
   background-repeat: no-repeat;
   background-position: right -10px bottom -25px;
   background-size: 62% auto;
