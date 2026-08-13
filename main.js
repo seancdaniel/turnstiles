@@ -591,7 +591,6 @@ function updatePassport() {
   document.getElementById('passport-rank').textContent = rank ? '#'+rank : '—';
   document.getElementById('pf-since').textContent = u.joinYear;
   document.getElementById('pf-avg-food').textContent = avgScore;
-  document.getElementById('pf-photos').textContent = STATE.photos.filter(p=>p.userId===u.id).length;
 
   // Park bars
   const parkCounts = {};

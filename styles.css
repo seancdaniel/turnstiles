@@ -581,7 +581,7 @@ body {
 .passport-footer {
   border-top: 2px dashed rgba(154,107,30,0.35);
   padding-top: 14px;
-  display: flex; justify-content: space-around; align-items: center;
+  display: flex; justify-content: center; align-items: center; gap: 28px;
 }
 
 .pf-stat { text-align: center; }
@@ -591,10 +591,11 @@ body {
   font-size: 22px; letter-spacing: 1px; color: var(--coral); line-height: 1;
 }
 .pf-lbl {
-  font-size: 8px; font-weight: 700; letter-spacing: 1.5px;
+  font-size: 8px; font-weight: 700; letter-spacing: 1px;
   text-transform: uppercase; color: var(--ink-faint);
+  white-space: nowrap; margin-top: 2px;
 }
-.pf-div { width: 1px; height: 28px; background: rgba(154,107,30,0.25); }
+.pf-div { width: 1px; height: 28px; background: rgba(154,107,30,0.25); flex-shrink: 0; }
 
 /* ---------- narrow "Admit One" stub ---------- */
 .pp-stub {
