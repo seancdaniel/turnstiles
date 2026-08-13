@@ -2023,6 +2023,18 @@ body.guest #nav-home { display: none !important; }
   letter-spacing: 2px; line-height: 0.9; color: #F3E7C8; margin-bottom: 18px;
 }
 .about-lead { font-size: 17px; font-weight: 300; line-height: 1.7; color: rgba(231,206,138,0.82); }
+.about-lead p + p { margin-top: 14px; }
+.about-contact {
+  display: inline-flex; align-items: center; gap: 7px;
+  margin-top: 18px;
+  font-size: 13px; font-weight: 600; letter-spacing: 0.2px;
+  color: #E7CE8A;
+  border-bottom: 1px solid rgba(231,206,138,0.35);
+  padding-bottom: 2px;
+  transition: border-color 0.15s, color 0.15s;
+}
+.about-contact i { font-size: 14px; }
+.about-contact:hover { color: #F3E7C8; border-color: rgba(231,206,138,0.7); }
 .about-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-bottom: 46px; }
 .about-card {
   background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 26px 26px;
