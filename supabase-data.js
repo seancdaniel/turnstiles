@@ -169,10 +169,10 @@ async function submitCheckin() {
   if (!STATE.currentUser) { openOverlay('overlay-register'); return; }
   var park = document.getElementById('ci-park').value;
   var date = document.getElementById('ci-date').value || new Date().toISOString().split('T')[0];
-  var miles = parseFloat(document.getElementById('ci-miles').value) || 0;
   var review = document.getElementById('ci-review').value.trim();
   var uid = STATE.currentUser.id;
-  var res = await sb.from('checkins').insert({ user_id: uid, park: park, visit_date: date, miles: miles, review: review });
+  // miles isn't collected here on purpose — added later via openAddMiles() once the visit is over; defaults to 0 in the DB until then.
+  var res = await sb.from('checkins').insert({ user_id: uid, park: park, visit_date: date, review: review });
   if (res.error) { toast('Could not save check-in: ' + res.error.message, 'error'); return; }
   var photoImg = document.getElementById('ci-photo-img');
   if (photoImg && photoImg.src && photoImg.src.indexOf('data:') === 0) {
@@ -181,7 +181,6 @@ async function submitCheckin() {
     if (url) await sb.from('photos').insert({ user_id: uid, park: park, caption: review || ('Check-in at ' + park), image_url: url });
   }
   closeOverlay('overlay-checkin');
-  document.getElementById('ci-miles').value = '';
   document.getElementById('ci-review').value = '';
   document.getElementById('ci-photo-preview').style.display = 'none';
   document.getElementById('ci-photo-input').value = '';
@@ -189,6 +188,29 @@ async function submitCheckin() {
   await loadData();
   showView('home');
   toast('Check-in at ' + park + ' logged!');
+}
+
+var amEditId = null;
+function openAddMiles(id) {
+  if (!STATE.currentUser) return;
+  var c = STATE.checkins.find(function (x) { return x.id === id; });
+  if (!c) return;
+  amEditId = id;
+  document.getElementById('am-context').textContent = 'How far did you walk at ' + c.park + ' on ' + formatDate(c.date) + '?';
+  document.getElementById('am-miles').value = c.miles || '';
+  openOverlay('overlay-add-miles');
+}
+
+async function submitAddMiles() {
+  if (!STATE.currentUser || !amEditId) { closeOverlay('overlay-add-miles'); return; }
+  var miles = parseFloat(document.getElementById('am-miles').value) || 0;
+  var res = await sb.from('checkins').update({ miles: miles }).eq('id', amEditId).eq('user_id', STATE.currentUser.id);
+  if (res.error) { toast('Could not save miles: ' + res.error.message, 'error'); return; }
+  closeOverlay('overlay-add-miles');
+  amEditId = null;
+  document.getElementById('am-miles').value = '';
+  await loadData();
+  toast('Miles walked saved!');
 }
 
 async function deleteCheckin(id) {

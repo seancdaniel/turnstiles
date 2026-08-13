@@ -215,10 +215,6 @@
         </div>
       </div>
       <div class="field">
-        <label class="field-lbl">Miles Walked</label>
-        <input class="field-input" id="ci-miles" type="number" min="0" max="30" step="0.1" placeholder="e.g. 7.4">
-      </div>
-      <div class="field">
         <label class="field-lbl">Review (optional)</label>
         <textarea class="field-input" id="ci-review" rows="3" placeholder="What was the highlight? Any tips for fellow passholders?" style="resize:none;height:80px"></textarea>
       </div>
@@ -234,10 +230,32 @@
           <img id="ci-photo-img" style="width:100%;max-height:180px;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
         </div>
       </div>
+      <div class="field-hint"><i class="ti ti-shoe" style="font-size:11px"></i> No need to log your miles walked now — add them later from Visit History once you're done for the day.</div>
     </div>
     <div class="modal-footer">
       <button class="btn-sm" onclick="closeOverlay('overlay-checkin')">Cancel</button>
       <button class="btn-sm primary" onclick="submitCheckin()"><i class="ti ti-circle-check" style="font-size:13px"></i> Submit Check-In</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Miles Modal (finish a check-in later with how far you walked) -->
+<div class="overlay" id="overlay-add-miles">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Add Miles Walked</span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-add-miles')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field-hint" id="am-context" style="margin-bottom:12px"></div>
+      <div class="field">
+        <label class="field-lbl">Miles Walked</label>
+        <input class="field-input" id="am-miles" type="number" min="0" max="30" step="0.1" placeholder="e.g. 7.4">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeOverlay('overlay-add-miles')">Finalize Without Miles</button>
+      <button class="btn-sm primary" onclick="submitAddMiles()"><i class="ti ti-circle-check" style="font-size:13px"></i> Save Miles</button>
     </div>
   </div>
 </div>
@@ -1435,9 +1453,9 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=20"></script>
+<script src="main.js?v=21"></script>
 <script src="supabase-auth.js?v=5"></script>
-<script src="supabase-data.js?v=10"></script>
+<script src="supabase-data.js?v=11"></script>
 <script src="supabase-food.js?v=11"></script>
 <script src="supabase-waittimes.js?v=3"></script>
 <script src="leaderboard.js?v=5"></script>

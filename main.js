@@ -855,7 +855,7 @@ function renderProfile() {
       ${my.slice(0,20).map(c=>`<tr>
         <td>${parkEmoji(c.park)} ${c.park}</td>
         <td>${formatDate(c.date)}</td>
-        <td>${c.miles?c.miles+' mi':'—'}</td>
+        <td>${c.miles?c.miles+' mi':'<button class="btn-sm" onclick="openAddMiles(\''+c.id+'\')">Add Miles</button>'}</td>
         <td>${c.score?'<span class="visit-tag">'+c.score.toFixed(1)+'/10</span>':'—'}</td>
         <td style="font-size:12px;color:var(--ink-faint)">${(c.foods||[]).join(', ')||'—'}</td>
         <td><button class="btn-sm danger" onclick="deleteCheckin('${c.id}')">Delete</button></td>
