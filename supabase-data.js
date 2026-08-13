@@ -196,21 +196,76 @@ function openAddMiles(id) {
   var c = STATE.checkins.find(function (x) { return x.id === id; });
   if (!c) return;
   amEditId = id;
-  document.getElementById('am-context').textContent = 'How far did you walk at ' + c.park + ' on ' + formatDate(c.date) + '?';
+  document.getElementById('am-context').textContent = 'Wrapping up your visit to ' + c.park + ' on ' + formatDate(c.date) + '.';
   document.getElementById('am-miles').value = c.miles || '';
+  document.getElementById('am-photo-preview').style.display = 'none';
+  document.getElementById('am-photo-img').removeAttribute('src');
+  document.getElementById('am-photo-input').value = '';
   openOverlay('overlay-add-miles');
+}
+
+function handleAmPhotoSelect(e) {
+  var file = e.target.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function (r) {
+    document.getElementById('am-photo-preview').style.display = 'block';
+    document.getElementById('am-photo-img').src = r.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// jump to the food review form, pre-filled with the park from the check-in being completed
+function rateAFoodFromCheckin() {
+  var c = STATE.checkins.find(function (x) { return x.id === amEditId; });
+  closeOverlay('overlay-add-miles');
+  if (typeof resetFoodForm === 'function') resetFoodForm();
+  openOverlay('overlay-food-review');
+  if (c) { var parkSel = document.getElementById('fr-park'); if (parkSel) parkSel.value = c.park; }
 }
 
 async function submitAddMiles() {
   if (!STATE.currentUser || !amEditId) { closeOverlay('overlay-add-miles'); return; }
+  var c = STATE.checkins.find(function (x) { return x.id === amEditId; });
+  var uid = STATE.currentUser.id;
   var miles = parseFloat(document.getElementById('am-miles').value) || 0;
-  var res = await sb.from('checkins').update({ miles: miles }).eq('id', amEditId).eq('user_id', STATE.currentUser.id);
-  if (res.error) { toast('Could not save miles: ' + res.error.message, 'error'); return; }
+  var res = await sb.from('checkins').update({ miles: miles }).eq('id', amEditId).eq('user_id', uid);
+  if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
+  var photoImg = document.getElementById('am-photo-img');
+  if (c && photoImg && photoImg.src && photoImg.src.indexOf('data:') === 0) {
+    var small = await downscale(photoImg.src);
+    var url = await uploadPhoto(small, uid);
+    if (url) await sb.from('photos').insert({ user_id: uid, park: c.park, caption: 'Check-in at ' + c.park, image_url: url });
+  }
   closeOverlay('overlay-add-miles');
   amEditId = null;
   document.getElementById('am-miles').value = '';
   await loadData();
-  toast('Miles walked saved!');
+  toast('Check-in updated!');
+}
+
+// small prompt on the home page pointing at your most recent check-in, so miles/food/photo
+// are easy to add after the fact instead of having to dig through Visit History
+function renderCurrentCheckin() {
+  var box = document.getElementById('checkin-prompt');
+  if (!box) return;
+  var u = STATE.currentUser;
+  if (!u) { box.style.display = 'none'; return; }
+  var mine = STATE.checkins.filter(function (c) { return c.userId === u.id; }); // newest-first, per loadData()'s query order
+  if (!mine.length) { box.style.display = 'none'; return; }
+  var latest = mine[0];
+  box.dataset.checkinId = latest.id;
+  document.getElementById('cp-park').textContent = latest.park;
+  document.getElementById('cp-date').textContent = formatDate(latest.date);
+  box.style.display = 'block';
+}
+function openCurrentCheckin() {
+  var box = document.getElementById('checkin-prompt');
+  var id = box && box.dataset.checkinId;
+  if (id) openAddMiles(id);
+}
+if (typeof updatePassport === 'function') {
+  var _origUpdatePassport = updatePassport;
+  updatePassport = function () { _origUpdatePassport(); renderCurrentCheckin(); };
 }
 
 async function deleteCheckin(id) {

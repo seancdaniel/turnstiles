@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=40">
+  <link rel="stylesheet" href="styles.css?v=41">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -241,21 +241,38 @@
 
 <!-- Add Miles Modal (finish a check-in later with how far you walked) -->
 <div class="overlay" id="overlay-add-miles">
-  <div class="modal">
+  <div class="modal modal-wide">
     <div class="modal-hd">
-      <span class="modal-hd-title">Add Miles Walked</span>
+      <span class="modal-hd-title">Complete Your Check-In</span>
       <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-add-miles')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
-      <div class="field-hint" id="am-context" style="margin-bottom:12px"></div>
+      <div class="field-hint" id="am-context" style="margin-bottom:14px"></div>
       <div class="field">
         <label class="field-lbl">Miles Walked</label>
         <input class="field-input" id="am-miles" type="number" min="0" max="30" step="0.1" placeholder="e.g. 7.4">
       </div>
+      <div class="field">
+        <label class="field-lbl">Add a Photo (optional)</label>
+        <div class="photo-upload-zone" onclick="document.getElementById('am-photo-input').click()">
+          <div class="photo-upload-icon"><i class="ti ti-camera-plus"></i></div>
+          <div class="photo-upload-text">Click to upload a photo</div>
+          <div class="photo-upload-sub">JPEG, PNG up to 10MB</div>
+        </div>
+        <input type="file" id="am-photo-input" accept="image/*" style="display:none" onchange="handleAmPhotoSelect(event)">
+        <div id="am-photo-preview" style="margin-top:8px;display:none">
+          <img id="am-photo-img" style="width:100%;max-height:180px;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
+        </div>
+      </div>
+      <div class="field" style="border-top:1px dashed var(--border);padding-top:14px;margin-top:2px">
+        <label class="field-lbl">Tried Some Food?</label>
+        <button type="button" class="btn-sm" onclick="rateAFoodFromCheckin()"><i class="ti ti-tools-kitchen-2" style="font-size:12px"></i> Rate a Food Item</button>
+        <div class="field-hint">Opens the food review form, pre-filled with this park.</div>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-sm" onclick="closeOverlay('overlay-add-miles')">Finalize Without Miles</button>
-      <button class="btn-sm primary" onclick="submitAddMiles()"><i class="ti ti-circle-check" style="font-size:13px"></i> Save Miles</button>
+      <button class="btn-sm primary" onclick="submitAddMiles()"><i class="ti ti-circle-check" style="font-size:13px"></i> Save</button>
     </div>
   </div>
 </div>
@@ -842,6 +859,7 @@
             </div>
           </div>
           <!-- Passport -->
+          <div class="passport-col">
           <aside class="passport">
             <div class="passport-frame">
               <div class="passport-main">
@@ -881,6 +899,20 @@
               </div>
             </div>
           </aside>
+          <!-- Current check-in prompt: latest visit, ready to finish up with miles/food/photo -->
+          <div class="checkin-prompt" id="checkin-prompt" style="display:none">
+            <div class="cp-hd">
+              <i class="ti ti-ticket"></i>
+              <div class="cp-hd-info">
+                <div class="cp-label">Latest Check-In</div>
+                <div class="cp-park" id="cp-park">—</div>
+              </div>
+              <div class="cp-date" id="cp-date"></div>
+            </div>
+            <p class="cp-sub">Add your miles, rate a food you tried, or share a photo from this visit — whenever you're ready.</p>
+            <button class="btn-sm primary" style="width:100%;justify-content:center" onclick="openCurrentCheckin()"><i class="ti ti-circle-check" style="font-size:12px"></i> Complete Check-In</button>
+          </div>
+          </div>
         </div>
       </section>
 
@@ -1455,7 +1487,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="main.js?v=21"></script>
 <script src="supabase-auth.js?v=5"></script>
-<script src="supabase-data.js?v=11"></script>
+<script src="supabase-data.js?v=12"></script>
 <script src="supabase-food.js?v=11"></script>
 <script src="supabase-waittimes.js?v=3"></script>
 <script src="leaderboard.js?v=5"></script>

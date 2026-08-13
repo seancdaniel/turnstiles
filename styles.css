@@ -633,6 +633,27 @@ body {
   .pp-stub-fine { display: none; }
 }
 
+/* ---------- passport column: ticket + the current check-in prompt below it ---------- */
+.passport-col { display: flex; flex-direction: column; gap: 14px; }
+
+.checkin-prompt {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--coral);
+  border-radius: 8px;
+  padding: 16px 18px;
+}
+.cp-hd { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.cp-hd > i { font-size: 18px; color: var(--coral); flex-shrink: 0; }
+.cp-hd-info { flex: 1; min-width: 0; }
+.cp-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.cp-park { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.5px; color: var(--ink); line-height: 1.1; }
+.cp-date { font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
+.cp-sub { font-size: 12px; font-weight: 300; line-height: 1.5; color: var(--ink-light); margin-bottom: 12px; }
+
 /* ========== SECTION WRAPPERS ========== */
 .section-wrap {
   max-width: 1300px;
