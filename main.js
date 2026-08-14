@@ -786,15 +786,53 @@ function renderFood() {
 // ============================================================
 const PHOTO_BG = ['#D0E8F5','#D0EFE1','#D4E7F7','#DCF4F3','#D0EFE1','#D0E8F5','#D4E7F7','#DCF4F3'];
 
+// Same two-level resort -> park filter as the Leaderboard (reuses its LB_GROUPS)
+let photoResort = 'all';
+let photoFilter = 'all';
+function selectPhotoResort(resort) {
+  photoResort = resort;
+  photoFilter = resort;
+  renderPhotoResortTabs();
+  renderPhotoParkTabs();
+  renderPhotos();
+}
+function selectPhotoPark(filter) {
+  photoFilter = filter;
+  renderPhotoParkTabs();
+  renderPhotos();
+}
+function renderPhotoResortTabs() {
+  ['all','disney','universal'].forEach(g => {
+    const b = document.getElementById('ph-btn-'+g);
+    if(b) b.className = 'lb-tab' + (photoResort===g ? ' active' : '');
+  });
+}
+function renderPhotoParkTabs() {
+  const row = document.getElementById('ph-park-row');
+  if(!row) return;
+  if(photoResort==='all') { row.innerHTML=''; row.style.display='none'; return; }
+  row.style.display = 'flex';
+  const g = LB_GROUPS[photoResort];
+  const items = [{v:photoResort, label:'Overall '+g.label}, ...g.parks.map(p=>({v:p, label:p}))];
+  row.innerHTML = items.map(it => {
+    const active = (photoFilter===it.v) ? ' active' : '';
+    return `<button class="lb-tab${active}" onclick="selectPhotoPark('${it.v}')">${escapeHtml(it.label)}</button>`;
+  }).join('');
+}
+
 function renderPhotos() {
   const el = document.getElementById('photos-grid');
-  const photos = [...STATE.photos].sort((a,b)=>b.ts-a.ts);
+  let photos = [...STATE.photos].sort((a,b)=>b.ts-a.ts);
+  if(photoFilter!=='all') {
+    const parks = (photoFilter==='disney'||photoFilter==='universal') ? LB_GROUPS[photoFilter].parks : [photoFilter];
+    photos = photos.filter(p => parks.includes(p.park));
+  }
   if(!photos.length) {
-    el.innerHTML='<div style="grid-column:1/-1"><div class="empty-state"><div class="empty-state-icon">📸</div><div class="empty-state-title">No Photos Yet</div><div class="empty-state-sub">Be the first to share a photo from the parks!</div></div></div>';
+    el.innerHTML='<div style="grid-column:1/-1"><div class="empty-state"><div class="empty-state-icon">📸</div><div class="empty-state-title">No Photos Yet</div><div class="empty-state-sub">'+(photoFilter==='all'?'Be the first to share a photo from the parks!':'No photos from this park yet — be the first!')+'</div></div></div>';
     return;
   }
   el.innerHTML = photos.map((p,i) => `
-    <div class="photo-thumb" style="background:${p.dataUrl?'#000':PHOTO_BG[i%PHOTO_BG.length]};border:1px solid var(--border)">
+    <div class="photo-thumb" style="background:${p.dataUrl?'#000':PHOTO_BG[i%PHOTO_BG.length]};border:1px solid var(--border)" onclick="openPhotoView('${p.id}')">
       ${p.dataUrl ? '<img alt="Photo shared by a passholder" src="'+p.dataUrl+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">' : '<span style="font-size:32px">'+parkEmoji(p.park)+'</span>'}
       <div class="photo-overlay">
         <span class="photo-user user-link" onclick="event.stopPropagation();openUserProfile('${p.userId}')">${avatarHtml(p.avatarUrl, p.avatar, 'avatar-img-inline')} ${p.username}</span>
@@ -806,6 +844,20 @@ function renderPhotos() {
       <i class="ti ti-camera-plus" style="font-size:24px;color:var(--ink-faint)"></i>
       <span style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint)">Share a photo</span>
     </div>`;
+}
+
+function openPhotoView(id) {
+  const p = STATE.photos.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('pv-park').textContent = p.park;
+  const img = document.getElementById('pv-img');
+  if(p.dataUrl) { img.src = p.dataUrl; img.style.display='block'; } else { img.removeAttribute('src'); img.style.display='none'; }
+  document.getElementById('pv-user').innerHTML =
+    `<div class="feed-av" style="background:var(--coral-lt);color:var(--coral)">${avatarHtml(p.avatarUrl, p.avatar)}</div>
+     <span class="user-link" onclick="closeOverlay('overlay-photo-view');openUserProfile('${p.userId}')" style="font-weight:700;font-size:13px;color:var(--ink)">${p.username}</span>
+     <span style="font-size:11px;color:var(--ink-faint)">${timeAgo(p.ts)}</span>`;
+  document.getElementById('pv-caption').textContent = p.caption || '';
+  openOverlay('overlay-photo-view');
 }
 
 // ============================================================
