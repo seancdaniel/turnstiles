@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=46">
+  <link rel="stylesheet" href="styles.css?v=47">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -1157,6 +1157,21 @@
           </div>
         </div>
         <div class="light-card" id="leaderboard-list"></div>
+
+        <div class="light-card" style="margin-top:18px;padding:20px 22px">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--ink);margin-bottom:4px">Rank Tiers</div>
+          <div style="font-size:12px;color:var(--ink-faint);margin-bottom:16px">Earn these by logging check-ins — Monthly resets on the 1st, Yearly resets Jan 1st.</div>
+          <div class="food-cols">
+            <div>
+              <div class="tier-legend-hd">Monthly</div>
+              <div id="tier-legend-monthly" class="tier-legend-list"></div>
+            </div>
+            <div>
+              <div class="tier-legend-hd">Yearly</div>
+              <div id="tier-legend-yearly" class="tier-legend-list"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Feed tab -->
@@ -1553,7 +1568,7 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=24"></script>
+<script src="main.js?v=25"></script>
 <script src="supabase-auth.js?v=6"></script>
 <script src="supabase-data.js?v=13"></script>
 <script src="supabase-food.js?v=11"></script>

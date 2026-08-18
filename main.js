@@ -721,6 +721,23 @@ function renderCommunityFeed() {
 function renderCommunity() {
   renderLeaderboard();
   renderCommunityFeed();
+  renderTierLegend();
+}
+
+// static reference card at the bottom of the Leaderboard tab - built straight from
+// MONTHLY_TIERS/YEARLY_TIERS so it can never drift out of sync with the real thresholds
+function renderTierLegend() {
+  const build = tiers => tiers.map(t => `
+    <div class="tier-legend-row">
+      <span class="tier-legend-icon" style="background:${t.color}">${t.icon}</span>
+      <span class="tier-legend-name">${t.name}</span>
+      <span class="tier-legend-req">${t.min===1 ? '1 check-in' : t.min+' check-ins'}</span>
+    </div>
+  `).join('');
+  const m = document.getElementById('tier-legend-monthly');
+  const y = document.getElementById('tier-legend-yearly');
+  if(m) m.innerHTML = build(MONTHLY_TIERS);
+  if(y) y.innerHTML = build(YEARLY_TIERS);
 }
 
 let communityTab = 'leaderboard';
