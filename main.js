@@ -606,7 +606,7 @@ function updatePassport() {
       const pct = Math.round((count/maxCount)*100);
       return `<div class="park-bar-row">
         <div class="park-dot" style="background:${color}"></div>
-        <span class="park-label">${park.replace('Universal Studios Florida','Univ. Studios').replace('Islands of Adventure','Islands of Adv.').replace('Hollywood Studios','Hollywood Stu.')}</span>
+        <span class="park-label">${escapeHtml(park.replace('Universal Studios Florida','Univ. Studios').replace('Islands of Adventure','Islands of Adv.').replace('Hollywood Studios','Hollywood Stu.'))}</span>
         <div class="park-bar-track"><div class="park-bar-fill" style="width:${pct}%;background:${color}"></div></div>
         <span class="park-count">${count}</span>
       </div>`;
@@ -676,7 +676,7 @@ function renderLeaderboard() {
       <span class="lb-rank ${rankColors[i]||''}">${i+1}</span>
       <div class="lb-av" style="background:var(--coral-lt);color:var(--coral)">${avatarHtml(row.avatarUrl, row.avatar)}</div>
       <div class="lb-info">
-        <div class="lb-username">${row.username}${isYou?'<span class="you-tag">YOU</span>':''}</div>
+        <div class="lb-username">${escapeHtml(row.username)}${isYou?'<span class="you-tag">YOU</span>':''}</div>
         <div class="lb-detail">${tierEmblem(monthlyTier,'Monthly')} ${tierEmblem(yearlyTier,'Yearly')}</div>
       </div>
       <div class="lb-visits-wrap">
@@ -703,15 +703,15 @@ function renderCommunityFeed() {
           <div class="feed-user-link user-link" onclick="openUserProfile('${user.id}')" style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0">
             <div class="feed-av" style="background:var(--coral-lt);color:var(--coral)">${avatarHtml(user.avatarUrl, user.avatar)}</div>
             <div class="feed-meta">
-              <div class="feed-username">${user.username}</div>
-              <div class="feed-parkname">${parkEmoji(c.park)} ${c.park}</div>
+              <div class="feed-username">${escapeHtml(user.username)}</div>
+              <div class="feed-parkname">${parkEmoji(c.park)} ${escapeHtml(c.park)}</div>
             </div>
           </div>
           <div class="feed-time">${timeAgo(c.ts)}</div>
         </div>
         <div class="feed-pills">
           ${c.miles?'<span class="pill pill-walk"><i class="ti ti-shoe"></i> '+c.miles+' mi</span>':''}
-          ${(c.foods||[]).slice(0,2).map(f=>'<span class="pill pill-food"><i class="ti ti-tools-kitchen-2"></i> '+f+'</span>').join('')}
+          ${(c.foods||[]).slice(0,2).map(f=>'<span class="pill pill-food"><i class="ti ti-tools-kitchen-2"></i> '+escapeHtml(f)+'</span>').join('')}
           ${c.score?'<span class="pill pill-score"><i class="ti ti-star"></i> '+c.score.toFixed(1)+'/10</span>':''}
         </div>
       </div>`;
@@ -852,8 +852,8 @@ function renderPhotos() {
     <div class="photo-thumb" style="background:${p.dataUrl?'#000':PHOTO_BG[i%PHOTO_BG.length]};border:1px solid var(--border)" onclick="openPhotoView('${p.id}')">
       ${p.dataUrl ? '<img alt="Photo shared by a passholder" src="'+p.dataUrl+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">' : '<span style="font-size:32px">'+parkEmoji(p.park)+'</span>'}
       <div class="photo-overlay">
-        <span class="photo-user user-link" onclick="event.stopPropagation();openUserProfile('${p.userId}')">${avatarHtml(p.avatarUrl, p.avatar, 'avatar-img-inline')} ${p.username}</span>
-        <span class="photo-score" title="${p.caption||p.park}">${p.park.split(' ')[0]}</span>
+        <span class="photo-user user-link" onclick="event.stopPropagation();openUserProfile('${p.userId}')">${avatarHtml(p.avatarUrl, p.avatar, 'avatar-img-inline')} ${escapeHtml(p.username)}</span>
+        <span class="photo-score" title="${escapeHtml(p.caption||p.park)}">${escapeHtml(p.park.split(' ')[0])}</span>
       </div>
     </div>
   `).join('') + `
@@ -871,7 +871,7 @@ function openPhotoView(id) {
   if(p.dataUrl) { img.src = p.dataUrl; img.style.display='block'; } else { img.removeAttribute('src'); img.style.display='none'; }
   document.getElementById('pv-user').innerHTML =
     `<div class="feed-av" style="background:var(--coral-lt);color:var(--coral)">${avatarHtml(p.avatarUrl, p.avatar)}</div>
-     <span class="user-link" onclick="closeOverlay('overlay-photo-view');openUserProfile('${p.userId}')" style="font-weight:700;font-size:13px;color:var(--ink)">${p.username}</span>
+     <span class="user-link" onclick="closeOverlay('overlay-photo-view');openUserProfile('${p.userId}')" style="font-weight:700;font-size:13px;color:var(--ink)">${escapeHtml(p.username)}</span>
      <span style="font-size:11px;color:var(--ink-faint)">${timeAgo(p.ts)}</span>`;
   document.getElementById('pv-caption').textContent = p.caption || '';
   openOverlay('overlay-photo-view');
@@ -921,11 +921,11 @@ function renderProfile() {
     </tr></thead>
     <tbody>
       ${my.slice(0,20).map(c=>`<tr>
-        <td>${parkEmoji(c.park)} ${c.park}</td>
+        <td>${parkEmoji(c.park)} ${escapeHtml(c.park)}</td>
         <td>${formatDate(c.date)}</td>
         <td>${c.miles?c.miles+' mi':'<button class="btn-sm" onclick="openAddMiles(\''+c.id+'\')">Add Miles</button>'}</td>
         <td>${c.score?'<span class="visit-tag">'+c.score.toFixed(1)+'/10</span>':'—'}</td>
-        <td style="font-size:12px;color:var(--ink-faint)">${(c.foods||[]).join(', ')||'—'}</td>
+        <td style="font-size:12px;color:var(--ink-faint)">${escapeHtml((c.foods||[]).join(', '))||'—'}</td>
         <td style="white-space:nowrap"><button class="btn-sm" onclick="editCheckin('${c.id}')">Edit</button> <button class="btn-sm danger" onclick="deleteCheckin('${c.id}')">Delete</button></td>
       </tr>`).join('')}
     </tbody>
@@ -958,7 +958,7 @@ function switchParkTab(btn, tab) {
 // Callers just need width/height/border-radius on the containing element -
 // the <img> fills it via object-fit + border-radius:inherit.
 function avatarHtml(avatarUrl, emoji, extraClass) {
-  if (avatarUrl) return '<img class="avatar-img' + (extraClass ? ' ' + extraClass : '') + '" src="' + avatarUrl + '" alt="">';
+  if (avatarUrl) return '<img class="avatar-img' + (extraClass ? ' ' + extraClass : '') + '" src="' + escapeHtml(avatarUrl) + '" alt="">';
   return escapeHtml(emoji || '\u{1F3A2}');
 }
 

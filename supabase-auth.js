@@ -1,5 +1,10 @@
 /* Turnstiles - Supabase auth (overrides the demo auth in main.js) */
 
+// letters, numbers, underscore, period only - keeps usernames unambiguous and closes off
+// the character set that made the unescaped-render bug (fixed in main.js) exploitable
+// in the first place. Defense in depth: validate on the way in, escape on the way out.
+function isValidUsername(u) { return /^[A-Za-z0-9_.]{3,20}$/.test(u); }
+
 function profileToUser(p, email) {
   return {
     id: p.id, username: p.username,
@@ -108,6 +113,7 @@ async function regNext() {
     const pass = document.getElementById('reg-pass').value;
     const pass2 = document.getElementById('reg-pass2').value;
     if (!fname || !username || !email || !pass) { toast('Please fill in all required fields.', 'error'); return; }
+    if (!isValidUsername(username)) { toast('Username must be 3-20 characters: letters, numbers, underscores, or periods only.', 'error'); return; }
     if (pass !== pass2) { perr.classList.add('show'); return; }
     const strength = checkPasswordStrength();
     if (!Object.keys(strength).every(k => strength[k])) { toast('Password does not meet the requirements below.', 'error'); return; }
@@ -191,6 +197,7 @@ async function submitEditProfile() {
   const err = document.getElementById('ep-user-err');
   err.classList.remove('show');
   if (!fname || !username) { toast('First name and username are required.', 'error'); return; }
+  if (!isValidUsername(username)) { toast('Username must be 3-20 characters: letters, numbers, underscores, or periods only.', 'error'); return; }
   if (username !== u.username) {
     const { data: taken } = await sb.from('profiles').select('id').eq('username', username).maybeSingle();
     if (taken) { err.classList.add('show'); return; }
