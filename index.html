@@ -51,10 +51,66 @@
       <div class="field">
         <label class="field-lbl">Password</label>
         <input class="field-input" id="signin-pass" type="password" placeholder="••••••••">
+        <div style="text-align:right;margin-top:6px"><a onclick="openForgotPassword()" style="font-size:12px;color:var(--ink-light);cursor:pointer;text-decoration:underline">Forgot password?</a></div>
       </div>
       <br>
       <button class="btn-hero" style="width:100%;justify-content:center" onclick="doSignIn()">Sign In</button>
       <div class="auth-switch">No account? <a onclick="switchToRegister()">Create one free</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- Forgot Password Modal: request a reset link by email -->
+<div class="overlay" id="overlay-forgot-password">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Reset Your Password</span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-forgot-password')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--ink-light);line-height:1.5;margin-bottom:16px">Enter your account email and we'll send you a link to reset your password.</p>
+      <div class="field">
+        <label class="field-lbl">Email</label>
+        <input class="field-input" id="fp-email" type="email" placeholder="you@email.com">
+        <div class="field-error" id="fp-err">Enter your email address.</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeOverlay('overlay-forgot-password')">Cancel</button>
+      <button class="btn-sm primary" onclick="submitForgotPassword()">Send Reset Link</button>
+    </div>
+  </div>
+</div>
+
+<!-- Change/Set Password Modal: used both for a logged-in "change password" action
+     and for landing back on the site after clicking a reset-link email (PASSWORD_RECOVERY) -->
+<div class="overlay" id="overlay-change-password">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title" id="cp-title">Change Password</span>
+      <button class="modal-close" aria-label="Close" id="cp-close" onclick="closeOverlay('overlay-change-password')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label class="field-lbl">New Password</label>
+        <input class="field-input" id="cp-pass" type="password" placeholder="••••••••" oninput="checkPasswordStrength('cp-pass','cp-pass-reqs')">
+      </div>
+      <div class="pw-requirements" id="cp-pass-reqs">
+        <span class="pw-req" data-req="len">10+ characters</span>
+        <span class="pw-req" data-req="lower">Lowercase letter</span>
+        <span class="pw-req" data-req="upper">Uppercase letter</span>
+        <span class="pw-req" data-req="digit">Number</span>
+        <span class="pw-req" data-req="symbol">Symbol</span>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Confirm New Password</label>
+        <input class="field-input" id="cp-pass2" type="password" placeholder="••••••••">
+        <div class="field-error" id="cp-err">Passwords do not match</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" id="cp-cancel" onclick="closeOverlay('overlay-change-password')">Cancel</button>
+      <button class="btn-sm primary" onclick="submitChangePassword()">Save New Password</button>
     </div>
   </div>
 </div>
@@ -579,6 +635,10 @@
       <div class="field">
         <label class="field-lbl">Home Location</label>
         <input class="field-input" id="ep-location" placeholder="Orlando, FL">
+      </div>
+      <div class="field" style="border-top:1px dashed var(--border);padding-top:14px">
+        <label class="field-lbl">Password</label>
+        <button type="button" class="btn-sm" onclick="openChangePassword()"><i class="ti ti-lock" style="font-size:12px"></i> Change Password</button>
       </div>
     </div>
     <div class="modal-footer">
@@ -1494,7 +1554,7 @@
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="main.js?v=24"></script>
-<script src="supabase-auth.js?v=5"></script>
+<script src="supabase-auth.js?v=6"></script>
 <script src="supabase-data.js?v=13"></script>
 <script src="supabase-food.js?v=11"></script>
 <script src="supabase-waittimes.js?v=3"></script>

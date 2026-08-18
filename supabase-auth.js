@@ -80,8 +80,9 @@ async function regSubmit() {
 
 // Mirrors the Supabase Auth password policy (Settings -> Minimum password length /
 // Password requirements). Keep these two in sync if that policy ever changes.
-function checkPasswordStrength() {
-  const pass = document.getElementById('reg-pass').value;
+function checkPasswordStrength(inputId, reqsId) {
+  inputId = inputId || 'reg-pass'; reqsId = reqsId || 'reg-pass-reqs';
+  const pass = document.getElementById(inputId).value;
   const checks = {
     len: pass.length >= 10,
     lower: /[a-z]/.test(pass),
@@ -90,7 +91,7 @@ function checkPasswordStrength() {
     symbol: /[^A-Za-z0-9]/.test(pass)
   };
   Object.keys(checks).forEach(k => {
-    const el = document.querySelector('#reg-pass-reqs .pw-req[data-req="' + k + '"]');
+    const el = document.querySelector('#' + reqsId + ' .pw-req[data-req="' + k + '"]');
     if (el) el.classList.toggle('met', checks[k]);
   });
   return checks;
@@ -224,6 +225,82 @@ async function submitEditProfile() {
   showView('profile');
   toast('Profile updated!');
 }
+
+function openForgotPassword() {
+  closeOverlay('overlay-signin');
+  const signinEmail = document.getElementById('signin-user');
+  document.getElementById('fp-email').value = signinEmail ? signinEmail.value.trim() : '';
+  document.getElementById('fp-err').classList.remove('show');
+  openOverlay('overlay-forgot-password');
+}
+
+async function submitForgotPassword() {
+  const email = document.getElementById('fp-email').value.trim();
+  const err = document.getElementById('fp-err');
+  err.classList.remove('show');
+  if (!email) { err.textContent = 'Enter your email address.'; err.classList.add('show'); return; }
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin });
+  if (error) { err.textContent = error.message; err.classList.add('show'); return; }
+  closeOverlay('overlay-forgot-password');
+  toast('If that email has an account, a reset link is on its way.');
+}
+
+// true when overlay-change-password was opened by clicking a reset-link email rather than
+// from Edit Profile - there's no prior session to fall back to, so cancelling isn't offered
+var cpRecoveryMode = false;
+function openChangePassword() {
+  cpRecoveryMode = false;
+  document.getElementById('cp-title').textContent = 'Change Password';
+  document.getElementById('cp-close').style.display = '';
+  document.getElementById('cp-cancel').style.display = '';
+  document.getElementById('cp-pass').value = '';
+  document.getElementById('cp-pass2').value = '';
+  document.getElementById('cp-err').classList.remove('show');
+  document.querySelectorAll('#cp-pass-reqs .pw-req').forEach(el => el.classList.remove('met'));
+  closeOverlay('overlay-edit-profile');
+  openOverlay('overlay-change-password');
+}
+
+async function submitChangePassword() {
+  const pass = document.getElementById('cp-pass').value;
+  const pass2 = document.getElementById('cp-pass2').value;
+  const err = document.getElementById('cp-err');
+  err.classList.remove('show');
+  if (pass !== pass2) { err.textContent = 'Passwords do not match.'; err.classList.add('show'); return; }
+  const strength = checkPasswordStrength('cp-pass', 'cp-pass-reqs');
+  if (!Object.keys(strength).every(k => strength[k])) { toast('Password does not meet the requirements above.', 'error'); return; }
+  const { error } = await sb.auth.updateUser({ password: pass });
+  if (error) { err.textContent = error.message; err.classList.add('show'); return; }
+  closeOverlay('overlay-change-password');
+  toast('Password updated!');
+  if (cpRecoveryMode) {
+    cpRecoveryMode = false;
+    // the recovery link left them with a real session - load the profile and drop them
+    // into the app the same way a normal sign-in does
+    const { data } = await sb.auth.getSession();
+    if (data && data.session) {
+      const profile = await fetchProfile(data.session.user.id);
+      if (profile) enterApp(profileToUser(profile, data.session.user.email));
+    }
+  }
+}
+
+// clicking a password-reset email link lands back here with a recovery session -
+// catch that and force the "set a new password" modal open, no way to dismiss it
+// without a session to fall back to
+sb.auth.onAuthStateChange(function (event) {
+  if (event === 'PASSWORD_RECOVERY') {
+    cpRecoveryMode = true;
+    document.getElementById('cp-title').textContent = 'Set a New Password';
+    document.getElementById('cp-close').style.display = 'none';
+    document.getElementById('cp-cancel').style.display = 'none';
+    document.getElementById('cp-pass').value = '';
+    document.getElementById('cp-pass2').value = '';
+    document.getElementById('cp-err').classList.remove('show');
+    document.querySelectorAll('#cp-pass-reqs .pw-req').forEach(el => el.classList.remove('met'));
+    openOverlay('overlay-change-password');
+  }
+});
 
 async function doSignOut() {
   await sb.auth.signOut();
