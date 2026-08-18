@@ -2106,6 +2106,17 @@ body.guest #nav-home { display: none !important; }
   .about-hero { text-align: center; }
   .about-donate { max-width: none; }
 }
+.about-help { margin-top: 32px; padding: 32px 28px; text-align: center; }
+.about-help > i { font-size: 26px; color: var(--coral); margin-bottom: 10px; display: block; }
+.about-help h2 { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1px; color: var(--ink); margin-bottom: 8px; }
+.about-help p { font-size: 14px; font-weight: 300; color: var(--ink-light); margin: 0 auto 18px; max-width: 420px; }
+.about-help-link {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 14px; font-weight: 700; color: var(--coral);
+  border-bottom: 1px solid rgba(184,61,43,0.35); padding-bottom: 2px;
+  transition: border-color 0.15s, color 0.15s;
+}
+.about-help-link:hover { color: var(--coral-dk); border-color: var(--coral-dk); }
 @media (max-width: 680px) { .about-grid { grid-template-columns: 1fr; } }
 
 /* ======================================================
