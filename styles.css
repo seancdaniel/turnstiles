@@ -2079,14 +2079,15 @@ body.guest #nav-home { display: none !important; }
 .about-homescreen {
   display: flex; align-items: center; gap: 14px;
   padding: 18px 20px;
+  background: var(--gold); border-color: rgba(194,154,44,0.5);
 }
-.about-homescreen > i { font-size: 24px; color: var(--coral); flex-shrink: 0; }
+.about-homescreen > i { font-size: 24px; color: var(--ink); flex-shrink: 0; }
 .about-homescreen-text { flex: 1; min-width: 0; }
 .about-homescreen-text h3 {
   font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 0.5px;
   color: var(--ink); margin-bottom: 2px;
 }
-.about-homescreen-text p { font-size: 12px; font-weight: 300; color: var(--ink-light); line-height: 1.4; }
+.about-homescreen-text p { font-size: 12px; font-weight: 700; color: var(--ink); line-height: 1.4; }
 .about-homescreen .btn-sm { flex-shrink: 0; white-space: nowrap; }
 @media (max-width: 480px) {
   .about-homescreen { flex-direction: column; text-align: center; }
