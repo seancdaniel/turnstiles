@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=50">
+  <link rel="stylesheet" href="styles.css?v=51">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -111,6 +111,81 @@
     <div class="modal-footer">
       <button class="btn-sm" id="cp-cancel" onclick="closeOverlay('overlay-change-password')">Cancel</button>
       <button class="btn-sm primary" onclick="submitChangePassword()">Save New Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Modal -->
+<div class="overlay" id="overlay-privacy">
+  <div class="modal modal-wide">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Privacy</span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-privacy')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body legal-text">
+      <p>Turnstiles is a small, independently run project. Here is what we collect and why.</p>
+      <h3>What we collect</h3>
+      <p>When you make an account we ask for your name, a username, and an email address. You can also add a bio, a location, and a profile photo if you want to. When you use the app we store your check-ins, food reviews, wait time reports, and any photos you share.</p>
+      <h3>How it's used</h3>
+      <p>This information runs the core features of the app. Your check-ins power the leaderboard, your reviews show up on the food pages, and your photos show up in the community gallery. Your email is only used for login and account related emails, like password resets.</p>
+      <h3>What's public</h3>
+      <p>Your username, avatar, check-ins, food reviews, wait time reports, and shared photos are visible to other users. That's the point of a community app. Your email address is never shown to other users.</p>
+      <h3>Where it's stored</h3>
+      <p>Data is stored with Supabase, the database and authentication service this app runs on. Photos are stored in their cloud storage.</p>
+      <h3>What we don't do</h3>
+      <p>We don't sell your data. We don't run ads. We don't share your information with anyone outside of what's needed to run the site.</p>
+      <h3>Your choices</h3>
+      <p>You can edit your profile, delete individual check-ins, reviews, or photos, and change your password at any time from your account settings. If you want your account removed entirely, email <a href="mailto:help@goturnstiles.com">help@goturnstiles.com</a> and we will take care of it.</p>
+      <h3>Changes</h3>
+      <p>This policy may get updated as the site grows. Check back here if you want to stay current.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm primary" onclick="closeOverlay('overlay-privacy')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Terms Modal -->
+<div class="overlay" id="overlay-terms">
+  <div class="modal modal-wide">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Terms</span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-terms')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body legal-text">
+      <p>By using Turnstiles you're agreeing to a few basic ground rules.</p>
+      <h3>The site</h3>
+      <p>Turnstiles is a free tool for logging theme park visits, rating food, and sharing photos with other passholders. It's run by one person, not a company, and it isn't affiliated with Disney, Universal, or any theme park.</p>
+      <h3>Your account</h3>
+      <p>You need an account to check in, rate food, or post. Keep your password to yourself and let us know if you think someone else has access to your account.</p>
+      <h3>What you post</h3>
+      <p>Everything you post, reviews, photos, wait times, is your own responsibility. Don't post anything illegal, don't post photos or content that aren't yours to share, and don't harass other users. We can remove content or accounts that break these rules.</p>
+      <h3>Wait times and other info</h3>
+      <p>Wait times, ratings, and reviews are submitted by users, not verified by us. Don't rely on them as official park information.</p>
+      <h3>No guarantees</h3>
+      <p>This site is provided as is. We do our best to keep it running smoothly, but we can't promise it will always be available or error free.</p>
+      <h3>Changes</h3>
+      <p>These terms might change as the site grows. Continuing to use the site after a change means you're okay with the update.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm primary" onclick="closeOverlay('overlay-terms')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Contact Modal -->
+<div class="overlay" id="overlay-contact">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Contact</span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-contact')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:14px;color:var(--ink-light);line-height:1.6;margin-bottom:16px">Have a question, found a bug, or just want to say hi? Reach out any time.</p>
+      <a href="mailto:help@goturnstiles.com" class="about-help-link"><i class="ti ti-mail"></i> help@goturnstiles.com</a>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm primary" onclick="closeOverlay('overlay-contact')">Close</button>
     </div>
   </div>
 </div>
@@ -1120,8 +1195,8 @@
           <div class="footer-tagline">Track every visit. Rate every bite. Climb the board.</div>
         </div>
         <ul class="footer-links">
-          <li><a href="#">About</a></li><li><a href="#">Privacy</a></li>
-          <li><a href="#">Terms</a></li><li><a href="#">Contact</a></li>
+          <li><a href="#" onclick="showView('about')">About</a></li><li><a href="#" onclick="openOverlay('overlay-privacy')">Privacy</a></li>
+          <li><a href="#" onclick="openOverlay('overlay-terms')">Terms</a></li><li><a href="#" onclick="openOverlay('overlay-contact')">Contact</a></li>
         </ul>
         <div class="footer-copy">© 2026 Turnstiles · Not affiliated with Disney or Universal</div>
       </footer>
@@ -1544,7 +1619,7 @@
     </div>
     <footer class="site-footer">
       <div><div class="footer-brand">TURN<span>STILES</span></div><div class="footer-tagline">Track every visit. Rate every bite. Climb the board.</div></div>
-      <ul class="footer-links"><li><a href="#">About</a></li><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Contact</a></li></ul>
+      <ul class="footer-links"><li><a href="#" onclick="guestBrowse('about')">About</a></li><li><a href="#" onclick="openOverlay('overlay-privacy')">Privacy</a></li><li><a href="#" onclick="openOverlay('overlay-terms')">Terms</a></li><li><a href="#" onclick="openOverlay('overlay-contact')">Contact</a></li></ul>
       <div class="footer-copy">© 2026 Turnstiles · Not affiliated with Disney or Universal</div>
     </footer>
   </div>

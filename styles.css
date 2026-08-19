@@ -1176,6 +1176,13 @@ body {
 .modal-close:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
 
 .modal-body { padding: 24px; }
+
+.legal-text p { font-size: 14px; font-weight: 300; line-height: 1.65; color: var(--ink-light); margin-bottom: 14px; }
+.legal-text h3 {
+  font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 0.5px;
+  color: var(--ink); margin-bottom: 6px;
+}
+.legal-text a { color: var(--coral); text-decoration: underline; }
 .modal-footer {
   padding: 16px 24px;
   border-top: 1px solid var(--border);
