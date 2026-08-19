@@ -2337,6 +2337,11 @@ body {
 /* form fields: stack two-column rows on narrow screens */
 @media (max-width: 480px) {
   .field-row { grid-template-columns: 1fr; }
+  /* .pw-requirements' negative top margin is tuned to sit snugly under the desktop
+     Password/Confirm Password side-by-side row - once that row stacks into one
+     column above, the same negative margin instead crowds it against whichever
+     field ends up last (Confirm Password), so give it real breathing room here */
+  .pw-requirements { margin-top: 12px; }
 }
 
 /* grids: fewer columns as space shrinks */
