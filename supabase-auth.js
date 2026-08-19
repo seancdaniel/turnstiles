@@ -58,22 +58,23 @@ async function regSubmit() {
   const loc = document.getElementById('reg-location').value.trim();
   const { data, error } = await sb.auth.signUp({
     email: email, password: pass,
-    options: { data: { username: username, first_name: fname, last_name: lname, avatar: selectedAvatar } }
+    // bio/location travel as signup metadata (like username/first_name) so the
+    // handle_new_user() trigger can write them straight into the new profile row.
+    // A follow-up client-side update() can't be relied on here: with email
+    // confirmation ON there's no session yet at this point, so RLS would just
+    // silently drop the update (0 rows matched, no error) - see schema.sql.
+    options: { data: { username: username, first_name: fname, last_name: lname, avatar: selectedAvatar, bio: bio || 'Theme park enthusiast.', location: loc } }
   });
   if (error) { toast(error.message, 'error'); return; }
-  if (data.user) {
-    const profileUpdate = { bio: bio || 'Theme park enthusiast.', location: loc };
-    // only attempt the Storage upload if we actually have a session (email confirmation
-    // could be on, in which case there's no session yet and the upload would just fail RLS)
-    if (regAvatarMode === 'photo' && data.session) {
-      const previewSrc = document.getElementById('reg-avatar-preview-img').getAttribute('src');
-      if (previewSrc && previewSrc.indexOf('data:') === 0) {
-        const small = await downscale(previewSrc);
-        const url = await uploadPhoto(small, data.user.id);
-        if (url) profileUpdate.avatar_url = url;
-      }
+  // only attempt the avatar Storage upload if we actually have a session (email confirmation
+  // could be on, in which case there's no session yet and the upload would just fail RLS)
+  if (data.user && regAvatarMode === 'photo' && data.session) {
+    const previewSrc = document.getElementById('reg-avatar-preview-img').getAttribute('src');
+    if (previewSrc && previewSrc.indexOf('data:') === 0) {
+      const small = await downscale(previewSrc);
+      const url = await uploadPhoto(small, data.user.id);
+      if (url) await sb.from('profiles').update({ avatar_url: url }).eq('id', data.user.id);
     }
-    await sb.from('profiles').update(profileUpdate).eq('id', data.user.id);
   }
   if (!data.session) { closeOverlay('overlay-register'); resetRegForm(); toast('Account created! Check your email to confirm, then sign in.'); return; }
   const profile = await fetchProfile(data.user.id);

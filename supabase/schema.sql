@@ -232,3 +232,32 @@ create policy "delete own wait time" on public.wait_times for delete using (auth
 -- policies (own-folder insert/delete) - no new bucket needed.
 -- ============================================================
 alter table public.profiles add column if not exists avatar_url text;
+
+-- ============================================================
+-- MIGRATION — fix bio/location never saving at signup.
+-- handle_new_user() only ever wrote username/first_name/last_name/
+-- avatar; the client tried to fill in bio/location with a follow-up
+-- `update` right after signUp, but with email confirmation ON there's
+-- no session yet at that point, so RLS silently drops the update (0
+-- rows matched, no error). Folding bio/location into the same
+-- trigger insert fixes it regardless of session state. Safe to re-run.
+-- ============================================================
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  insert into public.profiles (id, username, first_name, last_name, avatar, bio, location)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'username', 'user_' || substr(new.id::text, 1, 8)),
+    new.raw_user_meta_data->>'first_name',
+    new.raw_user_meta_data->>'last_name',
+    coalesce(new.raw_user_meta_data->>'avatar', '🎢'),
+    coalesce(new.raw_user_meta_data->>'bio', 'Theme park enthusiast.'),
+    new.raw_user_meta_data->>'location'
+  );
+  return new;
+end;
+$$;
