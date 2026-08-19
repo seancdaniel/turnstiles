@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=51">
+  <link rel="stylesheet" href="styles.css?v=52">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -186,6 +186,27 @@
     </div>
     <div class="modal-footer">
       <button class="btn-sm primary" onclick="closeOverlay('overlay-contact')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add to Home Screen Modal -->
+<div class="overlay" id="overlay-add-to-home">
+  <div class="modal modal-wide">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Add To Home Screen</span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-add-to-home')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body legal-text">
+      <p>Adding Turnstiles to your home screen gives you a quick-launch icon, just like a regular app, with no download needed.</p>
+      <h3>iPhone (Safari)</h3>
+      <p>Open Turnstiles in Safari, tap the Share icon at the bottom of the screen (the square with an arrow pointing up), scroll down and tap "Add to Home Screen," then tap "Add" in the top right.</p>
+      <h3>Android (Chrome)</h3>
+      <p>Open Turnstiles in Chrome, tap the three-dot menu in the top right, tap "Add to Home screen" (or "Install app" if you see that instead), then confirm by tapping "Add" or "Install."</p>
+      <p>Once it's added, just tap the icon from your home screen any time to jump straight in.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm primary" onclick="closeOverlay('overlay-add-to-home')">Close</button>
     </div>
   </div>
 </div>
@@ -1347,11 +1368,21 @@
             <p>Right now its just me running the show. No team, no corporate backing, just one person building this thing one ride, one post, and one update at a time. So thanks for being here, thanks for giving it a shot, and thanks in advance for your patience as I keep building this out. More is coming, and if you have any issues or suggestions, please feel free to reach out to me directly via my email below.</p>
           </div>
         </div>
-        <div class="about-donate">
-          <i class="ti ti-heart"></i>
-          <h2>Support Turnstiles</h2>
-          <p>This site is free for all users. Any donations are appreciated and help keep the site running — but they're never required.</p>
-          <a href="https://ko-fi.com/turnstiles" target="_blank" rel="noopener" class="btn-donate"><i class="ti ti-glass-cocktail"></i> Margarita Fund</a>
+        <div class="about-side-col">
+          <div class="about-donate">
+            <i class="ti ti-heart"></i>
+            <h2>Support Turnstiles</h2>
+            <p>This site is free for all users. Any donations are appreciated and help keep the site running — but they're never required.</p>
+            <a href="https://ko-fi.com/turnstiles" target="_blank" rel="noopener" class="btn-donate"><i class="ti ti-glass-cocktail"></i> Margarita Fund</a>
+          </div>
+          <div class="light-card about-homescreen">
+            <i class="ti ti-device-mobile"></i>
+            <div class="about-homescreen-text">
+              <h3>Keep Turnstiles a Tap Away</h3>
+              <p>Add it to your phone's home screen for quick, app-like access.</p>
+            </div>
+            <button class="btn-sm" onclick="openOverlay('overlay-add-to-home')">How To Add It</button>
+          </div>
         </div>
       </div>
       <div class="about-grid">

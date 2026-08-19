@@ -2068,13 +2068,29 @@ body.guest #nav-home { display: none !important; }
 }
 .about-cta p { font-size: 14px; color: rgba(231,206,138,0.7); margin-bottom: 22px; }
 .about-cta .btn-hero { display: inline-flex; }
+.about-side-col { flex: 1 1 320px; max-width: 360px; display: flex; flex-direction: column; gap: 16px; }
 .about-donate {
   position: relative; overflow: hidden;
-  flex: 1 1 320px; max-width: 360px;
   border-radius: 14px; padding: 34px 30px;
   background: linear-gradient(135deg, var(--coral) 0%, var(--gold) 100%);
   box-shadow: 0 16px 34px rgba(184,61,43,0.30);
   display: flex; flex-direction: column; justify-content: center;
+}
+.about-homescreen {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 20px;
+}
+.about-homescreen > i { font-size: 24px; color: var(--coral); flex-shrink: 0; }
+.about-homescreen-text { flex: 1; min-width: 0; }
+.about-homescreen-text h3 {
+  font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 0.5px;
+  color: var(--ink); margin-bottom: 2px;
+}
+.about-homescreen-text p { font-size: 12px; font-weight: 300; color: var(--ink-light); line-height: 1.4; }
+.about-homescreen .btn-sm { flex-shrink: 0; white-space: nowrap; }
+@media (max-width: 480px) {
+  .about-homescreen { flex-direction: column; text-align: center; }
+  .about-homescreen .btn-sm { width: 100%; justify-content: center; }
 }
 .about-donate::before {
   content: '';
@@ -2111,7 +2127,7 @@ body.guest #nav-home { display: none !important; }
 @media (max-width: 780px) {
   .about-top { flex-direction: column; }
   .about-hero { text-align: center; }
-  .about-donate { max-width: none; }
+  .about-side-col { max-width: none; width: 100%; }
 }
 .about-help { margin-top: 32px; padding: 32px 28px; text-align: center; }
 .about-help > i { font-size: 26px; color: var(--coral); margin-bottom: 10px; display: block; }
