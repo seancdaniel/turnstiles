@@ -330,3 +330,19 @@ drop policy if exists "admin delete donors" on public.donors;
 create policy "admin delete donors" on public.donors for delete using (
   exists (select 1 from public.profiles where id = auth.uid() and is_admin)
 );
+
+-- ============================================================
+-- MIGRATION — one-time welcome message on a new account's first
+-- entry into the app. `welcomed` flips to true the moment enterApp()
+-- shows the welcome modal and never shows again after that - see
+-- enterApp() in supabase-data.js. Safe to re-run.
+--
+-- IMPORTANT: right after running this (and only this one time - do
+-- NOT repeat this line on a future full-file re-run, or it will wipe
+-- out the flag for anyone who's signed up since and is still waiting
+-- to see the welcome message), backfill everyone who already has an
+-- account so the message only fires for accounts created from here
+-- on out:
+--   update public.profiles set welcomed = true where welcomed = false;
+-- ============================================================
+alter table public.profiles add column if not exists welcomed boolean not null default false;

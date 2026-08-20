@@ -156,6 +156,12 @@ function enterApp(user) {
   updatePassport(); updateParkCounts();
   showView('home');
   loadData();
+  // one-time welcome message on a brand new account's first entry into the app
+  if (!user.welcomed) {
+    openOverlay('overlay-welcome');
+    user.welcomed = true; // don't reshow if enterApp somehow runs again this session
+    sb.from('profiles').update({ welcomed: true }).eq('id', user.id);
+  }
 }
 
 function guestBrowse(name) {

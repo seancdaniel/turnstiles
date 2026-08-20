@@ -195,6 +195,24 @@
   </div>
 </div>
 
+<!-- Welcome Modal (shown once, right after a new account's first entry into the app) -->
+<div class="overlay" id="overlay-welcome">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Welcome to Turnstiles!</span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-welcome')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:14px;color:var(--ink-light);line-height:1.6;margin-bottom:12px">Thank you for joining Turnstiles! The site is currently still under construction, so I appreciate all the feedback you can provide.</p>
+      <p style="font-size:14px;color:var(--ink-light);line-height:1.6;margin-bottom:16px">I can be reached at:</p>
+      <a href="mailto:help@goturnstiles.com" class="about-help-link"><i class="ti ti-mail"></i> help@goturnstiles.com</a>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm primary" onclick="closeOverlay('overlay-welcome')">Got it!</button>
+    </div>
+  </div>
+</div>
+
 <!-- Add to Home Screen Modal -->
 <div class="overlay" id="overlay-add-to-home">
   <div class="modal modal-wide">
@@ -1761,8 +1779,8 @@
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="main.js?v=29"></script>
-<script src="supabase-auth.js?v=10"></script>
-<script src="supabase-data.js?v=15"></script>
+<script src="supabase-auth.js?v=11"></script>
+<script src="supabase-data.js?v=16"></script>
 <script src="supabase-food.js?v=12"></script>
 <script src="supabase-waittimes.js?v=3"></script>
 <script src="supabase-donors.js?v=2"></script>
