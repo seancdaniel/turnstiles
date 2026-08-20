@@ -593,7 +593,7 @@ body {
 
 .section-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 38px; letter-spacing: 2px;
+  font-size: clamp(24px, 7vw, 38px); letter-spacing: 2px;
   color: var(--ink); line-height: 1; margin-bottom: 3px;
 }
 
@@ -1457,33 +1457,33 @@ select.field-input { cursor: pointer; }
   color: var(--gold); margin-bottom: 16px;
 }
 .hero-profile-lbl span { color: var(--coral); margin: 0 6px; }
-.hero-medals { display: flex; gap: 26px; flex-wrap: wrap; }
-.hero-medal { display: flex; align-items: center; gap: 12px; }
+.hero-medals { display: flex; gap: 20px; flex-wrap: wrap; }
+.hero-medal { display: flex; align-items: center; gap: 10px; }
 .hero-medal-icon {
-  width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0;
+  width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  font-size: 28px; line-height: 1;
+  font-size: 22px; line-height: 1;
   box-shadow: 0 3px 10px rgba(0,0,0,0.35), inset 0 0 0 2px rgba(255,255,255,0.15);
 }
 .hero-medal-icon.empty {
   background: rgba(255,255,255,0.08); box-shadow: none;
   border: 1px dashed rgba(231,206,138,0.35);
-  color: rgba(231,206,138,0.5); font-size: 20px; font-weight: 700;
+  color: rgba(231,206,138,0.5); font-size: 16px; font-weight: 700;
 }
 .hero-medal-info { display: flex; flex-direction: column; }
 .hero-medal-name {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 21px; letter-spacing: 1px; color: #F1E4C4; line-height: 1.15;
+  font-size: 17px; letter-spacing: 1px; color: #F1E4C4; line-height: 1.15;
 }
 .hero-medal-label {
-  font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  font-size: 8px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
   color: rgba(231,206,138,0.55); margin-top: 2px;
 }
 @media (max-width: 480px) {
-  .hero-medals { gap: 16px; }
-  .hero-medal-icon { width: 46px; height: 46px; font-size: 22px; }
-  .hero-medal-icon.empty { font-size: 17px; }
-  .hero-medal-name { font-size: 18px; }
+  .hero-medals { gap: 14px; }
+  .hero-medal-icon { width: 36px; height: 36px; font-size: 18px; }
+  .hero-medal-icon.empty { font-size: 13px; }
+  .hero-medal-name { font-size: 15px; }
 }
 
 /* ── Empty state ── */
