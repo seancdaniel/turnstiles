@@ -12,6 +12,7 @@ function profileToUser(p, email) {
     email: email || '', avatar: p.avatar || '\u{1F3A2}', avatarUrl: p.avatar_url || '',
     bio: p.bio || '', location: p.location || '',
     disneyPass: p.disney_pass || '', universalPass: p.universal_pass || '',
+    isAdmin: !!p.is_admin,
     parks: [], joinYear: p.join_year || new Date().getFullYear()
   };
 }

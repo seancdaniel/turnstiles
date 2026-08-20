@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=57">
+  <link rel="stylesheet" href="styles.css?v=58">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -817,6 +817,7 @@
           <li><a href="#" onclick="showView('photos')" id="nav-photos">Photos</a></li>
           <li><a href="#" onclick="showView('waittimes')" id="nav-waittimes">Wait Times</a></li>
           <li><a href="#" onclick="showView('about')" id="nav-about">About</a></li>
+          <li><a href="#" onclick="showView('thanks')" id="nav-thanks">Thank You</a></li>
         </ul>
         <div class="nav-actions">
           <div class="nav-guest-actions">
@@ -865,6 +866,7 @@
         <a href="#" onclick="closeAppMenu();showView('photos')">Photos</a>
         <a href="#" onclick="closeAppMenu();showView('waittimes')">Wait Times</a>
         <a href="#" onclick="closeAppMenu();showView('about')">About</a>
+        <a href="#" onclick="closeAppMenu();showView('thanks')">Thank You</a>
       </div>
     </nav>
   </header>
@@ -1444,6 +1446,44 @@
     </div>
   </div>
 
+  <!-- ── THANK YOU VIEW ── -->
+  <div id="view-thanks" class="screen">
+    <div style="max-width:1300px;margin:0 auto;padding:48px 32px">
+      <div class="section-head">
+        <div><h2 class="section-title">THANK YOU</h2><p class="section-sub">The passholders keeping the lights on</p></div>
+      </div>
+
+      <div class="light-card thanks-msg">
+        <i class="ti ti-heart"></i>
+        <p>Turnstiles is free for everyone, and it always will be. Every name below chose to help keep it running anyway — thank you. Genuinely.</p>
+      </div>
+
+      <!-- Admin-only: add/remove donor wall entries -->
+      <div class="light-card" id="donor-admin-panel" style="display:none;margin-top:22px">
+        <div class="card-hd"><div class="card-hd-title"><i class="ti ti-lock"></i> Add a Donor</div></div>
+        <div style="padding:16px 18px">
+          <div class="lb-tabs" style="margin-bottom:14px">
+            <button class="lb-tab active" id="dn-mode-user" onclick="switchDonorMode('user')">Registered User</button>
+            <button class="lb-tab" id="dn-mode-name" onclick="switchDonorMode('name')">Just a Name</button>
+          </div>
+          <div id="dn-user-fields" class="field">
+            <label class="field-lbl">Find their account</label>
+            <input class="field-input" id="dn-search" autocomplete="off" placeholder="Search by username" oninput="donorUserSearch()">
+            <div id="dn-results" class="fr-results" style="display:none"></div>
+            <div id="dn-picked" class="fr-picked" style="display:none"></div>
+          </div>
+          <div id="dn-name-field" class="field" style="display:none">
+            <label class="field-lbl">Name to display</label>
+            <input class="field-input" id="dn-name" placeholder="Whatever showed up on the donation">
+          </div>
+          <button class="btn-sm primary" onclick="submitDonor()"><i class="ti ti-plus" style="font-size:12px"></i> Add Donor</button>
+        </div>
+      </div>
+
+      <div class="donor-wall" id="donor-wall" style="margin-top:24px"></div>
+    </div>
+  </div>
+
 </div><!-- end app-shell -->
 
 <!-- ======================================================
@@ -1594,6 +1634,7 @@
           <a href="#" onclick="guestBrowse('photos')">Photos</a>
           <a href="#" onclick="guestBrowse('waittimes')">Wait Times</a>
           <a href="#" onclick="guestBrowse('about')">About</a>
+          <a href="#" onclick="guestBrowse('thanks')">Thank You</a>
         </nav>
         <div class="sh-actions">
           <button class="sh-signin" onclick="openOverlay('overlay-signin')">Sign In</button>
@@ -1609,6 +1650,7 @@
         <a href="#" onclick="closeMobileMenu();guestBrowse('photos')">Photos</a>
         <a href="#" onclick="closeMobileMenu();guestBrowse('waittimes')">Wait Times</a>
         <a href="#" onclick="closeMobileMenu();guestBrowse('about')">About</a>
+        <a href="#" onclick="closeMobileMenu();guestBrowse('thanks')">Thank You</a>
         <div class="sh-mobile-actions">
           <button class="sh-signin" onclick="closeMobileMenu();openOverlay('overlay-signin')">Sign In</button>
           <button class="sh-join" onclick="closeMobileMenu();openOverlay('overlay-register')">Create Account</button>
@@ -1718,11 +1760,12 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=28"></script>
-<script src="supabase-auth.js?v=9"></script>
-<script src="supabase-data.js?v=14"></script>
-<script src="supabase-food.js?v=11"></script>
+<script src="main.js?v=29"></script>
+<script src="supabase-auth.js?v=10"></script>
+<script src="supabase-data.js?v=15"></script>
+<script src="supabase-food.js?v=12"></script>
 <script src="supabase-waittimes.js?v=3"></script>
+<script src="supabase-donors.js?v=1"></script>
 <script src="leaderboard.js?v=5"></script>
 </body>
 </html>

@@ -295,3 +295,38 @@ begin
   return new;
 end;
 $$;
+
+-- ============================================================
+-- MIGRATION — Thank You page: a public donor wall, plus a minimal
+-- single-purpose admin flag so the site owner can manage it from
+-- inside the app (Add Donor panel on the Thank You page) without a
+-- full role/permission system. Safe to re-run.
+--
+-- After running this, make yourself an admin (one-time, run by hand):
+--   update public.profiles set is_admin = true where username = 'YOUR_USERNAME';
+-- ============================================================
+alter table public.profiles add column if not exists is_admin boolean not null default false;
+
+create table if not exists public.donors (
+  id           uuid primary key default gen_random_uuid(),
+  user_id      uuid references public.profiles(id) on delete set null,
+  -- snapshot of the name to show, taken when the donor is added. Kept even for a
+  -- linked account so the wall still shows a name if that account is ever deleted
+  -- (user_id just goes null via the FK above; display_name survives).
+  display_name text not null,
+  created_at   timestamptz default now()
+);
+alter table public.donors enable row level security;
+
+drop policy if exists "donors are public" on public.donors;
+create policy "donors are public" on public.donors for select using (true);
+
+drop policy if exists "admin insert donors" on public.donors;
+create policy "admin insert donors" on public.donors for insert with check (
+  exists (select 1 from public.profiles where id = auth.uid() and is_admin)
+);
+
+drop policy if exists "admin delete donors" on public.donors;
+create policy "admin delete donors" on public.donors for delete using (
+  exists (select 1 from public.profiles where id = auth.uid() and is_admin)
+);

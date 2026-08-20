@@ -109,6 +109,7 @@ function rerenderActive() {
   if (id === 'view-food') renderFood();
   if (id === 'view-photos') renderPhotos();
   if (id === 'view-waittimes') renderWaitTimes();
+  if (id === 'view-thanks') renderThanks();
 }
 
 async function loadData() {

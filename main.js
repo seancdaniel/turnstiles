@@ -130,6 +130,7 @@ function showView(name) {
   if(name==='food') renderFood();
   if(name==='photos') renderPhotos();
   if(name==='waittimes') renderWaitTimes();
+  if(name==='thanks') renderThanks();
   if(name==='home') renderProfile();
   window.scrollTo(0,0);
 }

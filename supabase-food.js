@@ -17,7 +17,8 @@ async function loadData() {
       sb.from('food_reviews').select('*').order('created_at', { ascending: false }),
       sb.from('photos').select('*').order('created_at', { ascending: false }),
       sb.from('food_favorites').select('*').order('created_at', { ascending: false }),
-      sb.from('wait_times').select('*').order('created_at', { ascending: false })
+      sb.from('wait_times').select('*').order('created_at', { ascending: false }),
+      sb.from('donors').select('*').order('created_at', { ascending: false })
     ]);
     var profiles = r[0].data || [];
     var idMap = {};
@@ -55,6 +56,17 @@ async function loadData() {
         avatarUrl: (idMap[w.user_id] && idMap[w.user_id].avatarUrl) || '',
         park: w.park, ride: w.ride, postedWait: w.posted_wait, actualWait: w.actual_wait,
         ts: new Date(w.created_at).getTime() };
+    });
+    // donor wall entries: user_id links to a live account (if it still exists and
+    // wasn't unlinked) - displayName is a snapshot taken when the donor was added,
+    // so the wall still shows a name even if that account is later deleted.
+    STATE.donors = (r[6].data || []).map(function (d) {
+      var u = d.user_id && idMap[d.user_id];
+      return { id: d.id, userId: d.user_id || null,
+        displayName: d.display_name,
+        username: u ? u.username : null,
+        avatar: u ? u.avatar : '', avatarUrl: u ? u.avatarUrl : '',
+        ts: new Date(d.created_at).getTime() };
     });
     rerenderActive();
   } catch (e) { console.log('loadData error:', e); }
