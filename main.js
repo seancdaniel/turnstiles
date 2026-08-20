@@ -562,6 +562,11 @@ function tierBadge(tier, label) {
   if (!tier) return '<span class="badge tier-badge-empty">Unranked ' + label + '</span>';
   return '<span class="badge tier-badge"><span class="tier-emblem tier-emblem-sm" style="background:' + tier.color + '">' + tier.icon + '</span> ' + tier.name + ' <span class="tier-badge-label">' + label + '</span></span>';
 }
+// large medal (home hero "My Profile" header)
+function heroMedalHtml(tier, label) {
+  if (!tier) return '<div class="hero-medal"><div class="hero-medal-icon empty">—</div><div class="hero-medal-info"><div class="hero-medal-name">Unranked</div><div class="hero-medal-label">' + label + '</div></div></div>';
+  return '<div class="hero-medal"><div class="hero-medal-icon" style="background:' + tier.color + '">' + tier.icon + '</div><div class="hero-medal-info"><div class="hero-medal-name">' + tier.name + '</div><div class="hero-medal-label">' + label + '</div></div></div>';
+}
 
 function updatePassport() {
   const u = STATE.currentUser; if(!u) return;
@@ -889,6 +894,9 @@ function renderProfile() {
   const avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '—';
   const monthlyTier = getMonthlyTier(checkinsThisMonth(u.id));
   const yearlyTier = getYearlyTier(checkinsThisYear(u.id));
+
+  const heroMedals = document.getElementById('hero-medals');
+  if (heroMedals) heroMedals.innerHTML = heroMedalHtml(monthlyTier, 'Monthly') + heroMedalHtml(yearlyTier, 'Yearly');
 
   document.getElementById('profile-avatar-big').innerHTML = avatarHtml(u.avatarUrl, u.avatar);
   document.getElementById('profile-display-name').textContent = u.fname + ' ' + u.lname;

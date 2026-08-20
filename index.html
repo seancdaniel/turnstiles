@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=53">
+  <link rel="stylesheet" href="styles.css?v=54">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -1025,28 +1025,16 @@
                 <div class="hero-banner-right"></div>
               </div>
 
-              <!-- Tagline -->
-              <div class="hero-tagline-wrap">
-                <span class="hero-tagline-star">★</span>
-                <span class="hero-tagline">Where <em>every visit</em> counts.</span>
-                <span class="hero-tagline-star">★</span>
-              </div>
-
-              <!-- Ticket stub row -->
-              <div class="hero-ticket-row">
-                <div class="hero-ticket-stub">Log Visits</div>
-                <div class="hero-ticket-line"></div>
-                <div class="hero-ticket-stub">Rate Food</div>
-                <div class="hero-ticket-line"></div>
-                <div class="hero-ticket-stub">Climb the Board</div>
-                <div class="hero-ticket-line"></div>
-                <div class="hero-ticket-stub">Share Photos</div>
+              <!-- My Profile header: this replaces what used to be marketing
+                   copy ("Where every visit counts" + a feature-stub row) now
+                   that this page IS the user's own profile, not a landing
+                   page. Large versions of the Monthly/Yearly tier medals,
+                   populated by renderProfile() in main.js. -->
+              <div class="hero-profile-hd">
+                <span class="hero-profile-lbl"><span>★</span> My Profile <span>★</span></span>
+                <div class="hero-medals" id="hero-medals"></div>
               </div>
             </div>
-            <p class="hero-sub">
-              Log your check-ins across Disney World, Universal, and the water parks.
-              Track your miles, rate the food, and see where you rank in the community.
-            </p>
             <div class="hero-stats" id="home-stats">
               <div class="hero-stat"><div class="hero-stat-num" id="stat-visits">0</div><div class="hero-stat-lbl">Total Visits</div></div>
               <div class="hero-stat"><div class="hero-stat-num" id="stat-miles">0</div><div class="hero-stat-lbl">Miles Walked</div></div>
@@ -1730,7 +1718,7 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=27"></script>
+<script src="main.js?v=28"></script>
 <script src="supabase-auth.js?v=9"></script>
 <script src="supabase-data.js?v=14"></script>
 <script src="supabase-food.js?v=11"></script>

@@ -265,74 +265,8 @@ body {
   border-radius: 0 2px 2px 0;
 }
 
-/* Tagline */
-.hero-tagline-wrap {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 6px;
-}
-
-.hero-tagline-star { color: var(--gold); font-size: 22px; flex-shrink: 0; }
-
-.hero-tagline {
-  font-family: 'Abril Fatface', serif;
-  font-style: italic;
-  font-size: 34px;
-  color: var(--ink-mid);
-  line-height: 1;
-  letter-spacing: -0.5px;
-}
-
-.hero-tagline em {
-  color: var(--teal);
-  font-style: italic;
-}
-
-/* Ticket stub row */
-.hero-ticket-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 22px;
-}
-
-.hero-ticket-stub {
-  background: var(--gold-pale);
-  border: 1.5px solid var(--border-gold);
-  border-radius: 4px;
-  padding: 4px 14px;
-  font-family: 'Special Elite', cursive;
-  font-size: 11px;
-  color: var(--gold);
-  letter-spacing: 1px;
-  position: relative;
-}
-
-.hero-ticket-stub::before,
-.hero-ticket-stub::after {
-  content: '';
-  position: absolute;
-  top: 50%; transform: translateY(-50%);
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--parchment);
-  border: 1px solid var(--border-gold);
-}
-.hero-ticket-stub::before { left: -6px; }
-.hero-ticket-stub::after  { right: -6px; }
-
-.hero-ticket-line {
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--border) 0, var(--border) 6px,
-    transparent 6px, transparent 12px
-  );
-  border: none;
-}
+/* (Tagline + ticket-stub row removed - the home hero is the user's own
+   profile now, not marketing copy. See .hero-profile-hd / .hero-medals.) */
 
 /* Ornamental rule — keep for spacing */
 .ornament {
@@ -343,17 +277,6 @@ body {
 }
 .ornament-line { flex: 0 0 48px; height: 2px; background: var(--gold); }
 .ornament-icon { color: var(--gold); font-size: 14px; letter-spacing: 4px; }
-
-.hero-sub {
-  font-size: 14px;
-  font-weight: 300;
-  letter-spacing: 0.5px;
-  color: var(--ink-light);
-  line-height: 1.8;
-  max-width: 480px;
-  margin-bottom: 28px;
-  font-style: italic;
-}
 
 .hero-stats {
   display: flex;
@@ -1525,6 +1448,44 @@ select.field-input { cursor: pointer; }
 .tier-badge-label { opacity: 0.6; font-weight: 400; letter-spacing: 0.5px; }
 .tier-badge-empty { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.45); }
 
+/* ── Hero "My Profile" header — large Monthly/Yearly medals, home hero ── */
+.hero-profile-hd { margin: 4px 0 26px; }
+.hero-profile-lbl {
+  display: block;
+  font-family: 'Special Elite', cursive;
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 16px;
+}
+.hero-profile-lbl span { color: var(--coral); margin: 0 6px; }
+.hero-medals { display: flex; gap: 26px; flex-wrap: wrap; }
+.hero-medal { display: flex; align-items: center; gap: 12px; }
+.hero-medal-icon {
+  width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; line-height: 1;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.35), inset 0 0 0 2px rgba(255,255,255,0.15);
+}
+.hero-medal-icon.empty {
+  background: rgba(255,255,255,0.08); box-shadow: none;
+  border: 1px dashed rgba(231,206,138,0.35);
+  color: rgba(231,206,138,0.5); font-size: 20px; font-weight: 700;
+}
+.hero-medal-info { display: flex; flex-direction: column; }
+.hero-medal-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 21px; letter-spacing: 1px; color: #F1E4C4; line-height: 1.15;
+}
+.hero-medal-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: rgba(231,206,138,0.55); margin-top: 2px;
+}
+@media (max-width: 480px) {
+  .hero-medals { gap: 16px; }
+  .hero-medal-icon { width: 46px; height: 46px; font-size: 22px; }
+  .hero-medal-icon.empty { font-size: 17px; }
+  .hero-medal-name { font-size: 18px; }
+}
+
 /* ── Empty state ── */
 .empty-state {
   text-align: center; padding: 48px 24px;
@@ -2198,8 +2159,6 @@ body {
 .tab.active { background: linear-gradient(180deg, #F8E9B0, #D9B441); color: #2a1d07; border-color: transparent; }
 
 /* ---- App-home hero text on dark ---- */
-.hero-tagline { color: #F1E4C4; }
-.hero-sub { color: rgba(231,206,138,0.72); }
 .hero-stat-lbl { color: var(--ink-faint); }
 
 /* ---- CTA band + footer ---- */
@@ -2341,10 +2300,7 @@ body {
   .hero-inner { grid-template-columns: 1fr; gap: 32px; padding: 40px 20px 40px; }
 }
 .hero-name-outline { font-size: clamp(52px, 13vw, 120px); }
-.hero-tagline { font-size: clamp(20px, 6vw, 34px); }
 @media (max-width: 600px) {
-  .hero-ticket-row { flex-wrap: wrap; }
-  .hero-ticket-line { display: none; }
   .hero-actions { flex-wrap: wrap; }
   .hero-actions .btn-hero, .hero-actions .btn-hero-outline { flex: 1 1 100%; justify-content: center; }
 }
