@@ -68,7 +68,7 @@ async function submitDonor() {
   if (res.error) { toast('Could not add donor: ' + res.error.message, 'error'); return; }
   resetDonorForm();
   await loadData();
-  toast('Donor added - thank you!');
+  toast('Donor added. Thank you!');
 }
 
 async function deleteDonor(id) {
@@ -102,7 +102,7 @@ function renderThanks() {
   var wall = document.getElementById('donor-wall');
   if (!wall) return;
   if (!donors.length) {
-    wall.innerHTML = '<div class="donor-empty">No donors yet - be the first! The Margarita Fund link is on the <a onclick="showView(\'about\')">About page</a>.</div>';
+    wall.innerHTML = '<div class="donor-empty">No donors yet. Be the first! The Margarita Fund link is on the <a onclick="showView(\'about\')">About page</a>.</div>';
     return;
   }
   wall.innerHTML = donors.map(donorChipHtml).join('');
