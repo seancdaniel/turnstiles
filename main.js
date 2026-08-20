@@ -907,7 +907,9 @@ function renderProfile() {
   if(foods.length>=10) badges.push('Foodie');
   document.getElementById('profile-badges').innerHTML =
     tierBadge(monthlyTier, 'Monthly') + tierBadge(yearlyTier, 'Yearly') +
-    badges.map(b => `<span class="badge${b.includes('Gold')||b.includes('Park')||b.includes('Foodie')?' gold':''}">${b}</span>`).join('');
+    badges.map(b => `<span class="badge${b.includes('Gold')||b.includes('Park')||b.includes('Foodie')?' gold':''}">${b}</span>`).join('') +
+    (u.disneyPass ? `<span class="badge">🏰 ${escapeHtml(u.disneyPass)}</span>` : '') +
+    (u.universalPass ? `<span class="badge">🌎 ${escapeHtml(u.universalPass)}</span>` : '');
 
   // Visit history table
   const histEl = document.getElementById('visit-history-table');

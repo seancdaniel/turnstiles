@@ -308,6 +308,29 @@
           <label class="field-lbl">Home Location (optional)</label>
           <input class="field-input" id="reg-location" placeholder="Orlando, FL">
         </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="field-lbl">Disney Annual Pass (optional)</label>
+            <select class="field-input" id="reg-disney-pass">
+              <option value="">No Disney Pass</option>
+              <option>Pixie Dust Pass</option>
+              <option>Pirate's Pass</option>
+              <option>Sorcerer Pass</option>
+              <option>Incredi-Pass</option>
+              <option>Other Disney Pass</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-lbl">Universal Annual Pass (optional)</label>
+            <select class="field-input" id="reg-universal-pass">
+              <option value="">No Universal Pass</option>
+              <option>Power Pass</option>
+              <option>Preferred Pass</option>
+              <option>Premier Pass</option>
+              <option>Other Universal Pass</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <!-- Step 3 -->
@@ -736,6 +759,29 @@
       <div class="field">
         <label class="field-lbl">Home Location</label>
         <input class="field-input" id="ep-location" placeholder="Orlando, FL">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-lbl">Disney Annual Pass</label>
+          <select class="field-input" id="ep-disney-pass">
+            <option value="">No Disney Pass</option>
+            <option>Pixie Dust Pass</option>
+            <option>Pirate's Pass</option>
+            <option>Sorcerer Pass</option>
+            <option>Incredi-Pass</option>
+            <option>Other Disney Pass</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-lbl">Universal Annual Pass</label>
+          <select class="field-input" id="ep-universal-pass">
+            <option value="">No Universal Pass</option>
+            <option>Power Pass</option>
+            <option>Preferred Pass</option>
+            <option>Premier Pass</option>
+            <option>Other Universal Pass</option>
+          </select>
+        </div>
       </div>
       <div class="field" style="border-top:1px dashed var(--border);padding-top:14px">
         <label class="field-lbl">Password</label>
@@ -1684,9 +1730,9 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js?v=26"></script>
-<script src="supabase-auth.js?v=8"></script>
-<script src="supabase-data.js?v=13"></script>
+<script src="main.js?v=27"></script>
+<script src="supabase-auth.js?v=9"></script>
+<script src="supabase-data.js?v=14"></script>
 <script src="supabase-food.js?v=11"></script>
 <script src="supabase-waittimes.js?v=3"></script>
 <script src="leaderboard.js?v=5"></script>

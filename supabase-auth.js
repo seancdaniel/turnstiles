@@ -11,6 +11,7 @@ function profileToUser(p, email) {
     fname: p.first_name || '', lname: p.last_name || '',
     email: email || '', avatar: p.avatar || '\u{1F3A2}', avatarUrl: p.avatar_url || '',
     bio: p.bio || '', location: p.location || '',
+    disneyPass: p.disney_pass || '', universalPass: p.universal_pass || '',
     parks: [], joinYear: p.join_year || new Date().getFullYear()
   };
 }
@@ -56,14 +57,16 @@ async function regSubmit() {
   const pass = document.getElementById('reg-pass').value;
   const bio = document.getElementById('reg-bio').value.trim();
   const loc = document.getElementById('reg-location').value.trim();
+  const disneyPass = document.getElementById('reg-disney-pass').value;
+  const universalPass = document.getElementById('reg-universal-pass').value;
   const { data, error } = await sb.auth.signUp({
     email: email, password: pass,
-    // bio/location travel as signup metadata (like username/first_name) so the
-    // handle_new_user() trigger can write them straight into the new profile row.
+    // bio/location/pass fields travel as signup metadata (like username/first_name) so
+    // the handle_new_user() trigger can write them straight into the new profile row.
     // A follow-up client-side update() can't be relied on here: with email
     // confirmation ON there's no session yet at this point, so RLS would just
     // silently drop the update (0 rows matched, no error) - see schema.sql.
-    options: { data: { username: username, first_name: fname, last_name: lname, avatar: selectedAvatar, bio: bio || 'Theme park enthusiast.', location: loc } }
+    options: { data: { username: username, first_name: fname, last_name: lname, avatar: selectedAvatar, bio: bio || 'Theme park enthusiast.', location: loc, disney_pass: disneyPass, universal_pass: universalPass } }
   });
   if (error) { toast(error.message, 'error'); return; }
   // only attempt the avatar Storage upload if we actually have a session (email confirmation
@@ -184,6 +187,8 @@ function openEditProfile() {
   document.getElementById('ep-username').value = u.username || '';
   document.getElementById('ep-bio').value = u.bio || '';
   document.getElementById('ep-location').value = u.location || '';
+  document.getElementById('ep-disney-pass').value = u.disneyPass || '';
+  document.getElementById('ep-universal-pass').value = u.universalPass || '';
   document.getElementById('ep-user-err').classList.remove('show');
   openOverlay('overlay-edit-profile');
 }
@@ -195,6 +200,8 @@ async function submitEditProfile() {
   const username = document.getElementById('ep-username').value.trim();
   const bio = document.getElementById('ep-bio').value.trim();
   const location = document.getElementById('ep-location').value.trim();
+  const disneyPass = document.getElementById('ep-disney-pass').value;
+  const universalPass = document.getElementById('ep-universal-pass').value;
   const err = document.getElementById('ep-user-err');
   err.classList.remove('show');
   if (!fname || !username) { toast('First name and username are required.', 'error'); return; }
@@ -219,12 +226,14 @@ async function submitEditProfile() {
 
   const { error } = await sb.from('profiles').update({
     first_name: fname, last_name: lname, username: username,
-    avatar: editSelectedAvatar || u.avatar, avatar_url: avatarUrl, bio: bio, location: location
+    avatar: editSelectedAvatar || u.avatar, avatar_url: avatarUrl, bio: bio, location: location,
+    disney_pass: disneyPass, universal_pass: universalPass
   }).eq('id', u.id);
   if (error) { toast('Could not save: ' + error.message, 'error'); return; }
   STATE.currentUser = Object.assign({}, u, {
     fname: fname, lname: lname, username: username,
-    avatar: editSelectedAvatar || u.avatar, avatarUrl: avatarUrl || '', bio: bio, location: location
+    avatar: editSelectedAvatar || u.avatar, avatarUrl: avatarUrl || '', bio: bio, location: location,
+    disneyPass: disneyPass, universalPass: universalPass
   });
   document.getElementById('nav-avatar').innerHTML = avatarHtml(STATE.currentUser.avatarUrl, STATE.currentUser.avatar);
   document.getElementById('nav-username').textContent = STATE.currentUser.username;

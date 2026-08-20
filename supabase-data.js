@@ -67,7 +67,9 @@ function openUserProfile(userId) {
     badges.map(function (b) {
       var gold = /Gold|Park|Foodie/.test(b) ? ' gold' : '';
       return '<span class="badge' + gold + '">' + escapeHtml(b) + '</span>';
-    }).join('');
+    }).join('') +
+    (u.disneyPass ? '<span class="badge">🏰 ' + escapeHtml(u.disneyPass) + '</span>' : '') +
+    (u.universalPass ? '<span class="badge">🌎 ' + escapeHtml(u.universalPass) + '</span>' : '');
 
   var visitsEl = document.getElementById('up-visits');
   var recent = my.slice().sort(function (a, b) { return b.ts - a.ts; }).slice(0, 10);

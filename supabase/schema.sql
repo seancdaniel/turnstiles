@@ -261,3 +261,37 @@ begin
   return new;
 end;
 $$;
+
+-- ============================================================
+-- MIGRATION — Disney/Universal Annual Pass fields.
+-- Which tier (if any) of each resort's AP the user holds, set at
+-- signup and editable afterward. Folded into handle_new_user() for
+-- the same reason bio/location were: with email confirmation ON
+-- there's no session yet right after signUp(), so these travel as
+-- signup metadata rather than a follow-up client update(). Safe to
+-- re-run.
+-- ============================================================
+alter table public.profiles add column if not exists disney_pass text;
+alter table public.profiles add column if not exists universal_pass text;
+
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  insert into public.profiles (id, username, first_name, last_name, avatar, bio, location, disney_pass, universal_pass)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'username', 'user_' || substr(new.id::text, 1, 8)),
+    new.raw_user_meta_data->>'first_name',
+    new.raw_user_meta_data->>'last_name',
+    coalesce(new.raw_user_meta_data->>'avatar', '🎢'),
+    coalesce(new.raw_user_meta_data->>'bio', 'Theme park enthusiast.'),
+    new.raw_user_meta_data->>'location',
+    new.raw_user_meta_data->>'disney_pass',
+    new.raw_user_meta_data->>'universal_pass'
+  );
+  return new;
+end;
+$$;
