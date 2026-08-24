@@ -202,7 +202,6 @@ var RESTAURANTS_BY_PARK = {
     ['Chicken Guy!', 'quick'],
     ['The Daily Poutine', 'quick'],
     ['Earl of Sandwich', 'quick'],
-    ['Shake Shack', 'quick'],
     ["Wetzel's Pretzels", 'quick'],
     ['Cookes of Dublin', 'quick'],
     ['Pizza Ponte', 'quick'],
