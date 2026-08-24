@@ -9,10 +9,12 @@
 
    Curated from general knowledge, not pulled live from Disney/Universal's own
    dining pages - restaurants open, close, and get renamed often enough that
-   this WILL drift out of date over time, and Epic Universe (opened 2025) is
-   the least certain section here since it's the newest park. If a user says
-   a spot is missing, closed, or misnamed, that's real - just add/edit/remove
-   the entry below and bump every ?v= that loads this file (see index.html).
+   this WILL drift out of date over time. Epic Universe (opened 2025) is the
+   least certain theme-park section since it's the newest park, and Disney
+   Springs is its own risk for a different reason - its restaurant lineup
+   rotates more often than an actual theme park's does. If a user says a spot
+   is missing, closed, or misnamed, that's real - just add/edit/remove the
+   entry below and bump every ?v= that loads this file (see index.html).
    No schema change needed either way: this only feeds the picker, the actual
    choice still just gets written into food_reviews.spot as plain text, same
    as it always has. */
@@ -174,6 +176,47 @@ var RESTAURANTS_BY_PARK = {
     ['Whakawaiwai Eats', 'quick'],
     ['Kunuku Boat Bar', 'snack'],
     ['Dancing Dragons Boat Bar', 'snack']
+  ],
+  'Disney Springs': [
+    ['The Boathouse', 'table'],
+    ["Chef Art Smith's Homecomin'", 'table'],
+    ['Morimoto Asia', 'table'],
+    ['Paddlefish', 'table'],
+    ['Raglan Road Irish Pub and Restaurant', 'table'],
+    ['STK Orlando', 'table'],
+    ['Terralina Crafted Italian', 'table'],
+    ['The Edison', 'table'],
+    ['Jaleo by José Andrés', 'table'],
+    ["Maria & Enzo's Ristorante", 'table'],
+    ["Enzo's Hideaway", 'table'],
+    ['Wine Bar George', 'table'],
+    ['City Works Eatery & Pour House', 'table'],
+    ['Planet Hollywood', 'table'],
+    ['Rainforest Cafe', 'table'],
+    ['T-REX', 'table'],
+    ['House of Blues Restaurant & Bar', 'table'],
+    ['Frontera Cocina', 'table'],
+    ['The Polite Pig', 'table'],
+    ['Splitsville Luxury Lanes', 'table'],
+    ["Blaze Fast-Fire'd Pizza", 'quick'],
+    ['Chicken Guy!', 'quick'],
+    ['The Daily Poutine', 'quick'],
+    ['Earl of Sandwich', 'quick'],
+    ['Shake Shack', 'quick'],
+    ["Wetzel's Pretzels", 'quick'],
+    ['Cookes of Dublin', 'quick'],
+    ['Pizza Ponte', 'quick'],
+    ['D-Luxe Burger', 'quick'],
+    ["B.B. Wolf's Sausage Co.", 'quick'],
+    ['Wolfgang Puck Express', 'quick'],
+    ['Starbucks', 'quick'],
+    ['Vivoli il Gelato', 'snack'],
+    ["Amorette's Patisserie", 'snack'],
+    ['Sprinkles', 'snack'],
+    ["Erin McKenna's Bakery", 'snack'],
+    ['Ghirardelli Soda Fountain and Chocolate Shop', 'snack'],
+    ['Joffrey\'s Coffee & Tea Company', 'snack'],
+    ['Aristocrepes', 'snack']
   ],
   "Disney's Animal Kingdom Lodge": [
     ['Jiko - The Cooking Place', 'table'],
