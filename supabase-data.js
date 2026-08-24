@@ -274,7 +274,10 @@ function rateAFoodFromCheckin() {
   closeOverlay('overlay-add-miles');
   if (typeof resetFoodForm === 'function') resetFoodForm();
   openOverlay('overlay-food-review');
-  if (c) { var parkSel = document.getElementById('fr-park'); if (parkSel) parkSel.value = c.park; }
+  if (c) {
+    var parkSel = document.getElementById('fr-park');
+    if (parkSel) { parkSel.value = c.park; if (typeof updateRestaurantOptions === 'function') updateRestaurantOptions(); }
+  }
 }
 
 async function submitAddMiles() {

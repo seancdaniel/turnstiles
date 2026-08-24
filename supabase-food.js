@@ -72,6 +72,57 @@ async function loadData() {
   } catch (e) { console.log('loadData error:', e); }
 }
 
+// Park -> restaurant cascading select, same idea as updateRideOptions() in
+// supabase-waittimes.js. RESTAURANTS_BY_PARK comes from restaurants-data.js.
+function updateRestaurantOptions() {
+  var park = document.getElementById('fr-park').value;
+  var sel = document.getElementById('fr-spot');
+  var list = typeof RESTAURANTS_BY_PARK !== 'undefined' ? RESTAURANTS_BY_PARK[park] : null;
+  if (!list) { sel.innerHTML = '<option value="">Select a park first...</option>'; return; }
+  var byType = { table: [], quick: [], snack: [] };
+  list.forEach(function (item) { if (byType[item[1]]) byType[item[1]].push(item[0]); });
+  var html = '<option value="">Select where you ate...</option>';
+  ['table', 'quick', 'snack'].forEach(function (t) {
+    if (!byType[t].length) return;
+    html += '<optgroup label="' + DINING_TYPE_LABELS[t] + '">' +
+      byType[t].map(function (n) { return '<option>' + escapeHtml(n) + '</option>'; }).join('') +
+      '</optgroup>';
+  });
+  html += '<option value="__other__">Other / not listed here...</option>';
+  sel.innerHTML = html;
+}
+
+function handleSpotSelect() {
+  foodClearPick();
+  var isOther = document.getElementById('fr-spot').value === '__other__';
+  var other = document.getElementById('fr-spot-other');
+  other.style.display = isOther ? 'block' : 'none';
+  if (!isOther) other.value = '';
+}
+
+// used when pre-filling the form from a search pick, a "want to try" favorite,
+// or editing an existing review - all of which carry a plain spot string that
+// may or may not still be one of the curated options for that park (older
+// rows especially, or a name that's since changed)
+function setSpotValue(spotText) {
+  var sel = document.getElementById('fr-spot');
+  spotText = spotText || '';
+  if (!spotText) { sel.value = ''; handleSpotSelect(); return; }
+  sel.value = spotText;
+  if (sel.value !== spotText) {
+    // not one of the curated options for this park - fall back to Other
+    sel.value = '__other__';
+    document.getElementById('fr-spot-other').value = spotText;
+  }
+  handleSpotSelect();
+}
+
+function getSpotValue() {
+  var sel = document.getElementById('fr-spot');
+  if (sel.value === '__other__') return document.getElementById('fr-spot-other').value.trim();
+  return sel.value.trim();
+}
+
 // distinct food items that already exist (name + park + spot)
 function foodItemsList() {
   var seen = {}, out = [];
@@ -104,7 +155,8 @@ function foodPickEl(el) {
   document.getElementById('fr-search').value = n;
   document.getElementById('fr-name').value = n;
   document.getElementById('fr-park').value = p;
-  document.getElementById('fr-spot').value = s;
+  updateRestaurantOptions();
+  setSpotValue(s);
   document.getElementById('fr-results').style.display = 'none';
   var picked = document.getElementById('fr-picked');
   picked.innerHTML = 'Rating <strong>' + escapeHtml(n) + '</strong> — ' + escapeHtml(p + (s ? ' · ' + s : '')) + ' <a onclick="foodClearPick()">change</a>';
@@ -122,7 +174,9 @@ function foodClearPick() {
 }
 
 function resetFoodForm() {
-  ['fr-search', 'fr-name', 'fr-spot', 'fr-review'].forEach(function (id) { var e = document.getElementById(id); if (e) e.value = ''; });
+  ['fr-search', 'fr-name', 'fr-review'].forEach(function (id) { var e = document.getElementById(id); if (e) e.value = ''; });
+  updateRestaurantOptions();
+  var other = document.getElementById('fr-spot-other'); if (other) { other.value = ''; other.style.display = 'none'; }
   var r = document.getElementById('fr-results'); if (r) { r.innerHTML = ''; r.style.display = 'none'; }
   var p = document.getElementById('fr-picked'); if (p) p.style.display = 'none';
   var sc = document.getElementById('fr-score'); if (sc) sc.value = 8.5;
@@ -149,7 +203,7 @@ async function submitFoodReview() {
   if (!STATE.currentUser) { openOverlay('overlay-register'); return; }
   var name = document.getElementById('fr-name').value.trim();
   var park = document.getElementById('fr-park').value;
-  var spot = document.getElementById('fr-spot').value.trim();
+  var spot = getSpotValue();
   if (!name) { toast('Pick an item or enter a name.', 'error'); return; }
   var score = parseFloat(document.getElementById('fr-score').value);
   var review = document.getElementById('fr-review').value.trim();
@@ -327,7 +381,8 @@ function rateFavorite(id) {
   document.getElementById('fr-search').value = f.itemName;
   document.getElementById('fr-name').value = f.itemName;
   document.getElementById('fr-park').value = f.park;
-  document.getElementById('fr-spot').value = f.spot || '';
+  updateRestaurantOptions();
+  setSpotValue(f.spot || '');
   var picked = document.getElementById('fr-picked');
   picked.innerHTML = 'Rating <strong>' + escapeHtml(f.itemName) + '</strong> — ' + escapeHtml(f.park + (f.spot ? ' · ' + f.spot : '')) + ' <a onclick="foodClearPick()">change</a>';
   picked.style.display = 'block';
@@ -385,7 +440,8 @@ function editFoodReview(id) {
   document.getElementById('fr-search').value = r.itemName;
   document.getElementById('fr-name').value = r.itemName;
   document.getElementById('fr-park').value = r.park;
-  document.getElementById('fr-spot').value = r.spot || '';
+  updateRestaurantOptions();
+  setSpotValue(r.spot || '');
   document.getElementById('fr-score').value = r.score;
   document.getElementById('fr-score-display').textContent = Number(r.score).toFixed(1);
   document.getElementById('fr-review').value = r.review || '';

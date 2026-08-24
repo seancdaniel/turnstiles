@@ -495,7 +495,7 @@
       </div>
       <div class="field">
         <label class="field-lbl">Park or Resort</label>
-        <select class="field-input" id="fr-park" onchange="foodClearPick()">
+        <select class="field-input" id="fr-park" onchange="foodClearPick();updateRestaurantOptions()">
           <optgroup label="Disney World">
             <option>Magic Kingdom</option>
             <option>EPCOT</option>
@@ -537,8 +537,11 @@
         </select>
       </div>
       <div class="field">
-        <label class="field-lbl">Where (stand / restaurant)</label>
-        <input class="field-input" id="fr-spot" placeholder="e.g. Aloha Isle or Kona Cafe" oninput="foodClearPick()">
+        <label class="field-lbl">Where (optional)</label>
+        <select class="field-input" id="fr-spot" onchange="handleSpotSelect()">
+          <option value="">Select a park first...</option>
+        </select>
+        <input class="field-input" id="fr-spot-other" style="display:none;margin-top:8px" placeholder="Name the restaurant or stand" oninput="foodClearPick()">
       </div>
       <div class="field">
         <div class="score-display" id="fr-score-display">8.5</div>
@@ -854,7 +857,7 @@
             <div class="dropdown-item" onclick="newCheckin();closeDropdown()">
               <i class="ti ti-circle-plus"></i> Log Check-In
             </div>
-            <div class="dropdown-item" onclick="openOverlay('overlay-food-review');closeDropdown()">
+            <div class="dropdown-item" onclick="resetFoodForm();openOverlay('overlay-food-review');closeDropdown()">
               <i class="ti ti-star"></i> Rate a Food Item
             </div>
             <div class="dropdown-item" onclick="openOverlay('overlay-photo');closeDropdown()">
@@ -1341,7 +1344,7 @@
     <div style="max-width:1300px;margin:0 auto;padding:48px 32px">
       <div class="section-head">
         <div><h2 class="section-title">FOOD SCORES</h2><p class="section-sub">Community-rated across all parks</p></div>
-        <button class="btn-sm primary" onclick="actionOrSignup('overlay-food-review')"><i class="ti ti-plus" style="font-size:12px"></i> Rate an Item</button>
+        <button class="btn-sm primary" onclick="resetFoodForm();actionOrSignup('overlay-food-review')"><i class="ti ti-plus" style="font-size:12px"></i> Rate an Item</button>
       </div>
       <div class="food-cols">
         <div>
@@ -1779,9 +1782,10 @@
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="main.js?v=29"></script>
+<script src="restaurants-data.js?v=1"></script>
 <script src="supabase-auth.js?v=11"></script>
-<script src="supabase-data.js?v=16"></script>
-<script src="supabase-food.js?v=12"></script>
+<script src="supabase-data.js?v=17"></script>
+<script src="supabase-food.js?v=13"></script>
 <script src="supabase-waittimes.js?v=3"></script>
 <script src="supabase-donors.js?v=2"></script>
 <script src="leaderboard.js?v=5"></script>
