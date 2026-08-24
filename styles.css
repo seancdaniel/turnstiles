@@ -121,6 +121,7 @@ body {
   padding: 7px 13px;
   border-radius: 4px;
   transition: all 0.15s;
+  white-space: nowrap;
 }
 .nav-links a:hover { background: var(--parchment-dk); color: var(--ink); }
 .nav-links a.active { color: var(--coral); }
@@ -2262,7 +2263,7 @@ body.guest #nav-home { display: none !important; }
 .app-mobile-menu a:hover { background: rgba(255,255,255,0.08); color: #fff; }
 .app-mobile-menu a.active { color: #E8B84B; }
 
-@media (max-width: 900px) {
+@media (max-width: 1150px) {
   .nav-links { display: none; }
   .app-burger { display: inline-flex; }
   .nav-inner { padding: 0 20px; }
