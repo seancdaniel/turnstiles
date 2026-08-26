@@ -215,33 +215,43 @@ function editCheckin(id) {
   openOverlay('overlay-checkin');
 }
 
-async function submitCheckin() {
+async function submitCheckin(btn) {
   if (!STATE.currentUser) { openOverlay('overlay-register'); return; }
-  var park = document.getElementById('ci-park').value;
-  var date = document.getElementById('ci-date').value || new Date().toISOString().split('T')[0];
-  var review = document.getElementById('ci-review').value.trim();
-  var uid = STATE.currentUser.id;
-  var wasEdit = !!ciEditId;
-  var res;
-  if (wasEdit) {
-    // miles isn't touched here - it's edited separately via openAddMiles()/the Complete Check-In flow
-    res = await sb.from('checkins').update({ park: park, visit_date: date, review: review }).eq('id', ciEditId).eq('user_id', uid);
-  } else {
-    res = await sb.from('checkins').insert({ user_id: uid, park: park, visit_date: date, review: review });
+  // guards against a rapid double-click (or an impatient re-click on a slow
+  // connection) firing this whole insert+photo-upload sequence a second time
+  // before the first call finishes - that's how a check-in and its photo
+  // were ending up posted twice
+  if (btn && btn.disabled) return;
+  if (btn) btn.disabled = true;
+  try {
+    var park = document.getElementById('ci-park').value;
+    var date = document.getElementById('ci-date').value || new Date().toISOString().split('T')[0];
+    var review = document.getElementById('ci-review').value.trim();
+    var uid = STATE.currentUser.id;
+    var wasEdit = !!ciEditId;
+    var res;
+    if (wasEdit) {
+      // miles isn't touched here - it's edited separately via openAddMiles()/the Complete Check-In flow
+      res = await sb.from('checkins').update({ park: park, visit_date: date, review: review }).eq('id', ciEditId).eq('user_id', uid);
+    } else {
+      res = await sb.from('checkins').insert({ user_id: uid, park: park, visit_date: date, review: review });
+    }
+    if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
+    var photoImg = document.getElementById('ci-photo-img');
+    if (photoImg && photoImg.src && photoImg.src.indexOf('data:') === 0) {
+      var small = await downscale(photoImg.src);
+      var url = await uploadPhoto(small, uid);
+      if (url) await sb.from('photos').insert({ user_id: uid, park: park, caption: review || ('Check-in at ' + park), image_url: url });
+    }
+    closeOverlay('overlay-checkin');
+    resetCheckinForm();
+    document.getElementById('ci-date').valueAsDate = new Date();
+    await loadData();
+    showView('home');
+    toast(wasEdit ? 'Check-in updated!' : 'Check-in at ' + park + ' logged!');
+  } finally {
+    if (btn) btn.disabled = false;
   }
-  if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
-  var photoImg = document.getElementById('ci-photo-img');
-  if (photoImg && photoImg.src && photoImg.src.indexOf('data:') === 0) {
-    var small = await downscale(photoImg.src);
-    var url = await uploadPhoto(small, uid);
-    if (url) await sb.from('photos').insert({ user_id: uid, park: park, caption: review || ('Check-in at ' + park), image_url: url });
-  }
-  closeOverlay('overlay-checkin');
-  resetCheckinForm();
-  document.getElementById('ci-date').valueAsDate = new Date();
-  await loadData();
-  showView('home');
-  toast(wasEdit ? 'Check-in updated!' : 'Check-in at ' + park + ' logged!');
 }
 
 var amEditId = null;
@@ -280,24 +290,30 @@ function rateAFoodFromCheckin() {
   }
 }
 
-async function submitAddMiles() {
+async function submitAddMiles(btn) {
   if (!STATE.currentUser || !amEditId) { closeOverlay('overlay-add-miles'); return; }
-  var c = STATE.checkins.find(function (x) { return x.id === amEditId; });
-  var uid = STATE.currentUser.id;
-  var miles = parseFloat(document.getElementById('am-miles').value) || 0;
-  var res = await sb.from('checkins').update({ miles: miles }).eq('id', amEditId).eq('user_id', uid);
-  if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
-  var photoImg = document.getElementById('am-photo-img');
-  if (c && photoImg && photoImg.src && photoImg.src.indexOf('data:') === 0) {
-    var small = await downscale(photoImg.src);
-    var url = await uploadPhoto(small, uid);
-    if (url) await sb.from('photos').insert({ user_id: uid, park: c.park, caption: 'Check-in at ' + c.park, image_url: url });
+  if (btn && btn.disabled) return; // see submitCheckin - same double-click guard
+  if (btn) btn.disabled = true;
+  try {
+    var c = STATE.checkins.find(function (x) { return x.id === amEditId; });
+    var uid = STATE.currentUser.id;
+    var miles = parseFloat(document.getElementById('am-miles').value) || 0;
+    var res = await sb.from('checkins').update({ miles: miles }).eq('id', amEditId).eq('user_id', uid);
+    if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
+    var photoImg = document.getElementById('am-photo-img');
+    if (c && photoImg && photoImg.src && photoImg.src.indexOf('data:') === 0) {
+      var small = await downscale(photoImg.src);
+      var url = await uploadPhoto(small, uid);
+      if (url) await sb.from('photos').insert({ user_id: uid, park: c.park, caption: 'Check-in at ' + c.park, image_url: url });
+    }
+    closeOverlay('overlay-add-miles');
+    amEditId = null;
+    document.getElementById('am-miles').value = '';
+    await loadData();
+    toast('Check-in updated!');
+  } finally {
+    if (btn) btn.disabled = false;
   }
-  closeOverlay('overlay-add-miles');
-  amEditId = null;
-  document.getElementById('am-miles').value = '';
-  await loadData();
-  toast('Check-in updated!');
 }
 
 // small prompt on the home page pointing at your most recent check-in, so miles/food/photo
@@ -352,25 +368,31 @@ async function submitFoodReview() {
   toast(name + ' rated ' + score.toFixed(1) + '/10!');
 }
 
-async function submitPhoto() {
+async function submitPhoto(btn) {
   if (!STATE.currentUser) { openOverlay('overlay-register'); return; }
-  var park = document.getElementById('ph-park').value;
-  var caption = document.getElementById('ph-caption').value.trim();
-  var img = document.getElementById('ph-preview-img');
-  var url = null;
-  if (img && img.src && img.src.indexOf('data:') === 0) {
-    var small = await downscale(img.src);
-    url = await uploadPhoto(small, STATE.currentUser.id);
+  if (btn && btn.disabled) return; // see submitCheckin - same double-click guard
+  if (btn) btn.disabled = true;
+  try {
+    var park = document.getElementById('ph-park').value;
+    var caption = document.getElementById('ph-caption').value.trim();
+    var img = document.getElementById('ph-preview-img');
+    var url = null;
+    if (img && img.src && img.src.indexOf('data:') === 0) {
+      var small = await downscale(img.src);
+      url = await uploadPhoto(small, STATE.currentUser.id);
+    }
+    var res = await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: park, caption: caption || ('At ' + park), image_url: url });
+    if (res.error) { toast('Could not share photo: ' + res.error.message, 'error'); return; }
+    closeOverlay('overlay-photo');
+    document.getElementById('ph-caption').value = '';
+    document.getElementById('ph-preview').style.display = 'none';
+    var phFile = document.getElementById('ph-file'); if (phFile) phFile.value = '';
+    await loadData();
+    showView('photos');
+    toast('Photo shared with the community!');
+  } finally {
+    if (btn) btn.disabled = false;
   }
-  var res = await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: park, caption: caption || ('At ' + park), image_url: url });
-  if (res.error) { toast('Could not share photo: ' + res.error.message, 'error'); return; }
-  closeOverlay('overlay-photo');
-  document.getElementById('ph-caption').value = '';
-  document.getElementById('ph-preview').style.display = 'none';
-  var phFile = document.getElementById('ph-file'); if (phFile) phFile.value = '';
-  await loadData();
-  showView('photos');
-  toast('Photo shared with the community!');
 }
 
 // initial community load so guest browsing shows real data

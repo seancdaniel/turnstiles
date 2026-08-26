@@ -1562,6 +1562,10 @@ select.field-input { cursor: pointer; }
 .btn-sm.primary:hover { background: var(--coral-dk); }
 .btn-sm.danger { color: #C0392B; border-color: rgba(192,57,43,0.35); }
 .btn-sm.danger:hover { background: #C0392B; color: white; border-color: #C0392B; }
+/* guards against duplicate check-ins/reviews/photos from a rapid double-click
+   while a submit is still in flight - see submitCheckin/submitFoodReview/etc. */
+.btn-sm:disabled { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
+.btn-sm.primary:disabled:hover { background: var(--coral); }
 
 /* ── Progress bar ── */
 .rank-progress { margin: 10px 0; }

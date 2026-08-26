@@ -199,48 +199,58 @@ function handleFoodPhoto(e) {
   reader.readAsDataURL(file);
 }
 
-async function submitFoodReview() {
+async function submitFoodReview(btn) {
   if (!STATE.currentUser) { openOverlay('overlay-register'); return; }
-  var name = document.getElementById('fr-name').value.trim();
-  var park = document.getElementById('fr-park').value;
-  var spot = getSpotValue();
-  if (!name) { toast('Pick an item or enter a name.', 'error'); return; }
-  var score = parseFloat(document.getElementById('fr-score').value);
-  var review = document.getElementById('fr-review').value.trim();
+  // guards against a rapid double-click (or an impatient re-click on a slow
+  // connection) firing this whole insert+photo-upload sequence a second time
+  // before the first call finishes - that's how a review and its photo were
+  // ending up posted twice
+  if (btn && btn.disabled) return;
+  if (btn) btn.disabled = true;
+  try {
+    var name = document.getElementById('fr-name').value.trim();
+    var park = document.getElementById('fr-park').value;
+    var spot = getSpotValue();
+    if (!name) { toast('Pick an item or enter a name.', 'error'); return; }
+    var score = parseFloat(document.getElementById('fr-score').value);
+    var review = document.getElementById('fr-review').value.trim();
 
-  var photoUrl = null;
-  var _fp = document.getElementById('fr-photo-img');
-  var _fpSrc = _fp && _fp.getAttribute('src');
-  if (_fpSrc && _fpSrc.indexOf('data:') === 0) {
-    var _small = await downscale(_fpSrc);
-    photoUrl = await uploadPhoto(_small, STATE.currentUser.id);
-  } else if (frEditId && _fpSrc) {
-    photoUrl = _fpSrc; // unchanged existing photo
-  }
+    var photoUrl = null;
+    var _fp = document.getElementById('fr-photo-img');
+    var _fpSrc = _fp && _fp.getAttribute('src');
+    if (_fpSrc && _fpSrc.indexOf('data:') === 0) {
+      var _small = await downscale(_fpSrc);
+      photoUrl = await uploadPhoto(_small, STATE.currentUser.id);
+    } else if (frEditId && _fpSrc) {
+      photoUrl = _fpSrc; // unchanged existing photo
+    }
 
-  if (frEditId) {
-    var _up = await sb.from('food_reviews').update({ item_name: name, park: park, spot: spot, score: score, review: review, photo_url: photoUrl }).eq('id', frEditId).eq('user_id', STATE.currentUser.id);
-    if (_up.error) { toast('Could not update: ' + _up.error.message, 'error'); return; }
+    if (frEditId) {
+      var _up = await sb.from('food_reviews').update({ item_name: name, park: park, spot: spot, score: score, review: review, photo_url: photoUrl }).eq('id', frEditId).eq('user_id', STATE.currentUser.id);
+      if (_up.error) { toast('Could not update: ' + _up.error.message, 'error'); return; }
+      closeOverlay('overlay-food-review');
+      resetFoodForm();
+      await loadData();
+      showView('profile');
+      toast('Review updated!');
+      return;
+    }
+    var res = await sb.from('food_reviews').insert({ user_id: STATE.currentUser.id, item_name: name, park: park, spot: spot, score: score, review: review, photo_url: photoUrl });
+    if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
+    if (photoUrl) await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: park, caption: name + (spot ? ' - ' + spot : ''), image_url: photoUrl });
+    var matchingFavorite = STATE.foodFavorites.find(function (f) {
+      return f.userId === STATE.currentUser.id && f.itemName.toLowerCase() === name.toLowerCase() &&
+        f.park === park && (f.spot || '') === spot;
+    });
+    if (matchingFavorite) await sb.from('food_favorites').delete().eq('id', matchingFavorite.id);
     closeOverlay('overlay-food-review');
     resetFoodForm();
     await loadData();
-    showView('profile');
-    toast('Review updated!');
-    return;
+    showView('food');
+    toast(name + ' rated ' + score.toFixed(1) + '/10!');
+  } finally {
+    if (btn) btn.disabled = false;
   }
-  var res = await sb.from('food_reviews').insert({ user_id: STATE.currentUser.id, item_name: name, park: park, spot: spot, score: score, review: review, photo_url: photoUrl });
-  if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
-  if (photoUrl) await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: park, caption: name + (spot ? ' - ' + spot : ''), image_url: photoUrl });
-  var matchingFavorite = STATE.foodFavorites.find(function (f) {
-    return f.userId === STATE.currentUser.id && f.itemName.toLowerCase() === name.toLowerCase() &&
-      f.park === park && (f.spot || '') === spot;
-  });
-  if (matchingFavorite) await sb.from('food_favorites').delete().eq('id', matchingFavorite.id);
-  closeOverlay('overlay-food-review');
-  resetFoodForm();
-  await loadData();
-  showView('food');
-  toast(name + ' rated ' + score.toFixed(1) + '/10!');
 }
 
 // aggregate reviews per item = name + park + spot (case-insensitive), fixes count

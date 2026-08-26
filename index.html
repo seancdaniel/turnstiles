@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=58">
+  <link rel="stylesheet" href="styles.css?v=59">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -436,7 +436,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn-sm" onclick="closeOverlay('overlay-checkin')">Cancel</button>
-      <button class="btn-sm primary" onclick="submitCheckin()"><i class="ti ti-circle-check" style="font-size:13px"></i> Submit Check-In</button>
+      <button class="btn-sm primary" onclick="submitCheckin(this)"><i class="ti ti-circle-check" style="font-size:13px"></i> Submit Check-In</button>
     </div>
   </div>
 </div>
@@ -474,7 +474,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn-sm" onclick="closeOverlay('overlay-add-miles')">Finalize Without Miles</button>
-      <button class="btn-sm primary" onclick="submitAddMiles()"><i class="ti ti-circle-check" style="font-size:13px"></i> Save</button>
+      <button class="btn-sm primary" onclick="submitAddMiles(this)"><i class="ti ti-circle-check" style="font-size:13px"></i> Save</button>
     </div>
   </div>
 </div>
@@ -575,7 +575,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn-sm" onclick="closeOverlay('overlay-food-review')">Cancel</button>
-      <button class="btn-sm primary" onclick="submitFoodReview()">Submit Review</button>
+      <button class="btn-sm primary" onclick="submitFoodReview(this)">Submit Review</button>
     </div>
   </div>
 </div>
@@ -636,7 +636,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn-sm" onclick="closeOverlay('overlay-photo')">Cancel</button>
-      <button class="btn-sm primary" onclick="submitPhoto()">Share Photo</button>
+      <button class="btn-sm primary" onclick="submitPhoto(this)">Share Photo</button>
     </div>
   </div>
 </div>
@@ -1791,8 +1791,8 @@
 <script src="main.js?v=29"></script>
 <script src="restaurants-data.js?v=3"></script>
 <script src="supabase-auth.js?v=11"></script>
-<script src="supabase-data.js?v=17"></script>
-<script src="supabase-food.js?v=13"></script>
+<script src="supabase-data.js?v=18"></script>
+<script src="supabase-food.js?v=14"></script>
 <script src="supabase-waittimes.js?v=3"></script>
 <script src="supabase-donors.js?v=2"></script>
 <script src="leaderboard.js?v=5"></script>
