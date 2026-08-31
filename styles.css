@@ -408,11 +408,18 @@ body {
 }
 .btn-hero-outline:hover { background: var(--parchment-dk); }
 
-.btn-hero-outline {
+/* Light-on-dark variant, for the app hero only. Scoped to #app-shell because
+   the same class is also used by the landing page Sign In button, which sits
+   on the light ivory ticket panel - left unscoped this rule won there too and
+   made that button cream-on-cream, effectively invisible. A luminance contrast
+   checker gives a FALSE PASS on it, because the ticket panel is painted with a
+   background-image gradient rather than a background-color, so walking up for
+   a background finds the dark page behind it. Check that one by eye. */
+#app-shell .btn-hero-outline {
   color: #F3E7C8;
   border-color: rgba(231,206,138,0.4);
 }
-.btn-hero-outline:hover {
+#app-shell .btn-hero-outline:hover {
   background: rgba(231,206,138,0.10);
   border-color: rgba(231,206,138,0.7);
 }
