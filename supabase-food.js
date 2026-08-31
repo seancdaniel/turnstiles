@@ -18,7 +18,10 @@ async function loadData() {
       sb.from('photos').select('*').order('created_at', { ascending: false }),
       sb.from('food_favorites').select('*').order('created_at', { ascending: false }),
       sb.from('wait_times').select('*').order('created_at', { ascending: false }),
-      sb.from('donors').select('*').order('created_at', { ascending: false })
+      sb.from('donors').select('*').order('created_at', { ascending: false }),
+      sb.from('festivals').select('*').order('created_at', { ascending: false }),
+      sb.from('festival_reviews').select('*').order('created_at', { ascending: false }),
+      sb.from('festival_favorites').select('*').order('created_at', { ascending: false })
     ]);
     var profiles = r[0].data || [];
     var idMap = {};
@@ -67,6 +70,24 @@ async function loadData() {
         username: u ? u.username : null,
         avatar: u ? u.avatar : '', avatarUrl: u ? u.avatarUrl : '',
         ts: new Date(d.created_at).getTime() };
+    });
+    // EPCOT Festivals: `festivals` sorted newest-first (see query above), so
+    // STATE.festivals[0] is always the "current" one and everything after it
+    // is the archive - no active/inactive flag to keep in sync.
+    STATE.festivals = (r[7].data || []).map(function (f) {
+      return { id: f.id, name: f.name, ts: new Date(f.created_at).getTime() };
+    });
+    STATE.festivalReviews = (r[8].data || []).map(function (f) {
+      return { id: f.id, userId: f.user_id, festivalId: f.festival_id,
+        username: (idMap[f.user_id] && idMap[f.user_id].username) || 'someone',
+        avatar: (idMap[f.user_id] && idMap[f.user_id].avatar) || '\u{1F3A2}',
+        avatarUrl: (idMap[f.user_id] && idMap[f.user_id].avatarUrl) || '',
+        boothName: f.booth_name, location: f.location || '', score: Number(f.score),
+        review: f.review || '', photoUrl: f.photo_url || '', ts: new Date(f.created_at).getTime() };
+    });
+    STATE.festivalFavorites = (r[9].data || []).map(function (f) {
+      return { id: f.id, userId: f.user_id, festivalId: f.festival_id,
+        boothName: f.booth_name, location: f.location || '', ts: new Date(f.created_at).getTime() };
     });
     rerenderActive();
   } catch (e) { console.log('loadData error:', e); }

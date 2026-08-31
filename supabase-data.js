@@ -2,6 +2,7 @@
 
 // drop the demo seed; we use real data now
 STATE.users = []; STATE.checkins = []; STATE.foodReviews = []; STATE.photos = []; STATE.foodFavorites = []; STATE.waitTimes = [];
+STATE.festivals = []; STATE.festivalReviews = []; STATE.festivalFavorites = [];
 
 function downscale(dataUrl, max) {
   max = max || 1000;
@@ -107,6 +108,7 @@ function rerenderActive() {
   if (id === 'view-home' && STATE.currentUser) { updatePassport(); updateParkCounts(); renderProfile(); }
   if (id === 'view-community') renderCommunity();
   if (id === 'view-food') renderFood();
+  if (id === 'view-festivals') renderFestivalView();
   if (id === 'view-photos') renderPhotos();
   if (id === 'view-waittimes') renderWaitTimes();
   if (id === 'view-thanks') renderThanks();

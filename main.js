@@ -126,8 +126,12 @@ function showView(name) {
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
   const navEl = document.getElementById('nav-'+name);
   if(navEl) navEl.classList.add('active');
+  // Epcot Festivals lives in a submenu off Food Scores - light up the parent
+  // link too so there's still a visible "you are here" cue in the main nav
+  if(name==='festivals') { const foodEl = document.getElementById('nav-food'); if(foodEl) foodEl.classList.add('active'); }
   if(name==='community') renderCommunity();
   if(name==='food') renderFood();
+  if(name==='festivals') renderFestivalView();
   if(name==='photos') renderPhotos();
   if(name==='waittimes') renderWaitTimes();
   if(name==='thanks') renderThanks();
@@ -365,6 +369,23 @@ function closeDropdown() {
 }
 document.addEventListener('click', e => {
   if(!e.target.closest('#nav-user-pill') && !e.target.closest('#user-dropdown')) closeDropdown();
+});
+
+// Nav item submenu (e.g. Food Scores -> Epcot Festivals). CSS handles the
+// mouse-hover reveal; this click toggle is the fallback for touch/tablet
+// viewports wide enough to show the desktop nav instead of the hamburger.
+function toggleNavSub(e) {
+  e.preventDefault(); e.stopPropagation();
+  const li = e.currentTarget.closest('.nav-has-sub');
+  if(!li) return;
+  li.classList.toggle('sub-open');
+}
+function closeNavSub() {
+  const open = document.querySelector('.nav-has-sub.sub-open');
+  if(open) open.classList.remove('sub-open');
+}
+document.addEventListener('click', e => {
+  if(!e.target.closest('.nav-has-sub')) closeNavSub();
 });
 
 // ============================================================

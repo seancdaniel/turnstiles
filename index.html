@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=59">
+  <link rel="stylesheet" href="styles.css?v=60">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -601,6 +601,93 @@
   </div>
 </div>
 
+<!-- Rate an EPCOT Festival booth -->
+<div class="overlay" id="overlay-festival-review">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Rate a Festival Booth</span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-festival-review')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label class="field-lbl">Booth Name</label>
+        <input class="field-input" id="fv-booth" list="fv-booth-datalist" placeholder="e.g. Refreshment Port" autocomplete="off">
+        <datalist id="fv-booth-datalist"></datalist>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Location within EPCOT</label>
+        <select class="field-input" id="fv-location" onchange="handleFestLocationSelect()">
+          <option value="">Select a location...</option>
+          <option>World Celebration</option>
+          <option>World Discovery</option>
+          <option>World Nature</option>
+          <option>World Showcase Plaza</option>
+          <option>Mexico</option>
+          <option>Norway</option>
+          <option>China</option>
+          <option>Germany</option>
+          <option>Italy</option>
+          <option>The American Adventure</option>
+          <option>Japan</option>
+          <option>Morocco</option>
+          <option>France</option>
+          <option>United Kingdom</option>
+          <option>Canada</option>
+          <option value="__other__">Other / not listed here...</option>
+        </select>
+        <input class="field-input" id="fv-location-other" style="display:none;margin-top:8px" placeholder="Describe where in EPCOT">
+      </div>
+      <div class="field">
+        <div class="score-display" id="fv-score-display">8.5</div>
+        <div class="score-display-sub">your score out of 10</div>
+        <input type="range" class="score-slider" id="fv-score" min="0" max="10" step="0.1" value="8.5" oninput="document.getElementById('fv-score-display').textContent=parseFloat(this.value).toFixed(1)">
+        <div class="score-slider-labels"><span>1 — Avoid</span><span>5 — Decent</span><span>10 — Must Try</span></div>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Review</label>
+        <textarea class="field-input" id="fv-review" rows="3" style="resize:none;height:80px" placeholder="Tell the community what you thought..."></textarea>
+      </div>
+      <div class="field">
+        <label class="field-lbl">Photo (optional)</label>
+        <div class="photo-upload-zone" onclick="document.getElementById('fv-photo-file').click()">
+          <div class="photo-upload-icon"><i class="ti ti-photo-plus"></i></div>
+          <div class="photo-upload-text">Add a photo of it</div>
+          <div class="photo-upload-sub">JPEG or PNG</div>
+        </div>
+        <input type="file" id="fv-photo-file" accept="image/*" style="display:none" onchange="handleFestivalPhoto(event)">
+        <div id="fv-photo-preview" style="margin-top:8px;display:none">
+          <img id="fv-photo-img" alt="Festival booth photo preview" style="width:100%;max-height:180px;object-fit:cover;border-radius:6px">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeOverlay('overlay-festival-review')">Cancel</button>
+      <button class="btn-sm primary" onclick="submitFestivalReview(this)">Submit Review</button>
+    </div>
+  </div>
+</div>
+
+<!-- EPCOT Festival booth detail: every individual review for one booth -->
+<div class="overlay" id="overlay-festival-detail">
+  <div class="modal modal-wide">
+    <div class="modal-hd">
+      <span class="modal-hd-title"><span id="fvd-emoji"></span> <span id="fvd-title"></span></span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-festival-detail')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="fd-summary">
+        <div class="fd-summary-loc" id="fvd-loc"></div>
+        <div class="fd-summary-score">
+          <span class="fd-summary-avg" id="fvd-avg"></span>
+          <span class="fd-summary-count" id="fvd-count"></span>
+        </div>
+      </div>
+      <button class="btn-sm" id="fvd-fav-btn" onclick="toggleFestivalFavoriteCurrent()" style="margin-bottom:16px">☆ Want to Try</button>
+      <div id="fvd-reviews-list"></div>
+    </div>
+  </div>
+</div>
+
 <!-- Photo Upload Modal -->
 <div class="overlay" id="overlay-photo">
   <div class="modal">
@@ -841,7 +928,15 @@
         <ul class="nav-links" role="list">
           <li><a href="#" onclick="showView('home')" id="nav-home">My Parks</a></li>
           <li><a href="#" onclick="showView('community')" id="nav-community">Leaderboard</a></li>
-          <li><a href="#" onclick="showView('food')" id="nav-food">Food Scores</a></li>
+          <li class="nav-has-sub">
+            <a href="#" onclick="showView('food')" id="nav-food">Food Scores</a>
+            <button type="button" class="nav-sub-toggle" aria-label="Show Food Scores submenu" onclick="toggleNavSub(event)"><i class="ti ti-chevron-down"></i></button>
+            <div class="nav-submenu">
+              <div class="nav-submenu-inner">
+                <a href="#" onclick="showView('festivals');closeNavSub()" id="nav-festivals">🎪 Epcot Festivals</a>
+              </div>
+            </div>
+          </li>
           <li><a href="#" onclick="showView('photos')" id="nav-photos">Photos</a></li>
           <li><a href="#" onclick="showView('waittimes')" id="nav-waittimes">Wait Times</a></li>
           <li><a href="#" onclick="showView('about')" id="nav-about">About</a></li>
@@ -873,6 +968,9 @@
             <div class="dropdown-item" onclick="openOverlay('overlay-wait-time');closeDropdown()">
               <i class="ti ti-clock"></i> Log a Wait Time
             </div>
+            <div class="dropdown-item" onclick="resetFestivalForm();openOverlay('overlay-festival-review');closeDropdown()">
+              🎪 Rate a Festival Booth
+            </div>
             <div class="dropdown-divider"></div>
             <div class="dropdown-item" onclick="openEditProfile();closeDropdown()">
               <i class="ti ti-pencil"></i> Edit Profile
@@ -891,6 +989,7 @@
         <a href="#" onclick="closeAppMenu();showView('home')">My Parks</a>
         <a href="#" onclick="closeAppMenu();showView('community')">Leaderboard</a>
         <a href="#" onclick="closeAppMenu();showView('food')">Food Scores</a>
+        <a href="#" onclick="closeAppMenu();showView('festivals')">🎪 Epcot Festivals</a>
         <a href="#" onclick="closeAppMenu();showView('photos')">Photos</a>
         <a href="#" onclick="closeAppMenu();showView('waittimes')">Wait Times</a>
         <a href="#" onclick="closeAppMenu();showView('about')">About</a>
@@ -1366,6 +1465,63 @@
     </div>
   </div>
 
+  <!-- ── EPCOT FESTIVALS VIEW ── -->
+  <div id="view-festivals" class="screen">
+    <div style="max-width:1300px;margin:0 auto;padding:48px 32px">
+      <div class="section-head">
+        <div><h2 class="section-title">EPCOT FESTIVALS</h2><p class="section-sub" id="fest-current-name">🎪 Loading...</p></div>
+        <button class="btn-sm primary" id="fest-rate-btn" onclick="resetFestivalForm();actionOrSignup('overlay-festival-review')"><i class="ti ti-plus" style="font-size:12px"></i> Rate a Booth</button>
+      </div>
+      <div class="page-tabs">
+        <button class="page-tab active" id="fest-tab-btn-current" onclick="switchFestivalTab(this,'current')">Current Festival</button>
+        <button class="page-tab" id="fest-tab-btn-archive" onclick="switchFestivalTab(this,'archive')">Archive</button>
+      </div>
+
+      <!-- Current festival: booth rankings + this user's own reviews/favorites -->
+      <div id="fttab-current">
+        <div class="food-cols">
+          <div>
+            <div class="subsection-title"><i class="ti ti-trophy"></i>Top Rated Booths</div>
+            <div class="light-card" id="fest-scores-list"></div>
+          </div>
+          <div>
+            <div class="subsection-title"><i class="ti ti-flame"></i>Most Reviewed</div>
+            <div class="light-card" id="fest-popular-list"></div>
+          </div>
+        </div>
+        <div id="fest-mine-wrap" style="margin-top:32px;display:none">
+          <div class="subsection-title"><i class="ti ti-star"></i>Want to Try (This Festival)</div>
+          <div class="light-card" id="fest-my-favorites"></div>
+          <div class="subsection-title" style="margin-top:20px"><i class="ti ti-notebook"></i>My Booth Reviews</div>
+          <div class="light-card" id="fest-my-reviews"></div>
+        </div>
+      </div>
+
+      <!-- Archive: past festivals, read-only once you drill into one -->
+      <div id="fttab-archive" style="display:none">
+        <div id="fest-archive-back" style="display:none;margin-bottom:16px">
+          <a href="#" class="section-link" onclick="closeFestivalArchiveDetail()"><i class="ti ti-arrow-left"></i> Back to Archive</a>
+        </div>
+        <div id="fest-archive-list-wrap">
+          <div class="light-card" id="fest-archive-list"></div>
+        </div>
+        <div id="fest-archive-detail-wrap" style="display:none">
+          <p class="section-sub" id="fest-archive-detail-name" style="margin-bottom:16px"></p>
+          <div class="food-cols">
+            <div>
+              <div class="subsection-title"><i class="ti ti-trophy"></i>Top Rated Booths</div>
+              <div class="light-card" id="fest-archive-scores-list"></div>
+            </div>
+            <div>
+              <div class="subsection-title"><i class="ti ti-flame"></i>Most Reviewed</div>
+              <div class="light-card" id="fest-archive-popular-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── PHOTOS VIEW ── -->
   <div id="view-photos" class="screen">
     <div style="max-width:1300px;margin:0 auto;padding:48px 32px">
@@ -1658,7 +1814,15 @@
         </a>
         <nav class="sh-nav" aria-label="Browse">
           <a href="#" onclick="guestBrowse('community')">Leaderboard</a>
-          <a href="#" onclick="guestBrowse('food')">Food Scores</a>
+          <span class="nav-has-sub">
+            <a href="#" onclick="guestBrowse('food')">Food Scores</a>
+            <button type="button" class="nav-sub-toggle" aria-label="Show Food Scores submenu" onclick="toggleNavSub(event)"><i class="ti ti-chevron-down"></i></button>
+            <div class="nav-submenu">
+              <div class="nav-submenu-inner">
+                <a href="#" onclick="guestBrowse('festivals');closeNavSub()">🎪 Epcot Festivals</a>
+              </div>
+            </div>
+          </span>
           <a href="#" onclick="guestBrowse('photos')">Photos</a>
           <a href="#" onclick="guestBrowse('waittimes')">Wait Times</a>
           <a href="#" onclick="guestBrowse('about')">About</a>
@@ -1675,6 +1839,7 @@
       <div class="sh-mobile" id="sh-mobile">
         <a href="#" onclick="closeMobileMenu();guestBrowse('community')">Leaderboard</a>
         <a href="#" onclick="closeMobileMenu();guestBrowse('food')">Food Scores</a>
+        <a href="#" onclick="closeMobileMenu();guestBrowse('festivals')">🎪 Epcot Festivals</a>
         <a href="#" onclick="closeMobileMenu();guestBrowse('photos')">Photos</a>
         <a href="#" onclick="closeMobileMenu();guestBrowse('waittimes')">Wait Times</a>
         <a href="#" onclick="closeMobileMenu();guestBrowse('about')">About</a>
@@ -1788,11 +1953,12 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
-<script src="main.js?v=29"></script>
+<script src="main.js?v=30"></script>
 <script src="restaurants-data.js?v=3"></script>
 <script src="supabase-auth.js?v=11"></script>
-<script src="supabase-data.js?v=18"></script>
-<script src="supabase-food.js?v=14"></script>
+<script src="supabase-data.js?v=19"></script>
+<script src="supabase-food.js?v=15"></script>
+<script src="supabase-festivals.js?v=1"></script>
 <script src="supabase-waittimes.js?v=3"></script>
 <script src="supabase-donors.js?v=2"></script>
 <script src="leaderboard.js?v=5"></script>

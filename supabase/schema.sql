@@ -346,3 +346,73 @@ create policy "admin delete donors" on public.donors for delete using (
 --   update public.profiles set welcomed = true where welcomed = false;
 -- ============================================================
 alter table public.profiles add column if not exists welcomed boolean not null default false;
+
+-- ============================================================
+-- MIGRATION — EPCOT Festivals: a separate space for festival-specific
+-- food booth reviews (Food & Wine, Flower & Garden, Festival of the
+-- Arts, Holidays, etc.) so seasonal content doesn't clog the year-round
+-- Food Scores page. "Current" festival = whichever row in `festivals`
+-- has the newest created_at - everything older is automatically the
+-- archive, no active/inactive flag to manage. Safe to re-run.
+--
+-- Starting a new festival is a one-line manual insert (the site owner
+-- or Claude runs this by hand when a new one opens - infrequent enough
+-- that a whole admin UI isn't worth it, same call made for `donors`):
+--   insert into public.festivals (name) values ('EPCOT International Festival of the Arts 2027');
+-- ============================================================
+create table if not exists public.festivals (
+  id          uuid primary key default gen_random_uuid(),
+  name        text not null,
+  created_at  timestamptz default now()
+);
+alter table public.festivals enable row level security;
+
+drop policy if exists "festivals public read" on public.festivals;
+create policy "festivals public read" on public.festivals for select using (true);
+-- no write policy - festivals are only ever added by hand via the SQL above
+
+create table if not exists public.festival_reviews (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null references auth.users(id) on delete cascade,
+  festival_id uuid not null references public.festivals(id) on delete cascade,
+  booth_name  text not null,
+  location    text,
+  score       numeric not null,
+  review      text,
+  photo_url   text,
+  created_at  timestamptz default now()
+);
+alter table public.festival_reviews enable row level security;
+
+drop policy if exists "festival reviews public read" on public.festival_reviews;
+create policy "festival reviews public read" on public.festival_reviews for select using (true);
+drop policy if exists "insert own festival review" on public.festival_reviews;
+create policy "insert own festival review" on public.festival_reviews for insert with check (auth.uid() = user_id);
+drop policy if exists "update own festival review" on public.festival_reviews;
+create policy "update own festival review" on public.festival_reviews for update using (auth.uid() = user_id);
+drop policy if exists "delete own festival review" on public.festival_reviews;
+create policy "delete own festival review" on public.festival_reviews for delete using (auth.uid() = user_id);
+
+-- FESTIVAL FAVORITES ("want to try" reminders, private to the user - same as food_favorites)
+create table if not exists public.festival_favorites (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null references auth.users(id) on delete cascade,
+  festival_id uuid not null references public.festivals(id) on delete cascade,
+  booth_name  text not null,
+  location    text,
+  created_at  timestamptz default now()
+);
+alter table public.festival_favorites enable row level security;
+
+drop policy if exists "festival favorites are own" on public.festival_favorites;
+create policy "festival favorites are own" on public.festival_favorites for select using (auth.uid() = user_id);
+drop policy if exists "insert own festival favorite" on public.festival_favorites;
+create policy "insert own festival favorite" on public.festival_favorites for insert with check (auth.uid() = user_id);
+drop policy if exists "delete own festival favorite" on public.festival_favorites;
+create policy "delete own festival favorite" on public.festival_favorites for delete using (auth.uid() = user_id);
+
+-- seed the first festival so the page has something to show (safe to
+-- re-run: only inserts if the table is completely empty)
+insert into public.festivals (name)
+select 'EPCOT International Food & Wine Festival 2026'
+where not exists (select 1 from public.festivals);
