@@ -1441,13 +1441,17 @@ select.field-input { cursor: pointer; }
   border-radius: 6px; padding: 6px;
   box-shadow: 0 8px 24px rgba(14,30,46,0.12);
 }
-.nav-submenu-inner a {
+/* extra .nav-has-sub qualifier bumps specificity above the unscoped
+   ".nav-links a"/".sh-nav a" rules below - this link is nested inside
+   both of those, so without it their (later, equal-specificity) dark
+   nav text color wins and leaves it invisible: white-on-white */
+.nav-has-sub .nav-submenu-inner a {
   display: block; padding: 9px 12px; border-radius: 4px;
   font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
   color: var(--ink); text-decoration: none; white-space: nowrap;
   transition: background 0.1s;
 }
-.nav-submenu-inner a:hover { background: var(--parchment); }
+.nav-has-sub .nav-submenu-inner a:hover { background: var(--parchment); color: var(--ink); }
 
 /* ── Profile page ── */
 .profile-header-card {
