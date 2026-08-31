@@ -584,10 +584,23 @@ function tierBadge(tier, label) {
   if (!tier) return '<span class="badge tier-badge-empty">Unranked ' + label + '</span>';
   return '<span class="badge tier-badge"><span class="tier-emblem tier-emblem-sm" style="background:' + tier.color + '">' + tier.icon + '</span> ' + tier.name + ' <span class="tier-badge-label">' + label + '</span></span>';
 }
-// large medal (home hero "My Profile" header)
-function heroMedalHtml(tier, label) {
-  if (!tier) return '<div class="hero-medal"><div class="hero-medal-icon empty">—</div><div class="hero-medal-info"><div class="hero-medal-name">Unranked</div><div class="hero-medal-label">' + label + '</div></div></div>';
-  return '<div class="hero-medal"><div class="hero-medal-icon" style="background:' + tier.color + '">' + tier.icon + '</div><div class="hero-medal-info"><div class="hero-medal-name">' + tier.name + '</div><div class="hero-medal-label">' + label + '</div></div></div>';
+// one rank plate on the home-hero credential. `count` is the number of
+// check-ins that earned the tier - it fills what would otherwise be dead
+// space with the answer to "why am I this rank?", and it is already being
+// computed in order to pick the tier in the first place.
+function credPlateHtml(tier, period, count) {
+  const disc = tier
+    ? '<div class="cred-plate-ic" style="background:' + tier.color + '">' + tier.icon + '</div>'
+    : '<div class="cred-plate-ic empty">\u2014</div>';
+  return '<div class="cred-plate">' + disc +
+    '<div class="cred-plate-t">' +
+      '<div class="cred-plate-n">' + (tier ? tier.name : 'Unranked') + '</div>' +
+      '<div class="cred-plate-p">' + period + '</div>' +
+    '</div>' +
+    '<div class="cred-plate-c">' + count +
+      '<span>Check-In' + (count === 1 ? '' : 's') + '</span>' +
+    '</div>' +
+  '</div>';
 }
 
 function updatePassport() {
@@ -917,8 +930,26 @@ function renderProfile() {
   const monthlyTier = getMonthlyTier(checkinsThisMonth(u.id));
   const yearlyTier = getYearlyTier(checkinsThisYear(u.id));
 
-  const heroMedals = document.getElementById('hero-medals');
-  if (heroMedals) heroMedals.innerHTML = heroMedalHtml(monthlyTier, 'Monthly') + heroMedalHtml(yearlyTier, 'Yearly');
+  // Home-hero credential. updatePassport() writes the four figures; every
+  // identity-shaped field on the card is written here.
+  const credRank = document.getElementById('cred-rank');
+  if (credRank) credRank.innerHTML =
+    credPlateHtml(monthlyTier, 'This Month', checkinsThisMonth(u.id)) +
+    credPlateHtml(yearlyTier, 'This Year', checkinsThisYear(u.id));
+  const credAv = document.getElementById('cred-avatar');
+  if (credAv) credAv.innerHTML = avatarHtml(u.avatarUrl, u.avatar);
+  const credName = document.getElementById('cred-name');
+  if (credName) credName.textContent = (u.fname + ' ' + (u.lname || '')).trim() || u.username;
+  const credHandle = document.getElementById('cred-handle');
+  if (credHandle) credHandle.textContent = '@' + u.username;
+  const credSince = document.getElementById('cred-since');
+  if (credSince) credSince.textContent = u.joinYear || '\u2014';
+  const credPasses = document.getElementById('cred-passes');
+  if (credPasses) credPasses.innerHTML =
+    (u.disneyPass ? '<span class="cred-pass"><em>\u{1F3F0}</em> ' + escapeHtml(u.disneyPass) + '</span>' : '') +
+    (u.universalPass ? '<span class="cred-pass"><em>\u{1F30E}</em> ' + escapeHtml(u.universalPass) + '</span>' : '');
+  const credCta = document.getElementById('cred-cta');
+  if (credCta) credCta.textContent = my.length ? 'Log a Check-In' : 'Log Your First Check-In';
 
   document.getElementById('profile-avatar-big').innerHTML = avatarHtml(u.avatarUrl, u.avatar);
   document.getElementById('profile-display-name').textContent = u.fname + ' ' + u.lname;

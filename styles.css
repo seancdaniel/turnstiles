@@ -168,106 +168,10 @@ body {
 }
 
 /* ── HERO TITLE BLOCK — Vintage Carnival Marquee ── */
-.hero-title-block {
-  margin-bottom: 28px;
-  position: relative;
-}
-
 /* Starburst badge behind the logo text */
-.hero-starburst {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  margin-bottom: 16px;
-}
-
-.hero-starburst-inner {
-  background: var(--navy);
-  border: 3px solid var(--gold);
-  border-radius: 4px;
-  padding: 6px 18px 4px;
-  position: relative;
-  display: inline-block;
-}
-
-.hero-starburst-text {
-  font-family: 'Special Elite', cursive;
-  font-size: 11px;
-  letter-spacing: 3px;
-  color: var(--gold-lt);
-  text-transform: uppercase;
-  display: block;
-  text-align: center;
-}
-
 /* Main marquee wordmark */
-.hero-marquee-sign {
-  display: block;
-  position: relative;
-  margin-bottom: 8px;
-}
-
 /* Outline effect on TURNSTILES */
-.hero-name-outline {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 120px;
-  line-height: 0.85;
-  letter-spacing: 4px;
-  display: block;
-  /* layered text-shadow for outline/neon effect */
-  color: var(--parchment);
-  text-shadow:
-    -3px -3px 0 var(--coral),
-     3px -3px 0 var(--coral),
-    -3px  3px 0 var(--coral),
-     3px  3px 0 var(--coral),
-     0px -3px 0 var(--coral),
-     0px  3px 0 var(--coral),
-    -3px  0px 0 var(--coral),
-     3px  0px 0 var(--coral),
-    0 0 24px rgba(184,61,43,0.22);
-}
-
 /* Underline banner */
-.hero-name-banner {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  margin: 4px 0 16px;
-}
-
-.hero-banner-left {
-  background: var(--coral);
-  height: 8px;
-  flex: 1;
-  border-radius: 2px 0 0 2px;
-}
-
-.hero-banner-center {
-  background: var(--navy);
-  border: 2px solid var(--coral);
-  padding: 0 14px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 13px;
-  letter-spacing: 4px;
-  color: var(--gold-lt);
-}
-
-.hero-banner-right {
-  background: var(--coral);
-  height: 8px;
-  flex: 1;
-  border-radius: 0 2px 2px 0;
-}
-
-/* (Tagline + ticket-stub row removed - the home hero is the user's own
-   profile now, not marketing copy. See .hero-profile-hd / .hero-medals.) */
-
 /* Ornamental rule — keep for spacing */
 .ornament {
   display: flex;
@@ -278,39 +182,168 @@ body {
 .ornament-line { flex: 0 0 48px; height: 2px; background: var(--gold); }
 .ornament-icon { color: var(--gold); font-size: 14px; letter-spacing: 4px; }
 
-.hero-stats {
-  display: flex;
-  gap: 0;
-  margin-bottom: 28px;
-  border: 1px solid var(--border-gold);
-  border-radius: 4px;
+/* ── HOME HERO — PASSHOLDER CREDENTIAL ──────────────────────────────────
+   The logged-in home page IS the user's own profile, so the hero reads as
+   the annual pass card they actually carry: issuing mark, member since,
+   who they are, where they stand, then the figures. This replaced a
+   marketing-style block (starburst eyebrow, 90px outlined wordmark, EST.
+   banner) that repeated the site name already sitting in the nav.
+   Written with explicit colours rather than the light :root tokens
+   because this block only ever renders inside the dark app shell. */
+.cred {
+  position: relative;
   overflow: hidden;
-  width: fit-content;
-  background: var(--gold-pale);
+  border: 1px solid rgba(231,206,138,0.22);
+  border-radius: 12px;
+  background:
+    repeating-radial-gradient(circle at 108% -8%, transparent 0 7px, rgba(231,206,138,0.032) 7px 8px),
+    linear-gradient(158deg, #1C3247, #16283A);
+  box-shadow: 0 18px 44px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.045);
+  margin-bottom: 20px;
+}
+/* gold foil edge — the "issued" seal line */
+.cred::before {
+  content: '';
+  position: absolute; inset: 0 0 auto 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold) 18%, var(--gold-lt) 50%, var(--gold) 82%, transparent);
+  opacity: 0.75;
 }
 
-.hero-stat {
-  padding: 14px 26px;
-  text-align: center;
-  border-right: 1px solid var(--border-gold);
+.cred-issue {
+  display: flex; align-items: center; justify-content: space-between; gap: 18px;
+  padding: 20px 26px;
+  border-bottom: 1px solid rgba(231,206,138,0.12);
 }
-.hero-stat:last-child { border-right: none; }
-
-.hero-stat-num {
+.cred-mark { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.cred-logo {
+  width: 44px; height: 44px; flex-shrink: 0; display: block;
+  filter: drop-shadow(0 0 10px rgba(231,206,138,0.45));
+}
+.cred-wordmark {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 36px;
-  letter-spacing: 1px;
-  color: var(--coral);
-  line-height: 1;
-  margin-bottom: 3px;
+  font-size: 21px; letter-spacing: 2.6px; line-height: 1;
+  color: #F4EFE3; white-space: nowrap;
+}
+.cred-wordmark i { color: var(--gold-lt); font-style: normal; }
+.cred-since { text-align: right; flex-shrink: 0; }
+.cred-since-l {
+  font-size: 8.5px; font-weight: 700; letter-spacing: 1.9px; text-transform: uppercase;
+  color: rgba(244,239,227,0.34); margin-bottom: 3px;
+}
+.cred-since-v {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 19px; letter-spacing: 1.6px; line-height: 1;
+  color: var(--gold-lt); font-variant-numeric: tabular-nums;
 }
 
-.hero-stat-lbl {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--ink-faint);
+.cred-id { display: flex; align-items: center; gap: 18px; padding: 24px 26px 22px; }
+.cred-av {
+  width: 66px; height: 66px; flex-shrink: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 31px; overflow: hidden;
+  background: radial-gradient(circle at 32% 28%, #26405A, #182B3D);
+  border: 1px solid rgba(231,206,138,0.42);
+  box-shadow: 0 0 0 4px rgba(231,206,138,0.07), 0 6px 16px rgba(0,0,0,0.3);
+}
+.cred-av img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%; }
+.cred-who { min-width: 0; flex: 1; }
+.cred-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(27px, 3.7vw, 35px); letter-spacing: 1.1px; line-height: 1.04;
+  color: #F4EFE3; margin-bottom: 2px; overflow-wrap: anywhere;
+}
+.cred-handle {
+  font-size: 13px; font-weight: 400; letter-spacing: 0.3px;
+  color: var(--gold); margin-bottom: 11px;
+}
+.cred-passes { display: flex; gap: 7px; flex-wrap: wrap; }
+.cred-pass {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.9px; text-transform: uppercase;
+  color: rgba(244,239,227,0.82);
+  background: rgba(255,255,255,0.055);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 999px; padding: 5px 11px; white-space: nowrap;
+}
+.cred-pass em { font-style: normal; font-size: 12px; line-height: 1; }
+
+.cred-rank { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 26px 22px; }
+/* the tier colour is carried by the disc alone — an accent rail and a tint
+   wash on top of it would be the same one fact said three times */
+.cred-plate {
+  display: flex; align-items: center; gap: 11px;
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 7px; padding: 11px 13px;
+  background: rgba(255,255,255,0.028);
+}
+.cred-plate-ic {
+  width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; box-shadow: 0 3px 9px rgba(0,0,0,0.30);
+}
+.cred-plate-ic.empty {
+  background: transparent;
+  border: 1px dashed rgba(244,239,227,0.26);
+  color: rgba(244,239,227,0.34);
+  font-family: 'Bebas Neue', sans-serif; font-size: 15px;
+  box-shadow: none;
+}
+.cred-plate-t { min-width: 0; flex: 1; }
+.cred-plate-n {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 17px; letter-spacing: 1.1px; line-height: 1.1;
+  color: #F4EFE3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cred-plate-p {
+  font-size: 9px; font-weight: 700; letter-spacing: 1.7px; text-transform: uppercase;
+  color: rgba(244,239,227,0.34); margin-top: 2px;
+}
+/* the check-in count that earned the tier — turns dead space into the
+   answer to "why am I this rank?" */
+.cred-plate-c {
+  flex-shrink: 0; text-align: right; padding-left: 8px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px; letter-spacing: 0.7px; line-height: 1;
+  color: rgba(244,239,227,0.9); font-variant-numeric: tabular-nums;
+}
+.cred-plate-c span {
+  display: block; font-family: 'Josefin Sans', sans-serif;
+  font-size: 8px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+  color: rgba(244,239,227,0.34); margin-top: 4px;
+}
+
+.cred-figs {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid rgba(231,206,138,0.12);
+  background: rgba(0,0,0,0.17);
+}
+.cred-fig { padding: 16px 12px; text-align: center; border-left: 1px solid rgba(255,255,255,0.055); }
+.cred-fig:first-child { border-left: none; }
+.cred-fig-n {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px; letter-spacing: 0.8px; line-height: 1;
+  color: #F4EFE3; margin-bottom: 5px; font-variant-numeric: tabular-nums;
+}
+/* rank is the only competitive figure — the only one that moves because of
+   other people — so it is the only one that carries the accent */
+.cred-fig.is-rank .cred-fig-n { color: #E0654C; }
+.cred-fig-l {
+  font-size: 8.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: rgba(244,239,227,0.34); line-height: 1.3;
+}
+
+.cred-beta {
+  font-size: 9.5px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+  color: rgba(244,239,227,0.34);
+}
+
+@media (max-width: 640px) {
+  .cred-issue, .cred-id { padding-left: 18px; padding-right: 18px; }
+  .cred-rank { grid-template-columns: 1fr; padding-left: 18px; padding-right: 18px; }
+  .cred-id { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .cred-figs { grid-template-columns: 1fr 1fr; }
+  .cred-fig:nth-child(3) { border-left: none; }
+  .cred-fig:nth-child(-n+2) { border-bottom: 1px solid rgba(255,255,255,0.055); }
 }
 
 .hero-actions { display: flex; gap: 12px; align-items: center; }
@@ -1510,43 +1543,6 @@ select.field-input { cursor: pointer; }
 .tier-badge-empty { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.45); }
 
 /* ── Hero "My Profile" header — large Monthly/Yearly medals, home hero ── */
-.hero-profile-hd { margin: 4px 0 26px; }
-.hero-profile-lbl {
-  display: block;
-  font-family: 'Special Elite', cursive;
-  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 16px;
-}
-.hero-profile-lbl span { color: var(--coral); margin: 0 6px; }
-.hero-medals { display: flex; gap: 20px; flex-wrap: wrap; }
-.hero-medal { display: flex; align-items: center; gap: 10px; }
-.hero-medal-icon {
-  width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 22px; line-height: 1;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.35), inset 0 0 0 2px rgba(255,255,255,0.15);
-}
-.hero-medal-icon.empty {
-  background: rgba(255,255,255,0.08); box-shadow: none;
-  border: 1px dashed rgba(231,206,138,0.35);
-  color: rgba(231,206,138,0.5); font-size: 16px; font-weight: 700;
-}
-.hero-medal-info { display: flex; flex-direction: column; }
-.hero-medal-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 17px; letter-spacing: 1px; color: #F1E4C4; line-height: 1.15;
-}
-.hero-medal-label {
-  font-size: 8px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-  color: rgba(231,206,138,0.55); margin-top: 2px;
-}
-@media (max-width: 480px) {
-  .hero-medals { gap: 14px; }
-  .hero-medal-icon { width: 36px; height: 36px; font-size: 18px; }
-  .hero-medal-icon.empty { font-size: 13px; }
-  .hero-medal-name { font-size: 15px; }
-}
-
 /* ── Empty state ── */
 .empty-state {
   text-align: center; padding: 48px 24px;
@@ -2225,8 +2221,6 @@ body {
 .tab.active { background: linear-gradient(180deg, #F8E9B0, #D9B441); color: #2a1d07; border-color: transparent; }
 
 /* ---- App-home hero text on dark ---- */
-.hero-stat-lbl { color: var(--ink-faint); }
-
 /* ---- CTA band + footer ---- */
 .cta-inner { border: 1px solid rgba(194,154,44,0.32); }
 .site-footer { border-top: 1px solid rgba(194,154,44,0.30); }
@@ -2365,18 +2359,10 @@ body {
 @media (max-width: 900px) {
   .hero-inner { grid-template-columns: 1fr; gap: 32px; padding: 40px 20px 40px; }
 }
-.hero-name-outline { font-size: clamp(52px, 13vw, 120px); }
 @media (max-width: 600px) {
   .hero-actions { flex-wrap: wrap; }
   .hero-actions .btn-hero, .hero-actions .btn-hero-outline { flex: 1 1 100%; justify-content: center; }
 }
-@media (max-width: 640px) {
-  .hero-stats { display: grid; grid-template-columns: 1fr 1fr; }
-  .hero-stat { border-right: 1px solid var(--border-gold); border-bottom: 1px solid var(--border-gold); }
-  .hero-stat:nth-child(2n) { border-right: none; }
-  .hero-stat:nth-child(n+3) { border-bottom: none; }
-}
-
 /* section headers: let title + action button wrap instead of overflowing */
 .section-head { flex-wrap: wrap; gap: 12px; }
 

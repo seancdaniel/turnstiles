@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=61">
+  <link rel="stylesheet" href="styles.css?v=62">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -1115,46 +1115,44 @@
       <section class="hero-wrap">
         <div class="hero-inner">
           <div>
-            <div class="hero-title-block">
-              <!-- Marquee-badge eyebrow -->
-              <div class="hero-starburst">
-                <div class="hero-starburst-inner">
-                  <span class="hero-starburst-text">The Official Passholder Tracker</span>
+            <!-- Passholder credential: identity -> standing -> figures.
+                 Replaces the old marketing-style hero (starburst eyebrow, 90px
+                 outlined wordmark, EST. banner, loose medals) - this page is the
+                 user's own profile, so it leads with who they are instead of
+                 repeating the site name already sitting in the nav. Populated by
+                 renderProfile() (identity / passes / rank plates) and by
+                 updatePassport() (the four figures, which keep their old ids). -->
+            <div class="cred">
+              <div class="cred-issue">
+                <div class="cred-mark">
+                  <img class="cred-logo" src="img/logo.png?v=1" alt="" width="44" height="44">
+                  <div class="cred-wordmark">TURN<i>STILES</i></div>
+                </div>
+                <div class="cred-since">
+                  <div class="cred-since-l">Member Since</div>
+                  <div class="cred-since-v" id="cred-since">&mdash;</div>
                 </div>
               </div>
-              <div class="beta-badge">🚧 Beta — Actively Under Construction</div>
-
-              <!-- Big outline marquee name -->
-              <div class="hero-marquee-sign">
-                <span class="hero-name-outline">TURNSTILES</span>
+              <div class="cred-id">
+                <div class="cred-av" id="cred-avatar">🎢</div>
+                <div class="cred-who">
+                  <div class="cred-name" id="cred-name">Your Name</div>
+                  <div class="cred-handle" id="cred-handle">@you</div>
+                  <div class="cred-passes" id="cred-passes"></div>
+                </div>
               </div>
-
-              <!-- Coloured banner rule -->
-              <div class="hero-name-banner">
-                <div class="hero-banner-left"></div>
-                <div class="hero-banner-center">EST. 2026</div>
-                <div class="hero-banner-right"></div>
+              <div class="cred-rank" id="cred-rank"></div>
+              <div class="cred-figs">
+                <div class="cred-fig"><div class="cred-fig-n" id="stat-visits">0</div><div class="cred-fig-l">Total Visits</div></div>
+                <div class="cred-fig"><div class="cred-fig-n" id="stat-miles">0</div><div class="cred-fig-l">Miles Walked</div></div>
+                <div class="cred-fig"><div class="cred-fig-n" id="stat-foods">0</div><div class="cred-fig-l">Foods Tried</div></div>
+                <div class="cred-fig is-rank"><div class="cred-fig-n" id="stat-rank">#&mdash;</div><div class="cred-fig-l">Community Rank</div></div>
               </div>
-
-              <!-- My Profile header: this replaces what used to be marketing
-                   copy ("Where every visit counts" + a feature-stub row) now
-                   that this page IS the user's own profile, not a landing
-                   page. Large versions of the Monthly/Yearly tier medals,
-                   populated by renderProfile() in main.js. -->
-              <div class="hero-profile-hd">
-                <span class="hero-profile-lbl"><span>★</span> My Profile <span>★</span></span>
-                <div class="hero-medals" id="hero-medals"></div>
-              </div>
-            </div>
-            <div class="hero-stats" id="home-stats">
-              <div class="hero-stat"><div class="hero-stat-num" id="stat-visits">0</div><div class="hero-stat-lbl">Total Visits</div></div>
-              <div class="hero-stat"><div class="hero-stat-num" id="stat-miles">0</div><div class="hero-stat-lbl">Miles Walked</div></div>
-              <div class="hero-stat"><div class="hero-stat-num" id="stat-foods">0</div><div class="hero-stat-lbl">Foods Tried</div></div>
-              <div class="hero-stat"><div class="hero-stat-num" id="stat-rank">#—</div><div class="hero-stat-lbl">Community Rank</div></div>
             </div>
             <div class="hero-actions">
-              <button class="btn-hero" onclick="newCheckin()"><i class="ti ti-circle-plus"></i> Log a Check-In</button>
+              <button class="btn-hero" onclick="newCheckin()"><i class="ti ti-circle-plus"></i> <span id="cred-cta">Log a Check-In</span></button>
               <button class="btn-hero-outline" onclick="showView('community')">Browse Community</button>
+              <span class="cred-beta">🚧 Beta</span>
             </div>
           </div>
           <!-- Passport -->
@@ -1935,7 +1933,7 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
-<script src="main.js?v=30"></script>
+<script src="main.js?v=31"></script>
 <script src="restaurants-data.js?v=3"></script>
 <script src="supabase-auth.js?v=11"></script>
 <script src="supabase-data.js?v=19"></script>
