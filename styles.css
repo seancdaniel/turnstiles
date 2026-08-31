@@ -182,6 +182,43 @@ body {
 .ornament-line { flex: 0 0 48px; height: 2px; background: var(--gold); }
 .ornament-icon { color: var(--gold); font-size: 14px; letter-spacing: 4px; }
 
+/* ── Next-tier progress, under the credential ──────────────────────────
+   The credential says where you stand; this says what is next. Lives in
+   what was dead column space next to the taller .passport ticket. */
+.nextier {
+  margin-top: 18px;
+  border: 1px solid rgba(231,206,138,0.16);
+  border-radius: 10px;
+  padding: 15px 18px 17px;
+  background: rgba(255,255,255,0.022);
+}
+.nextier-hd {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: rgba(244,239,227,0.42);
+  padding-bottom: 11px; margin-bottom: 13px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.nextier-row + .nextier-row { margin-top: 13px; }
+.nextier-top {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  margin-bottom: 7px;
+}
+.nextier-period {
+  font-size: 9px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase;
+  color: rgba(244,239,227,0.42); flex-shrink: 0;
+}
+.nextier-goal {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px; letter-spacing: 0.8px; line-height: 1;
+  color: #F4EFE3; text-align: right;
+}
+.nextier-bar {
+  height: 5px; border-radius: 3px; overflow: hidden;
+  background: rgba(255,255,255,0.075);
+}
+.nextier-bar span { display: block; height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+@media (prefers-reduced-motion: reduce) { .nextier-bar span { transition: none; } }
+
 /* ── HOME HERO — PASSHOLDER CREDENTIAL ──────────────────────────────────
    The logged-in home page IS the user's own profile, so the hero reads as
    the annual pass card they actually carry: issuing mark, member since,

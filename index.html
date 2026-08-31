@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=62">
+  <link rel="stylesheet" href="styles.css?v=63">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -1154,6 +1154,12 @@
               <button class="btn-hero-outline" onclick="showView('community')">Browse Community</button>
               <span class="cred-beta">🚧 Beta</span>
             </div>
+            <!-- Progress to the next rank. Fills what was ~140px of dead
+                 column beside the taller passport ticket, and it is the
+                 natural follow-on question to the rank plates above:
+                 the card says where you stand, this says what is next.
+                 Built straight from MONTHLY_TIERS / YEARLY_TIERS. -->
+            <div class="nextier" id="nextier"></div>
           </div>
           <!-- Passport -->
           <div class="passport-col">
@@ -1933,7 +1939,7 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
-<script src="main.js?v=31"></script>
+<script src="main.js?v=32"></script>
 <script src="restaurants-data.js?v=3"></script>
 <script src="supabase-auth.js?v=11"></script>
 <script src="supabase-data.js?v=19"></script>

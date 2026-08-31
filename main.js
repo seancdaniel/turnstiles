@@ -588,6 +588,27 @@ function tierBadge(tier, label) {
 // check-ins that earned the tier - it fills what would otherwise be dead
 // space with the answer to "why am I this rank?", and it is already being
 // computed in order to pick the tier in the first place.
+// One progress row towards the next rank. `ladder` is MONTHLY_TIERS or
+// YEARLY_TIERS; the bar runs from the tier you currently hold to the one
+// above it, so it reads as "how far through this rung am I", not "how far
+// through the whole ladder". Top of the ladder shows a full bar.
+function nextTierRowHtml(ladder, count, period) {
+  const cur = tierFromCount(count, ladder);
+  let next = null;
+  for (const t of ladder) { if (count < t.min) { next = t; break; } }
+  const base = cur ? cur.min : 0;
+  const pct = next ? Math.max(0, Math.min(100, ((count - base) / (next.min - base)) * 100)) : 100;
+  const tint = next ? next.color : (cur ? cur.color : 'rgba(244,239,227,0.3)');
+  const goal = next ? (next.min - count) + ' to ' + next.name : 'Top tier reached';
+  return '<div class="nextier-row">' +
+    '<div class="nextier-top">' +
+      '<span class="nextier-period">' + period + '</span>' +
+      '<span class="nextier-goal">' + goal + '</span>' +
+    '</div>' +
+    '<div class="nextier-bar"><span style="width:' + pct.toFixed(1) + '%;background:' + tint + '"></span></div>' +
+  '</div>';
+}
+
 function credPlateHtml(tier, period, count) {
   const disc = tier
     ? '<div class="cred-plate-ic" style="background:' + tier.color + '">' + tier.icon + '</div>'
@@ -950,6 +971,11 @@ function renderProfile() {
     (u.universalPass ? '<span class="cred-pass"><em>\u{1F30E}</em> ' + escapeHtml(u.universalPass) + '</span>' : '');
   const credCta = document.getElementById('cred-cta');
   if (credCta) credCta.textContent = my.length ? 'Log a Check-In' : 'Log Your First Check-In';
+  const nextier = document.getElementById('nextier');
+  if (nextier) nextier.innerHTML =
+    '<div class="nextier-hd">Next Tier</div>' +
+    nextTierRowHtml(MONTHLY_TIERS, checkinsThisMonth(u.id), 'This Month') +
+    nextTierRowHtml(YEARLY_TIERS, checkinsThisYear(u.id), 'This Year');
 
   document.getElementById('profile-avatar-big').innerHTML = avatarHtml(u.avatarUrl, u.avatar);
   document.getElementById('profile-display-name').textContent = u.fname + ' ' + u.lname;
