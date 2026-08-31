@@ -82,12 +82,12 @@ async function loadData() {
         username: (idMap[f.user_id] && idMap[f.user_id].username) || 'someone',
         avatar: (idMap[f.user_id] && idMap[f.user_id].avatar) || '\u{1F3A2}',
         avatarUrl: (idMap[f.user_id] && idMap[f.user_id].avatarUrl) || '',
-        boothName: f.booth_name, location: f.location || '', score: Number(f.score),
+        itemName: f.item_name, boothName: f.booth_name || '', score: Number(f.score),
         review: f.review || '', photoUrl: f.photo_url || '', ts: new Date(f.created_at).getTime() };
     });
     STATE.festivalFavorites = (r[9].data || []).map(function (f) {
       return { id: f.id, userId: f.user_id, festivalId: f.festival_id,
-        boothName: f.booth_name, location: f.location || '', ts: new Date(f.created_at).getTime() };
+        itemName: f.item_name, boothName: f.booth_name || '', ts: new Date(f.created_at).getTime() };
     });
     rerenderActive();
   } catch (e) { console.log('loadData error:', e); }

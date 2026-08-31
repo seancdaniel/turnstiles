@@ -375,8 +375,8 @@ create table if not exists public.festival_reviews (
   id          uuid primary key default gen_random_uuid(),
   user_id     uuid not null references auth.users(id) on delete cascade,
   festival_id uuid not null references public.festivals(id) on delete cascade,
-  booth_name  text not null,
-  location    text,
+  item_name   text not null, -- the food item being rated
+  booth_name  text, -- where you got it, optional (mirrors food_reviews.spot)
   score       numeric not null,
   review      text,
   photo_url   text,
@@ -398,8 +398,8 @@ create table if not exists public.festival_favorites (
   id          uuid primary key default gen_random_uuid(),
   user_id     uuid not null references auth.users(id) on delete cascade,
   festival_id uuid not null references public.festivals(id) on delete cascade,
-  booth_name  text not null,
-  location    text,
+  item_name   text not null,
+  booth_name  text,
   created_at  timestamptz default now()
 );
 alter table public.festival_favorites enable row level security;
@@ -416,3 +416,18 @@ create policy "delete own festival favorite" on public.festival_favorites for de
 insert into public.festivals (name)
 select 'EPCOT International Food & Wine Festival 2026'
 where not exists (select 1 from public.festivals);
+
+-- ============================================================
+-- MIGRATION — Epcot Festival reviews are about the FOOD, not the
+-- booth (matches food_reviews: item_name = what you're rating,
+-- booth_name = where you got it, optional). Run this if you already
+-- ran the block above with the old "rate a booth" shape. Safe to
+-- re-run.
+-- ============================================================
+alter table public.festival_reviews add column if not exists item_name text;
+alter table public.festival_reviews alter column booth_name drop not null;
+alter table public.festival_reviews drop column if exists location;
+
+alter table public.festival_favorites add column if not exists item_name text;
+alter table public.festival_favorites alter column booth_name drop not null;
+alter table public.festival_favorites drop column if exists location;

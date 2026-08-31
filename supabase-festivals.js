@@ -1,6 +1,10 @@
 /* Turnstiles - EPCOT Festivals: a separate space for festival-specific food
-   booth reviews (Food & Wine, Flower & Garden, Festival of the Arts, etc.) so
+   reviews (Food & Wine, Flower & Garden, Festival of the Arts, etc.) so
    seasonal content doesn't clog the year-round Food Scores page.
+
+   Reviews are about the FOOD ITEM, not the booth - same shape as regular
+   food reviews (item name = what you're rating, booth = where you got it,
+   optional), just scoped to a festival instead of a park.
 
    "Current" festival = STATE.festivals[0] (the newest row, per loadData()'s
    `order('created_at', {ascending:false})` in supabase-food.js). Everything
@@ -23,64 +27,40 @@ function currentFestival() {
 // ============================================================
 // FORM
 // ============================================================
-function handleFestLocationSelect() {
-  var isOther = document.getElementById('fv-location').value === '__other__';
-  var other = document.getElementById('fv-location-other');
-  other.style.display = isOther ? 'block' : 'none';
-  if (!isOther) other.value = '';
-}
-
-// mirrors setSpotValue()/getSpotValue() in supabase-food.js - falls back to
-// "Other" when the stored text isn't one of the curated EPCOT locations
-// (an older row, or free text someone typed before this existed)
-function setFestLocationValue(locText) {
-  var sel = document.getElementById('fv-location');
-  locText = locText || '';
-  if (!locText) { sel.value = ''; handleFestLocationSelect(); return; }
-  sel.value = locText;
-  if (sel.value !== locText) {
-    sel.value = '__other__';
-    document.getElementById('fv-location-other').value = locText;
-  }
-  handleFestLocationSelect();
-}
-
-function getFestLocationValue() {
-  var sel = document.getElementById('fv-location');
-  if (sel.value === '__other__') return document.getElementById('fv-location-other').value.trim();
-  return sel.value.trim();
-}
-
-// light autocomplete (native <datalist>) off booth names already used for
-// the current festival, so repeat reviews of the same booth tend to match
-// up for aggregation without a whole search-and-pick UI like Food Scores has
-function populateFestBoothDatalist() {
-  var dl = document.getElementById('fv-booth-datalist');
-  if (!dl) return;
+// light autocomplete (native <datalist>) off item/booth names already used
+// for the current festival, so repeat reviews tend to match up for
+// aggregation without a whole search-and-pick UI like Food Scores has
+function populateFestDatalists() {
+  var itemDl = document.getElementById('fv-item-datalist');
+  var boothDl = document.getElementById('fv-booth-datalist');
   var cf = currentFestival();
-  if (!cf) { dl.innerHTML = ''; return; }
-  var seen = {}, names = [];
+  if (!cf) { if (itemDl) itemDl.innerHTML = ''; if (boothDl) boothDl.innerHTML = ''; return; }
+  var seenItems = {}, items = [], seenBooths = {}, booths = [];
   STATE.festivalReviews.forEach(function (r) {
     if (r.festivalId !== cf.id) return;
-    var key = r.boothName.toLowerCase();
-    if (!seen[key]) { seen[key] = true; names.push(r.boothName); }
+    var ik = r.itemName.toLowerCase();
+    if (!seenItems[ik]) { seenItems[ik] = true; items.push(r.itemName); }
+    if (r.boothName) {
+      var bk = r.boothName.toLowerCase();
+      if (!seenBooths[bk]) { seenBooths[bk] = true; booths.push(r.boothName); }
+    }
   });
-  dl.innerHTML = names.map(function (n) { return '<option value="' + escapeHtml(n) + '">'; }).join('');
+  if (itemDl) itemDl.innerHTML = items.map(function (n) { return '<option value="' + escapeHtml(n) + '">'; }).join('');
+  if (boothDl) boothDl.innerHTML = booths.map(function (n) { return '<option value="' + escapeHtml(n) + '">'; }).join('');
 }
 
 function resetFestivalForm() {
-  var b = document.getElementById('fv-booth'); if (b) b.value = '';
+  var it = document.getElementById('fv-item'); if (it) it.value = '';
+  var bo = document.getElementById('fv-booth'); if (bo) bo.value = '';
   var rv = document.getElementById('fv-review'); if (rv) rv.value = '';
-  var loc = document.getElementById('fv-location'); if (loc) loc.value = '';
-  var other = document.getElementById('fv-location-other'); if (other) { other.value = ''; other.style.display = 'none'; }
   var sc = document.getElementById('fv-score'); if (sc) sc.value = 8.5;
   var sd = document.getElementById('fv-score-display'); if (sd) sd.textContent = '8.5';
   var pv = document.getElementById('fv-photo-preview'); if (pv) pv.style.display = 'none';
   var pf = document.getElementById('fv-photo-file'); if (pf) pf.value = '';
   var pi = document.getElementById('fv-photo-img'); if (pi) pi.removeAttribute('src');
   fvEditId = null;
-  populateFestBoothDatalist();
-  var t = document.querySelector('#overlay-festival-review .modal-hd-title'); if (t) t.textContent = 'Rate a Festival Booth';
+  populateFestDatalists();
+  var t = document.querySelector('#overlay-festival-review .modal-hd-title'); if (t) t.textContent = 'Rate Festival Food';
   var bt = document.querySelector('#overlay-festival-review .modal-footer .btn-sm.primary'); if (bt) bt.textContent = 'Submit Review';
 }
 
@@ -102,9 +82,9 @@ async function submitFestivalReview(btn) {
   try {
     var cf = currentFestival();
     if (!cf) { toast('No festival is currently active.', 'error'); return; }
+    var item = document.getElementById('fv-item').value.trim();
+    if (!item) { toast('Enter the food item name.', 'error'); return; }
     var booth = document.getElementById('fv-booth').value.trim();
-    if (!booth) { toast('Enter the booth name.', 'error'); return; }
-    var location = getFestLocationValue();
     var score = parseFloat(document.getElementById('fv-score').value);
     var review = document.getElementById('fv-review').value.trim();
 
@@ -119,7 +99,7 @@ async function submitFestivalReview(btn) {
     }
 
     if (fvEditId) {
-      var _up = await sb.from('festival_reviews').update({ booth_name: booth, location: location, score: score, review: review, photo_url: photoUrl }).eq('id', fvEditId).eq('user_id', STATE.currentUser.id);
+      var _up = await sb.from('festival_reviews').update({ item_name: item, booth_name: booth || null, score: score, review: review, photo_url: photoUrl }).eq('id', fvEditId).eq('user_id', STATE.currentUser.id);
       if (_up.error) { toast('Could not update: ' + _up.error.message, 'error'); return; }
       closeOverlay('overlay-festival-review');
       resetFestivalForm();
@@ -128,19 +108,19 @@ async function submitFestivalReview(btn) {
       toast('Review updated!');
       return;
     }
-    var res = await sb.from('festival_reviews').insert({ user_id: STATE.currentUser.id, festival_id: cf.id, booth_name: booth, location: location, score: score, review: review, photo_url: photoUrl });
+    var res = await sb.from('festival_reviews').insert({ user_id: STATE.currentUser.id, festival_id: cf.id, item_name: item, booth_name: booth || null, score: score, review: review, photo_url: photoUrl });
     if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
-    if (photoUrl) await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: 'EPCOT', caption: booth + (location ? ' - ' + location : ''), image_url: photoUrl });
+    if (photoUrl) await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: 'EPCOT', caption: item + (booth ? ' - ' + booth : ''), image_url: photoUrl });
     var matchingFavorite = STATE.festivalFavorites.find(function (f) {
       return f.userId === STATE.currentUser.id && f.festivalId === cf.id &&
-        f.boothName.toLowerCase() === booth.toLowerCase() && (f.location || '') === location;
+        f.itemName.toLowerCase() === item.toLowerCase() && (f.boothName || '') === booth;
     });
     if (matchingFavorite) await sb.from('festival_favorites').delete().eq('id', matchingFavorite.id);
     closeOverlay('overlay-festival-review');
     resetFestivalForm();
     await loadData();
     showView('festivals');
-    toast(booth + ' rated ' + score.toFixed(1) + '/10!');
+    toast(item + ' rated ' + score.toFixed(1) + '/10!');
   } finally {
     if (btn) btn.disabled = false;
   }
@@ -154,15 +134,15 @@ function getFestivalAggregates(festivalId) {
   var map = {};
   STATE.festivalReviews.forEach(function (r) {
     if (r.festivalId !== festivalId) return;
-    var loc = r.location || '';
-    var key = r.boothName.toLowerCase() + '|' + loc.toLowerCase();
-    if (!map[key]) map[key] = { boothName: r.boothName, location: loc, festivalId: festivalId, scores: [], count: 0 };
+    var booth = r.boothName || '';
+    var key = r.itemName.toLowerCase() + '|' + booth.toLowerCase();
+    if (!map[key]) map[key] = { itemName: r.itemName, boothName: booth, festivalId: festivalId, scores: [], count: 0 };
     map[key].scores.push(r.score); map[key].count++;
   });
   return Object.keys(map).map(function (k) {
     var m = map[k];
     var avg = m.scores.reduce(function (a, b) { return a + b; }, 0) / m.scores.length;
-    return { boothName: m.boothName, location: m.location, festivalId: m.festivalId, count: m.count, avgScore: Math.round(avg * 10) / 10 };
+    return { itemName: m.itemName, boothName: m.boothName, festivalId: m.festivalId, count: m.count, avgScore: Math.round(avg * 10) / 10 };
   }).sort(function (a, b) { return b.avgScore - a.avgScore; });
 }
 
@@ -171,13 +151,13 @@ function renderFestivalLists(agg, scoresElId, popularElId) {
   var byPop = agg.slice().sort(function (a, b) { return b.count - a.count; }).slice(0, 10);
   var renderList = function (items, el) {
     if (!el) return;
-    if (!items.length) { el.innerHTML = '<div class="empty-state"><div class="empty-state-sub">No booth ratings yet.<br>Be the first to rate one!</div></div>'; return; }
+    if (!items.length) { el.innerHTML = '<div class="empty-state"><div class="empty-state-sub">No festival food ratings yet.<br>Be the first to rate one!</div></div>'; return; }
     el.innerHTML = items.map(function (item, i) {
-      var loc = item.location || 'EPCOT';
-      return '<div class="food-item" data-n="' + encodeURIComponent(item.boothName) + '" data-l="' + encodeURIComponent(item.location) + '" data-f="' + encodeURIComponent(item.festivalId) + '" onclick="openFestivalDetailEl(this)">' +
+      var loc = item.boothName || 'EPCOT';
+      return '<div class="food-item" data-n="' + encodeURIComponent(item.itemName) + '" data-b="' + encodeURIComponent(item.boothName) + '" data-f="' + encodeURIComponent(item.festivalId) + '" onclick="openFestivalDetailEl(this)">' +
         '<div class="food-rank">' + (i + 1) + '</div>' +
-        '<div class="food-emoji">' + foodEmoji(item.boothName) + '</div>' +
-        '<div class="food-info"><div class="food-name">' + escapeHtml(item.boothName) + '</div><div class="food-loc">' + escapeHtml(loc) + '</div></div>' +
+        '<div class="food-emoji">' + foodEmoji(item.itemName) + '</div>' +
+        '<div class="food-info"><div class="food-name">' + escapeHtml(item.itemName) + '</div><div class="food-loc">' + escapeHtml(loc) + '</div></div>' +
         '<div class="food-score-block"><div class="food-score-num">' + item.avgScore.toFixed(1) + '</div><div class="food-rev-count">' + item.count.toLocaleString() + ' review' + (item.count === 1 ? '' : 's') + '</div></div>' +
         '</div>';
     }).join('');
@@ -265,30 +245,30 @@ function closeFestivalArchiveDetail() {
 }
 
 // ============================================================
-// BOOTH DETAIL MODAL (every individual review for one booth)
+// FOOD DETAIL MODAL (every individual review for one item + booth)
 // ============================================================
 function openFestivalDetailEl(el) {
-  openFestivalDetail(decodeURIComponent(el.getAttribute('data-n')), decodeURIComponent(el.getAttribute('data-l')), decodeURIComponent(el.getAttribute('data-f')));
+  openFestivalDetail(decodeURIComponent(el.getAttribute('data-n')), decodeURIComponent(el.getAttribute('data-b')), decodeURIComponent(el.getAttribute('data-f')));
 }
 
-function openFestivalDetail(boothName, location, festivalId) {
-  var key = boothName.toLowerCase() + '|' + (location || '').toLowerCase();
+function openFestivalDetail(itemName, boothName, festivalId) {
+  var key = itemName.toLowerCase() + '|' + (boothName || '').toLowerCase();
   var reviews = STATE.festivalReviews.filter(function (r) {
     if (r.festivalId !== festivalId) return false;
-    var rKey = r.boothName.toLowerCase() + '|' + (r.location || '').toLowerCase();
+    var rKey = r.itemName.toLowerCase() + '|' + (r.boothName || '').toLowerCase();
     return rKey === key;
   }).sort(function (a, b) { return b.ts - a.ts; });
   if (!reviews.length) return;
-  var loc = location || 'EPCOT';
+  var loc = boothName || 'EPCOT';
   var avg = reviews.reduce(function (s, r) { return s + r.score; }, 0) / reviews.length;
   var cf = currentFestival();
-  fvdCurrent = { boothName: boothName, location: location || '', festivalId: festivalId, isCurrent: !!(cf && cf.id === festivalId) };
+  fvdCurrent = { itemName: itemName, boothName: boothName || '', festivalId: festivalId, isCurrent: !!(cf && cf.id === festivalId) };
   // "Want to Try" only makes sense for the festival that's actually happening
   var favBtn = document.getElementById('fvd-fav-btn');
   if (favBtn) favBtn.style.display = fvdCurrent.isCurrent ? '' : 'none';
   updateFestDetailFavButton();
-  document.getElementById('fvd-emoji').textContent = foodEmoji(boothName);
-  document.getElementById('fvd-title').textContent = boothName;
+  document.getElementById('fvd-emoji').textContent = foodEmoji(itemName);
+  document.getElementById('fvd-title').textContent = itemName;
   document.getElementById('fvd-loc').textContent = loc;
   document.getElementById('fvd-avg').textContent = avg.toFixed(1);
   document.getElementById('fvd-count').textContent = reviews.length + ' review' + (reviews.length === 1 ? '' : 's');
@@ -310,18 +290,18 @@ function openFestivalDetail(boothName, location, festivalId) {
 // ============================================================
 // WANT TO TRY (scoped to the current festival only)
 // ============================================================
-function isFestivalFavorited(boothName, location, festivalId) {
+function isFestivalFavorited(itemName, boothName, festivalId) {
   if (!STATE.currentUser) return false;
   return STATE.festivalFavorites.some(function (f) {
     return f.userId === STATE.currentUser.id && f.festivalId === festivalId &&
-      f.boothName.toLowerCase() === boothName.toLowerCase() && (f.location || '') === (location || '');
+      f.itemName.toLowerCase() === itemName.toLowerCase() && (f.boothName || '') === (boothName || '');
   });
 }
 
 function updateFestDetailFavButton() {
   var btn = document.getElementById('fvd-fav-btn');
   if (!btn || !fvdCurrent) return;
-  var fav = isFestivalFavorited(fvdCurrent.boothName, fvdCurrent.location, fvdCurrent.festivalId);
+  var fav = isFestivalFavorited(fvdCurrent.itemName, fvdCurrent.boothName, fvdCurrent.festivalId);
   btn.textContent = fav ? '★ Saved to Want to Try' : '☆ Want to Try';
   btn.className = 'btn-sm' + (fav ? ' primary' : '');
 }
@@ -331,14 +311,14 @@ async function toggleFestivalFavoriteCurrent() {
   if (!fvdCurrent) return;
   var fav = STATE.festivalFavorites.find(function (f) {
     return f.userId === STATE.currentUser.id && f.festivalId === fvdCurrent.festivalId &&
-      f.boothName.toLowerCase() === fvdCurrent.boothName.toLowerCase() && (f.location || '') === fvdCurrent.location;
+      f.itemName.toLowerCase() === fvdCurrent.itemName.toLowerCase() && (f.boothName || '') === fvdCurrent.boothName;
   });
   if (fav) {
     var _del = await sb.from('festival_favorites').delete().eq('id', fav.id);
     if (_del.error) { toast('Could not remove: ' + _del.error.message, 'error'); return; }
     toast('Removed from your Want to Try list.');
   } else {
-    var _ins = await sb.from('festival_favorites').insert({ user_id: STATE.currentUser.id, festival_id: fvdCurrent.festivalId, booth_name: fvdCurrent.boothName, location: fvdCurrent.location || null });
+    var _ins = await sb.from('festival_favorites').insert({ user_id: STATE.currentUser.id, festival_id: fvdCurrent.festivalId, item_name: fvdCurrent.itemName, booth_name: fvdCurrent.boothName || null });
     if (_ins.error) { toast('Could not save: ' + _ins.error.message, 'error'); return; }
     toast('Added to your Want to Try list!');
   }
@@ -352,14 +332,14 @@ function renderFestivalFavorites() {
   var cf = currentFestival();
   var mine = cf ? STATE.festivalFavorites.filter(function (f) { return f.userId === STATE.currentUser.id && f.festivalId === cf.id; }) : [];
   if (!mine.length) {
-    el.innerHTML = '<div class="empty-state"><div class="empty-state-sub">Nothing on your list yet.<br>Save a booth from above to remember it for next time.</div></div>';
+    el.innerHTML = '<div class="empty-state"><div class="empty-state-sub">Nothing on your list yet.<br>Save a festival food item from above to remember it for next time.</div></div>';
     return;
   }
   el.innerHTML = mine.map(function (f) {
-    var loc = f.location || 'EPCOT';
+    var loc = f.boothName || 'EPCOT';
     return '<div class="myfr-row">' +
-      '<div class="myfr-emoji">' + foodEmoji(f.boothName) + '</div>' +
-      '<div class="myfr-info"><div class="myfr-name">' + escapeHtml(f.boothName) + '</div><div class="myfr-loc">' + escapeHtml(loc) + '</div></div>' +
+      '<div class="myfr-emoji">' + foodEmoji(f.itemName) + '</div>' +
+      '<div class="myfr-info"><div class="myfr-name">' + escapeHtml(f.itemName) + '</div><div class="myfr-loc">' + escapeHtml(loc) + '</div></div>' +
       '<div class="myfr-actions">' +
         '<button class="btn-sm primary" onclick="rateFestivalFavorite(\'' + f.id + '\')">Rate It</button>' +
         '<button class="btn-sm danger" onclick="removeFestivalFavorite(\'' + f.id + '\')">Remove</button>' +
@@ -372,14 +352,14 @@ function rateFestivalFavorite(id) {
   var f = STATE.festivalFavorites.find(function (x) { return x.id === id; });
   if (!f) return;
   resetFestivalForm();
-  document.getElementById('fv-booth').value = f.boothName;
-  setFestLocationValue(f.location || '');
+  document.getElementById('fv-item').value = f.itemName;
+  document.getElementById('fv-booth').value = f.boothName || '';
   openOverlay('overlay-festival-review');
 }
 
 async function removeFestivalFavorite(id) {
   if (!STATE.currentUser) return;
-  if (!confirm('Remove this booth from your Want to Try list?')) return;
+  if (!confirm('Remove this item from your Want to Try list?')) return;
   var res = await sb.from('festival_favorites').delete().eq('id', id).eq('user_id', STATE.currentUser.id);
   if (res.error) { toast('Could not remove: ' + res.error.message, 'error'); return; }
   await loadData();
@@ -388,7 +368,7 @@ async function removeFestivalFavorite(id) {
 }
 
 // ============================================================
-// MY BOOTH REVIEWS
+// MY FESTIVAL REVIEWS
 // ============================================================
 function renderMyFestivalReviews() {
   var el = document.getElementById('fest-my-reviews');
@@ -396,14 +376,14 @@ function renderMyFestivalReviews() {
   var cf = currentFestival();
   var mine = cf ? STATE.festivalReviews.filter(function (r) { return r.userId === STATE.currentUser.id && r.festivalId === cf.id; }) : [];
   if (!mine.length) {
-    el.innerHTML = '<div class="empty-state"><div class="empty-state-sub">You have not rated any booths yet.<br>Rate one above to get started.</div></div>';
+    el.innerHTML = '<div class="empty-state"><div class="empty-state-sub">You have not rated any festival food yet.<br>Rate something above to get started.</div></div>';
     return;
   }
   el.innerHTML = mine.map(function (r) {
-    var loc = r.location || 'EPCOT';
+    var loc = r.boothName || 'EPCOT';
     return '<div class="myfr-row">' +
-      '<div class="myfr-emoji">' + foodEmoji(r.boothName) + '</div>' +
-      '<div class="myfr-info"><div class="myfr-name">' + escapeHtml(r.boothName) + '</div><div class="myfr-loc">' + escapeHtml(loc) + '</div>' + (r.review ? '<div class="myfr-review">' + escapeHtml(r.review) + '</div>' : '') + '</div>' +
+      '<div class="myfr-emoji">' + foodEmoji(r.itemName) + '</div>' +
+      '<div class="myfr-info"><div class="myfr-name">' + escapeHtml(r.itemName) + '</div><div class="myfr-loc">' + escapeHtml(loc) + '</div>' + (r.review ? '<div class="myfr-review">' + escapeHtml(r.review) + '</div>' : '') + '</div>' +
       '<div class="myfr-score">' + Number(r.score).toFixed(1) + '</div>' +
       '<div class="myfr-actions">' +
         '<button class="btn-sm" onclick="editFestivalReview(\'' + r.id + '\')">Edit</button>' +
@@ -428,9 +408,9 @@ function editFestivalReview(id) {
   if (!r) return;
   fvEditId = id;
   openOverlay('overlay-festival-review');
-  populateFestBoothDatalist();
-  document.getElementById('fv-booth').value = r.boothName;
-  setFestLocationValue(r.location || '');
+  populateFestDatalists();
+  document.getElementById('fv-item').value = r.itemName;
+  document.getElementById('fv-booth').value = r.boothName || '';
   document.getElementById('fv-score').value = r.score;
   document.getElementById('fv-score-display').textContent = Number(r.score).toFixed(1);
   document.getElementById('fv-review').value = r.review || '';

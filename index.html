@@ -601,41 +601,23 @@
   </div>
 </div>
 
-<!-- Rate an EPCOT Festival booth -->
+<!-- Rate an EPCOT Festival food item -->
 <div class="overlay" id="overlay-festival-review">
   <div class="modal">
     <div class="modal-hd">
-      <span class="modal-hd-title">Rate a Festival Booth</span>
+      <span class="modal-hd-title">Rate Festival Food</span>
       <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-festival-review')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
       <div class="field">
-        <label class="field-lbl">Booth Name</label>
-        <input class="field-input" id="fv-booth" list="fv-booth-datalist" placeholder="e.g. Refreshment Port" autocomplete="off">
-        <datalist id="fv-booth-datalist"></datalist>
+        <label class="field-lbl">Food Item Name</label>
+        <input class="field-input" id="fv-item" list="fv-item-datalist" placeholder="e.g. Cheddar Cheese Soup" autocomplete="off">
+        <datalist id="fv-item-datalist"></datalist>
       </div>
       <div class="field">
-        <label class="field-lbl">Location within EPCOT</label>
-        <select class="field-input" id="fv-location" onchange="handleFestLocationSelect()">
-          <option value="">Select a location...</option>
-          <option>World Celebration</option>
-          <option>World Discovery</option>
-          <option>World Nature</option>
-          <option>World Showcase Plaza</option>
-          <option>Mexico</option>
-          <option>Norway</option>
-          <option>China</option>
-          <option>Germany</option>
-          <option>Italy</option>
-          <option>The American Adventure</option>
-          <option>Japan</option>
-          <option>Morocco</option>
-          <option>France</option>
-          <option>United Kingdom</option>
-          <option>Canada</option>
-          <option value="__other__">Other / not listed here...</option>
-        </select>
-        <input class="field-input" id="fv-location-other" style="display:none;margin-top:8px" placeholder="Describe where in EPCOT">
+        <label class="field-lbl">Booth (optional)</label>
+        <input class="field-input" id="fv-booth" list="fv-booth-datalist" placeholder="e.g. Refreshment Port" autocomplete="off">
+        <datalist id="fv-booth-datalist"></datalist>
       </div>
       <div class="field">
         <div class="score-display" id="fv-score-display">8.5</div>
@@ -656,7 +638,7 @@
         </div>
         <input type="file" id="fv-photo-file" accept="image/*" style="display:none" onchange="handleFestivalPhoto(event)">
         <div id="fv-photo-preview" style="margin-top:8px;display:none">
-          <img id="fv-photo-img" alt="Festival booth photo preview" style="width:100%;max-height:180px;object-fit:cover;border-radius:6px">
+          <img id="fv-photo-img" alt="Festival food photo preview" style="width:100%;max-height:180px;object-fit:cover;border-radius:6px">
         </div>
       </div>
     </div>
@@ -667,7 +649,7 @@
   </div>
 </div>
 
-<!-- EPCOT Festival booth detail: every individual review for one booth -->
+<!-- EPCOT Festival food detail: every individual review for one food item -->
 <div class="overlay" id="overlay-festival-detail">
   <div class="modal modal-wide">
     <div class="modal-hd">
@@ -969,7 +951,7 @@
               <i class="ti ti-clock"></i> Log a Wait Time
             </div>
             <div class="dropdown-item" onclick="resetFestivalForm();openOverlay('overlay-festival-review');closeDropdown()">
-              🎪 Rate a Festival Booth
+              🎪 Rate Festival Food
             </div>
             <div class="dropdown-divider"></div>
             <div class="dropdown-item" onclick="openEditProfile();closeDropdown()">
@@ -1470,18 +1452,18 @@
     <div style="max-width:1300px;margin:0 auto;padding:48px 32px">
       <div class="section-head">
         <div><h2 class="section-title">EPCOT FESTIVALS</h2><p class="section-sub" id="fest-current-name">🎪 Loading...</p></div>
-        <button class="btn-sm primary" id="fest-rate-btn" onclick="resetFestivalForm();actionOrSignup('overlay-festival-review')"><i class="ti ti-plus" style="font-size:12px"></i> Rate a Booth</button>
+        <button class="btn-sm primary" id="fest-rate-btn" onclick="resetFestivalForm();actionOrSignup('overlay-festival-review')"><i class="ti ti-plus" style="font-size:12px"></i> Rate Festival Food</button>
       </div>
       <div class="page-tabs">
         <button class="page-tab active" id="fest-tab-btn-current" onclick="switchFestivalTab(this,'current')">Current Festival</button>
         <button class="page-tab" id="fest-tab-btn-archive" onclick="switchFestivalTab(this,'archive')">Archive</button>
       </div>
 
-      <!-- Current festival: booth rankings + this user's own reviews/favorites -->
+      <!-- Current festival: food rankings + this user's own reviews/favorites -->
       <div id="fttab-current">
         <div class="food-cols">
           <div>
-            <div class="subsection-title"><i class="ti ti-trophy"></i>Top Rated Booths</div>
+            <div class="subsection-title"><i class="ti ti-trophy"></i>Top Rated</div>
             <div class="light-card" id="fest-scores-list"></div>
           </div>
           <div>
@@ -1492,7 +1474,7 @@
         <div id="fest-mine-wrap" style="margin-top:32px;display:none">
           <div class="subsection-title"><i class="ti ti-star"></i>Want to Try (This Festival)</div>
           <div class="light-card" id="fest-my-favorites"></div>
-          <div class="subsection-title" style="margin-top:20px"><i class="ti ti-notebook"></i>My Booth Reviews</div>
+          <div class="subsection-title" style="margin-top:20px"><i class="ti ti-notebook"></i>My Festival Reviews</div>
           <div class="light-card" id="fest-my-reviews"></div>
         </div>
       </div>
@@ -1509,7 +1491,7 @@
           <p class="section-sub" id="fest-archive-detail-name" style="margin-bottom:16px"></p>
           <div class="food-cols">
             <div>
-              <div class="subsection-title"><i class="ti ti-trophy"></i>Top Rated Booths</div>
+              <div class="subsection-title"><i class="ti ti-trophy"></i>Top Rated</div>
               <div class="light-card" id="fest-archive-scores-list"></div>
             </div>
             <div>
@@ -1957,8 +1939,8 @@
 <script src="restaurants-data.js?v=3"></script>
 <script src="supabase-auth.js?v=11"></script>
 <script src="supabase-data.js?v=19"></script>
-<script src="supabase-food.js?v=15"></script>
-<script src="supabase-festivals.js?v=1"></script>
+<script src="supabase-food.js?v=16"></script>
+<script src="supabase-festivals.js?v=2"></script>
 <script src="supabase-waittimes.js?v=3"></script>
 <script src="supabase-donors.js?v=2"></script>
 <script src="leaderboard.js?v=5"></script>
