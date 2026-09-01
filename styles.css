@@ -219,6 +219,163 @@ body {
 .nextier-bar span { display: block; height: 100%; border-radius: 3px; transition: width 0.5s ease; }
 @media (prefers-reduced-motion: reduce) { .nextier-bar span { transition: none; } }
 
+/* ── FOOD SCORES — searchable, paged list on a gold card ────────────────
+   Same material as the profile credential (.cred), so the two pages read as
+   one system. It carries its own --fc-* palette rather than borrowing the
+   card's --cd-* ones: they are different surfaces with different jobs (a
+   credential vs. a long list) and keeping them separate means either can be
+   retuned without disturbing the other. If you recolour one and want them to
+   match, change both.
+
+   Two columns (Top Rated / Most Reviewed) became one list with a sort
+   toggle, because paging two side-by-side lists means two paginators. */
+.goldcard {
+  --fc-ink:   #1A2A3A;                                   /* primary text */
+  --fc-dim:   rgba(26,42,58,0.86);                       /* labels — 0.86, see .cred note on contrast */
+  --fc-face:  linear-gradient(158deg, #EFDCA1, #D3AE58); /* the card */
+  --fc-weave: rgba(26,42,58,0.045);                      /* faint ring pattern */
+  --fc-edge:  rgba(26,42,58,0.28);
+  --fc-rule:  rgba(26,42,58,0.16);                       /* row dividers */
+  --fc-hover: rgba(255,255,255,0.32);
+  --fc-foil:  linear-gradient(90deg, transparent, #8E6E17 18%, #5C4A22 50%, #8E6E17 82%, transparent);
+
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--fc-edge);
+  border-radius: 12px;
+  background:
+    repeating-radial-gradient(circle at 108% -8%, transparent 0 7px, var(--fc-weave) 7px 8px),
+    var(--fc-face);
+  box-shadow: 0 18px 44px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.5);
+}
+.goldcard::before {
+  content: '';
+  position: absolute; inset: 0 0 auto 0; height: 2px;
+  background: var(--fc-foil);
+  opacity: 0.8;
+}
+
+/* ---- controls sit on the dark page, so they stay page-coloured ---- */
+.fl-controls {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
+}
+.fl-search { position: relative; flex: 1 1 300px; max-width: 460px; }
+.fl-search > i {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  font-size: 15px; color: rgba(244,239,227,0.4); pointer-events: none;
+}
+.fl-search input {
+  width: 100%;
+  font-family: 'Josefin Sans', sans-serif; font-size: 13.5px; font-weight: 400;
+  color: #F4EFE3;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(231,206,138,0.22);
+  border-radius: 999px;
+  padding: 11px 38px 11px 39px;
+  outline: none;
+  transition: border-color 0.16s, background 0.16s;
+  -webkit-appearance: none; appearance: none;
+}
+.fl-search input::placeholder { color: rgba(244,239,227,0.38); }
+.fl-search input::-webkit-search-cancel-button { display: none; }
+.fl-search input:focus { border-color: rgba(231,206,138,0.6); background: rgba(255,255,255,0.08); }
+.fl-clear {
+  position: absolute; right: 9px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; padding: 5px;
+  display: flex; color: rgba(244,239,227,0.5); font-size: 14px;
+}
+.fl-clear:hover { color: #F4EFE3; }
+.fl-clear:focus-visible { outline: 2px solid var(--gold-lt); outline-offset: 2px; border-radius: 50%; }
+
+.fl-sorts { display: flex; gap: 6px; flex-shrink: 0; }
+.fl-sort {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: rgba(244,239,227,0.55);
+  background: transparent;
+  border: 1px solid rgba(231,206,138,0.18);
+  border-radius: 999px; padding: 9px 16px; cursor: pointer;
+  transition: all 0.16s ease; white-space: nowrap;
+}
+.fl-sort:hover { color: #F4EFE3; border-color: rgba(231,206,138,0.45); }
+.fl-sort.active { color: #14213a; background: linear-gradient(180deg, #F0D27E, #DDB247); border-color: transparent; }
+.fl-sort:focus-visible { outline: 2px solid var(--gold-lt); outline-offset: 3px; }
+
+/* ---- rows ---- */
+.fl-row {
+  display: flex; align-items: center; gap: 13px;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--fc-rule);
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.fl-row:last-child { border-bottom: none; }
+.fl-row:hover { background: var(--fc-hover); }
+.fl-row:focus-visible { outline: 2px solid var(--fc-ink); outline-offset: -3px; }
+.fl-rank {
+  font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px;
+  color: var(--fc-dim); min-width: 28px; text-align: center;
+  font-variant-numeric: tabular-nums; flex-shrink: 0;
+}
+.fl-emoji { font-size: 21px; width: 32px; text-align: center; flex-shrink: 0; }
+.fl-info { flex: 1; min-width: 0; }
+.fl-name {
+  font-size: 13.5px; font-weight: 700; letter-spacing: 0.5px;
+  color: var(--fc-ink); margin-bottom: 2px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.fl-loc {
+  font-size: 10.5px; font-weight: 400; letter-spacing: 0.4px; color: var(--fc-dim);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.fl-score { text-align: right; flex-shrink: 0; }
+.fl-score-n {
+  font-family: 'Bebas Neue', sans-serif; font-size: 23px; letter-spacing: 1px;
+  line-height: 1; color: var(--fc-ink); font-variant-numeric: tabular-nums;
+}
+.fl-score-c { font-size: 9.5px; font-weight: 600; letter-spacing: 0.3px; color: var(--fc-dim); margin-top: 2px; }
+
+.fl-empty { padding: 46px 24px; text-align: center; }
+.fl-empty-t {
+  font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px;
+  color: var(--fc-ink); margin-bottom: 6px;
+}
+.fl-empty-s { font-size: 12.5px; font-weight: 300; line-height: 1.6; color: var(--fc-dim); }
+
+/* ---- pager ---- */
+.fl-pager {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  margin-top: 18px; flex-wrap: wrap;
+}
+.fl-pg-btn {
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(231,206,138,0.22);
+  color: #F4EFE3; cursor: pointer; font-size: 17px;
+  transition: all 0.16s ease;
+}
+.fl-pg-btn:hover:not(:disabled) { background: rgba(231,206,138,0.14); border-color: rgba(231,206,138,0.55); }
+.fl-pg-btn:disabled { opacity: 0.28; cursor: not-allowed; }
+.fl-pg-btn:focus-visible { outline: 2px solid var(--gold-lt); outline-offset: 3px; }
+.fl-pg-info {
+  font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+  color: rgba(244,239,227,0.5); font-variant-numeric: tabular-nums; text-align: center;
+}
+
+@media (max-width: 620px) {
+  .fl-controls { flex-direction: column; align-items: stretch; }
+  /* flex-basis is the CROSS axis once this flips to column - left as
+     "flex: 1 1 300px" the search box grows to 300px tall and leaves a
+     gap the size of a phone screen above the sort buttons */
+  .fl-search { flex: 0 0 auto; max-width: none; }
+  .fl-sorts .fl-sort { flex: 1; text-align: center; }
+  .fl-row { padding: 12px 14px; gap: 10px; }
+  .fl-rank { min-width: 20px; font-size: 17px; }
+  .fl-emoji { width: 26px; font-size: 19px; }
+}
+
 /* ── HOME HERO — PASSHOLDER CREDENTIAL ──────────────────────────────────
    The logged-in home page IS the user's own profile, so the hero reads as
    the annual pass card they actually carry: issuing mark, member since,

@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=66">
+  <link rel="stylesheet" href="styles.css?v=68">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -1433,21 +1433,32 @@
 
   <!-- ── FOOD SCORES VIEW ── -->
   <div id="view-food" class="screen">
-    <div style="max-width:1300px;margin:0 auto;padding:48px 32px">
+    <!-- narrower than the other views (1300): this is a single list now, and at
+         full width the rows stretch into a dead gap between name and score -->
+    <div style="max-width:960px;margin:0 auto;padding:48px 32px">
       <div class="section-head">
         <div><h2 class="section-title">FOOD SCORES</h2><p class="section-sub">Community-rated across all parks</p></div>
         <button class="btn-sm primary" onclick="resetFoodForm();actionOrSignup('overlay-food-review')"><i class="ti ti-plus" style="font-size:12px"></i> Rate an Item</button>
       </div>
-      <div class="food-cols">
-        <div>
-          <div class="subsection-title"><i class="ti ti-trophy"></i>Top Rated</div>
-          <div class="light-card" id="food-scores-list"></div>
+      <!-- Search + sort + a paged list, replacing the old two fixed top-10
+           columns. Top Rated / Most Reviewed are sort modes now rather than
+           separate columns, because paging two side-by-side lists would mean
+           two paginators. All wired up in supabase-food.js. -->
+      <div class="fl-controls">
+        <div class="fl-search">
+          <i class="ti ti-search"></i>
+          <input type="search" id="fl-q" placeholder="Search food, park or restaurant..."
+                 autocomplete="off" aria-label="Search food items" oninput="foodSearchInput()">
+          <button class="fl-clear" id="fl-clear" onclick="foodSearchClear()" aria-label="Clear search" style="display:none"><i class="ti ti-x"></i></button>
         </div>
-        <div>
-          <div class="subsection-title"><i class="ti ti-flame"></i>Most Reviewed</div>
-          <div class="light-card" id="food-popular-list"></div>
+        <div class="fl-sorts" role="group" aria-label="Sort food items">
+          <button class="fl-sort active" id="fl-sort-score" onclick="setFoodSort('score')">Top Rated</button>
+          <button class="fl-sort" id="fl-sort-count" onclick="setFoodSort('count')">Most Reviewed</button>
         </div>
       </div>
+
+      <div class="goldcard"><div id="food-list"></div></div>
+      <div class="fl-pager" id="fl-pager"></div>
     </div>
   </div>
 
@@ -1943,7 +1954,7 @@
 <script src="restaurants-data.js?v=3"></script>
 <script src="supabase-auth.js?v=11"></script>
 <script src="supabase-data.js?v=19"></script>
-<script src="supabase-food.js?v=16"></script>
+<script src="supabase-food.js?v=17"></script>
 <script src="supabase-festivals.js?v=2"></script>
 <script src="supabase-waittimes.js?v=3"></script>
 <script src="supabase-donors.js?v=2"></script>
