@@ -525,19 +525,23 @@ function userCheckins(userId) {
 // within that window; nothing is ever archived, "this month/year"
 // is just a filter on checkins.date.
 // ============================================================
+// Theme-park / franchise references, same idea as YEARLY_TIERS below.
+// Thresholds and colours are deliberately unchanged from the old
+// Bronze..Grandmaster set: the colours still read as a progression and are
+// already contrast-checked against the gold profile card.
 const MONTHLY_TIERS = [
-  {name:'Bronze',      min:1,  color:'#CD7F32', icon:'🥉'},
-  {name:'Silver',      min:3,  color:'#9CA3AF', icon:'🥈'},
-  {name:'Gold',        min:5,  color:'#D4AF37', icon:'🥇'},
-  {name:'Platinum',    min:7,  color:'#2DD4BF', icon:'💠'},
-  {name:'Diamond',     min:9,  color:'#60A5FA', icon:'💎'},
-  {name:'Master',      min:11, color:'#A855F7', icon:'🏆'},
-  {name:'Grandmaster', min:13, color:'#F59E0B', icon:'👑'}
+  {name:'First Year',    min:1,  color:'#CD7F32', icon:'🦉'},
+  {name:'Padawan',       min:3,  color:'#9CA3AF', icon:'🗡️'},
+  {name:'Quartermaster', min:5,  color:'#D4AF37', icon:'⚓'},
+  {name:'Skipper',       min:7,  color:'#2DD4BF', icon:'🚤'},
+  {name:'Prefect',       min:9,  color:'#60A5FA', icon:'🎓'},
+  {name:'Agent J',       min:11, color:'#A855F7', icon:'🕶️'},
+  {name:'Captain',       min:13, color:'#F59E0B', icon:'🏴‍☠️'}
 ];
 const YEARLY_TIERS = [
   {name:'Dopey',           min:1,   color:'#7BAE7F', icon:'😆'},
   {name:'Park Hopper',     min:5,   color:'#4FA8D8', icon:'🎟️'},
-  {name:'Skipper',         min:12,  color:'#3C9B8F', icon:'⛵'},
+  {name:'Adventurer',      min:12,  color:'#3C9B8F', icon:'🧭'},
   {name:'Galaxy Defender', min:25,  color:'#4C4FA0', icon:'👽'},
   {name:'Galactic Hero',   min:45,  color:'#8B5CF6', icon:'🚀'},
   {name:'Tri-Wizard Cup',  min:75,  color:'#B8860B', icon:'🪄'},
