@@ -260,6 +260,9 @@ body {
      in main.js, and Grandmaster's orange goes muddy against gold - this
      ring is what keeps them legible on a light card */
   --cd-disc-ring:  0 0 0 1.5px rgba(26,42,58,0.35);
+  /* the logo art is gold, which vanished against a gold card - it is painted
+     as a mask rather than an <img> so it can take a colour from here */
+  --cd-logo:       #1A2A3A;
   /* ---------------------------------------------- */
 
   position: relative;
@@ -286,8 +289,16 @@ body {
   border-bottom: 1px solid var(--cd-rule);
 }
 .cred-mark { display: flex; align-items: center; gap: 12px; min-width: 0; }
+/* painted through the logo's own alpha channel rather than drawn as an image,
+   so the mark takes --cd-logo instead of its baked-in gold. Same masking
+   technique the scalloped .ticket edges already use. logo.png is a clean
+   cut-out (85% fully transparent, hollow centre), so the shape comes through
+   exactly, anti-aliased edges included. */
 .cred-logo {
   width: 44px; height: 44px; flex-shrink: 0; display: block;
+  background: var(--cd-logo);
+  -webkit-mask: url("img/logo.png?v=1") center / contain no-repeat;
+  mask: url("img/logo.png?v=1") center / contain no-repeat;
 }
 .cred-wordmark {
   font-family: 'Bebas Neue', sans-serif;
