@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=70">
+  <link rel="stylesheet" href="styles.css?v=74">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -1139,6 +1139,7 @@
                   <div class="cred-name" id="cred-name">Your Name</div>
                   <div class="cred-handle" id="cred-handle">@you</div>
                   <div class="cred-passes" id="cred-passes"></div>
+                  <div class="cred-bio" id="cred-bio"></div>
                 </div>
               </div>
               <div class="cred-rank" id="cred-rank"></div>
@@ -1152,6 +1153,7 @@
             <div class="hero-actions">
               <button class="btn-hero" onclick="newCheckin()"><i class="ti ti-circle-plus"></i> <span id="cred-cta">Log a Check-In</span></button>
               <button class="btn-hero-outline" onclick="showView('community')">Browse Community</button>
+              <button class="btn-hero-outline" onclick="openEditProfile()"><i class="ti ti-pencil" style="font-size:11px"></i> Edit Profile</button>
               <span class="cred-beta">🚧 Beta</span>
             </div>
             <!-- Progress to the next rank. Fills what was ~140px of dead
@@ -1303,29 +1305,18 @@
 
       <!-- PROFILE (merged into the same page as My Parks) -->
       <section class="section-wrap" style="padding-bottom:52px">
-        <div class="profile-header-card">
-          <div class="profile-hd-inner">
-            <div class="profile-avatar" id="profile-avatar-big">🎢</div>
-            <div class="profile-info">
-              <div class="profile-display-name" id="profile-display-name">Your Name</div>
-              <div class="profile-username" id="profile-username">@username</div>
-              <div class="profile-bio" id="profile-bio">No bio yet.</div>
-            </div>
-            <button class="btn-sm" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:white" onclick="openEditProfile()">
-              <i class="ti ti-pencil" style="font-size:11px"></i> Edit Profile
-            </button>
-          </div>
-          <div class="profile-badges" id="profile-badges">
-            <span class="badge">Bronze Tier</span>
-          </div>
+        <!-- Past Accomplishments. This replaced a profile header card that had
+             become a near-duplicate of the .cred credential above (same
+             avatar, name, handle, tier badges, AP chips, and 3 of its 4
+             stats). The parts that were NOT duplicated were rehomed rather
+             than dropped: achievement badges moved in here, the bio to
+             .cred-bio, and Edit Profile to the hero actions.
+             Built by renderPastAccomplishments() purely from checkins.date -
+             no history is stored anywhere. -->
+        <div class="section-head" style="margin-bottom:14px">
+          <div><h2 class="section-title">PAST ACCOMPLISHMENTS</h2><p class="section-sub">Badges you have earned, and ranks you held in previous months and years</p></div>
         </div>
-
-        <div class="stat-cards">
-          <div class="stat-card"><div class="stat-card-num" id="prof-stat-visits">0</div><div class="stat-card-lbl">Total Visits</div></div>
-          <div class="stat-card"><div class="stat-card-num" id="prof-stat-miles">0.0</div><div class="stat-card-lbl">Miles Walked</div></div>
-          <div class="stat-card"><div class="stat-card-num" id="prof-stat-foods">0</div><div class="stat-card-lbl">Foods Tried</div></div>
-          <div class="stat-card"><div class="stat-card-num" id="prof-stat-avg">—</div><div class="stat-card-lbl">Avg Food Score</div></div>
-        </div>
+        <div class="light-card" id="past-accomplishments" style="margin-bottom:34px"></div>
 
         <div class="section-head" style="margin-bottom:14px">
           <div><h2 class="section-title">MY FOOD REVIEWS</h2><p class="section-sub">Ratings you've left - Edit to update</p></div>
@@ -1954,7 +1945,7 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
-<script src="main.js?v=33"></script>
+<script src="main.js?v=34"></script>
 <script src="restaurants-data.js?v=3"></script>
 <script src="supabase-auth.js?v=11"></script>
 <script src="supabase-data.js?v=19"></script>

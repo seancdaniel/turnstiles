@@ -358,6 +358,72 @@ body {
   .fl-emoji { width: 24px; font-size: 18px; }
 }
 
+/* ── Past Accomplishments ───────────────────────────────────────────────
+   Replaced the old .profile-header-card, which had become a near-total
+   duplicate of the .cred credential at the top of the page (same avatar,
+   name, handle, tier badges, AP chips and three of the four stats).
+   Three things in it were NOT duplicated and had to be rehomed rather than
+   deleted: the achievement badges (now the first block here), the bio (now
+   .cred-bio on the credential) and the Edit Profile button (now sits with
+   the hero actions).
+
+   Everything here is derived from checkins.date at render time - there is no
+   history table. A month or year only appears once it is over AND it earned
+   a tier, so this genuinely reads as a trophy case rather than a log. */
+.pa-hd {
+  font-size: 9.5px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase;
+  color: var(--ink-faint); padding: 15px 18px 11px;
+}
+.pa-group + .pa-group .pa-hd { border-top: 1px solid var(--border); }
+.pa-badges { display: flex; flex-wrap: wrap; gap: 7px; padding: 0 18px 16px; }
+/* .badge is styled for a DARK surface (white text at 80%) because it was born
+   on the old navy profile card and is still used there by the read-only
+   openUserProfile modal. On this white card the plain variant rendered
+   white-on-white and vanished - First Visit and Regular were in the DOM but
+   invisible. These re-tint it for a light ground, scoped so the modal is
+   untouched. */
+.pa-badges .badge {
+  background: rgba(26,42,58,0.055);
+  border-color: rgba(26,42,58,0.16);
+  color: var(--ink-mid);
+}
+.pa-badges .badge.gold {
+  background: rgba(194,154,44,0.15);
+  border-color: rgba(194,154,44,0.45);
+  color: #6B5210;
+}
+.pa-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 18px; border-top: 1px solid var(--border);
+}
+.pa-ic {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.16);
+}
+.pa-info { flex: 1; min-width: 0; }
+.pa-name {
+  font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 1px;
+  line-height: 1.15; color: var(--ink);
+}
+.pa-when { font-size: 10.5px; font-weight: 400; letter-spacing: 0.4px; color: var(--ink-faint); margin-top: 1px; }
+.pa-count {
+  flex-shrink: 0; text-align: right;
+  font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 0.6px;
+  line-height: 1; color: var(--ink-mid); font-variant-numeric: tabular-nums;
+}
+.pa-count span {
+  display: block; font-family: 'Josefin Sans', sans-serif;
+  font-size: 8px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--ink-faint); margin-top: 3px;
+}
+
+/* bio on the credential — the one piece of the old card with no other home */
+.cred-bio {
+  font-size: 12.5px; font-weight: 400; line-height: 1.5;
+  color: var(--cd-dim); margin-top: 11px; max-width: 56ch;
+}
+
 /* ── HOME HERO — PASSHOLDER CREDENTIAL ──────────────────────────────────
    The logged-in home page IS the user's own profile, so the hero reads as
    the annual pass card they actually carry: issuing mark, member since,
@@ -510,14 +576,17 @@ body {
   box-shadow: none;
 }
 .cred-plate-t { min-width: 0; flex: 1; }
+/* wraps at spaces only - never nowrap (truncated long ranks to "GALAXY
+   DEFE...") and never break-anywhere (split it as "GALAXY DEFEND / ER").
+   The media query below is what actually keeps it on one line. */
 .cred-plate-n {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 17px; letter-spacing: 1.1px; line-height: 1.1;
-  color: var(--cd-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: 17px; letter-spacing: 1.1px; line-height: 1.06;
+  color: var(--cd-ink);
 }
 .cred-plate-p {
   font-size: 9px; font-weight: 700; letter-spacing: 1.7px; text-transform: uppercase;
-  color: var(--cd-dim); margin-top: 2px;
+  color: var(--cd-dim); margin-top: 2px; white-space: nowrap;
 }
 /* the check-in count that earned the tier — turns dead space into the
    answer to "why am I this rank?" */
@@ -558,6 +627,14 @@ body {
 .cred-beta {
   font-size: 9.5px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
   color: rgba(244,239,227,0.34);
+}
+
+/* Between the hero going two-column (900px) and the page being genuinely
+   wide, the left column is only ~490px, so two rank plates side by side get
+   ~238px each - not enough for a name like "Galaxy Defender". Stack them
+   through that band; they go back to two-up once there is room. */
+@media (min-width: 901px) and (max-width: 1240px) {
+  .cred-rank { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 640px) {

@@ -628,6 +628,84 @@ function credPlateHtml(tier, period, count) {
   '</div>';
 }
 
+// ── Past Accomplishments ──────────────────────────────────────────────
+// All derived from checkins.date at render time; no history is stored.
+// A period only counts once it is OVER (the current month/year live on the
+// credential instead) and only if it actually earned a tier.
+const PA_MONTHS = ['January','February','March','April','May','June',
+                   'July','August','September','October','November','December'];
+
+function pastRankRows(userId) {
+  const now = new Date();
+  const curY = now.getFullYear(), curM = now.getMonth();
+  const byMonth = {}, byYear = {};
+  STATE.checkins.forEach(c => {
+    if (c.userId !== userId || !c.date) return;
+    const d = new Date(c.date + 'T00:00:00');
+    const y = d.getFullYear(), mo = d.getMonth();
+    if (y !== curY || mo !== curM) byMonth[y + '|' + mo] = (byMonth[y + '|' + mo] || 0) + 1;
+    if (y !== curY) byYear[y] = (byYear[y] || 0) + 1;
+  });
+
+  const months = Object.keys(byMonth).map(k => {
+    const p = k.split('|'), y = +p[0], mo = +p[1], n = byMonth[k];
+    return { tier: getMonthlyTier(n), when: PA_MONTHS[mo] + ' ' + y, count: n, sort: y * 12 + mo };
+  }).filter(r => r.tier).sort((a, b) => b.sort - a.sort);
+
+  const years = Object.keys(byYear).map(k => {
+    const y = +k, n = byYear[k];
+    return { tier: getYearlyTier(n), when: String(y), count: n, sort: y };
+  }).filter(r => r.tier).sort((a, b) => b.sort - a.sort);
+
+  return { months: months, years: years };
+}
+
+function paRowHtml(r) {
+  return '<div class="pa-row">' +
+    '<div class="pa-ic" style="background:' + r.tier.color + '">' + r.tier.icon + '</div>' +
+    '<div class="pa-info"><div class="pa-name">' + escapeHtml(r.tier.name) + '</div>' +
+      '<div class="pa-when">' + escapeHtml(r.when) + '</div></div>' +
+    '<div class="pa-count">' + r.count + '<span>Check-In' + (r.count === 1 ? '' : 's') + '</span></div>' +
+  '</div>';
+}
+
+function renderPastAccomplishments() {
+  const el = document.getElementById('past-accomplishments');
+  const u = STATE.currentUser;
+  if (!el || !u) return;
+  const my = userCheckins();
+  const foods = [...new Set(my.flatMap(c => c.foods || []))];
+
+  const badges = [];
+  if (my.length >= 1) badges.push('First Visit');
+  if (my.length >= 10) badges.push('Regular');
+  if (my.length >= 50) badges.push('Gold Passholder');
+  if ([...new Set(my.map(c => c.park))].length >= 4) badges.push('Park Hopper');
+  if (foods.length >= 10) badges.push('Foodie');
+
+  const past = pastRankRows(u.id);
+  let html = '';
+
+  if (badges.length) {
+    html += '<div class="pa-group"><div class="pa-hd">Badges Earned</div><div class="pa-badges">' +
+      badges.map(b => '<span class="badge' + (/Gold|Park|Foodie/.test(b) ? ' gold' : '') + '">' + escapeHtml(b) + '</span>').join('') +
+      '</div></div>';
+  }
+  if (past.months.length) {
+    html += '<div class="pa-group"><div class="pa-hd">Monthly Ranks</div>' +
+      past.months.map(paRowHtml).join('') + '</div>';
+  }
+  if (past.years.length) {
+    html += '<div class="pa-group"><div class="pa-hd">Yearly Ranks</div>' +
+      past.years.map(paRowHtml).join('') + '</div>';
+  }
+
+  el.innerHTML = html || '<div class="empty-state">' +
+    '<div class="empty-state-icon">🏅</div>' +
+    '<div class="empty-state-title">Nothing Here Yet</div>' +
+    '<div class="empty-state-sub">Badges and the ranks you finish each month and year will collect here.</div></div>';
+}
+
 function updatePassport() {
   const u = STATE.currentUser; if(!u) return;
   const my = userCheckins();
@@ -973,6 +1051,8 @@ function renderProfile() {
   if (credPasses) credPasses.innerHTML =
     (u.disneyPass ? '<span class="cred-pass"><em>\u{1F3F0}</em> ' + escapeHtml(u.disneyPass) + '</span>' : '') +
     (u.universalPass ? '<span class="cred-pass"><em>\u{1F30E}</em> ' + escapeHtml(u.universalPass) + '</span>' : '');
+  const credBio = document.getElementById('cred-bio');
+  if (credBio) credBio.textContent = u.bio || '';
   const credCta = document.getElementById('cred-cta');
   if (credCta) credCta.textContent = my.length ? 'Log a Check-In' : 'Log Your First Check-In';
   const nextier = document.getElementById('nextier');
@@ -981,26 +1061,8 @@ function renderProfile() {
     nextTierRowHtml(MONTHLY_TIERS, checkinsThisMonth(u.id), 'This Month') +
     nextTierRowHtml(YEARLY_TIERS, checkinsThisYear(u.id), 'This Year');
 
-  document.getElementById('profile-avatar-big').innerHTML = avatarHtml(u.avatarUrl, u.avatar);
-  document.getElementById('profile-display-name').textContent = u.fname + ' ' + u.lname;
-  document.getElementById('profile-username').textContent = '@'+u.username;
-  document.getElementById('profile-bio').textContent = u.bio||'No bio yet.';
-  document.getElementById('prof-stat-visits').textContent = my.length;
-  document.getElementById('prof-stat-miles').textContent = miles.toFixed(1);
-  document.getElementById('prof-stat-foods').textContent = foods.length;
-  document.getElementById('prof-stat-avg').textContent = avg;
 
-  const badges = [];
-  if(my.length>=1) badges.push('First Visit');
-  if(my.length>=10) badges.push('Regular');
-  if(my.length>=50) badges.push('Gold Passholder');
-  if([...new Set(my.map(c=>c.park))].length>=4) badges.push('Park Hopper');
-  if(foods.length>=10) badges.push('Foodie');
-  document.getElementById('profile-badges').innerHTML =
-    tierBadge(monthlyTier, 'Monthly') + tierBadge(yearlyTier, 'Yearly') +
-    badges.map(b => `<span class="badge${b.includes('Gold')||b.includes('Park')||b.includes('Foodie')?' gold':''}">${b}</span>`).join('') +
-    (u.disneyPass ? `<span class="badge">🏰 ${escapeHtml(u.disneyPass)}</span>` : '') +
-    (u.universalPass ? `<span class="badge">🌎 ${escapeHtml(u.universalPass)}</span>` : '');
+  renderPastAccomplishments();
 
   // Visit history table
   const histEl = document.getElementById('visit-history-table');
