@@ -290,29 +290,19 @@ function getFoodAggregates() {
   }).sort(function (a, b) { return b.avgScore - a.avgScore; });
 }
 
-// ── Food Scores list: search + sort + pagination ──────────────────────
-// Replaced two fixed top-10 columns. Top Rated / Most Reviewed are sort
-// modes now; paging two side-by-side lists would have meant two paginators.
+// ── Food Scores: two independently paged lists, one shared search ─────
+// Top Rated and Most Reviewed are separate columns, each with its own page
+// state, so paging one does not disturb the other. The search filters the
+// pool both columns are drawn from.
 var FOOD_PER_PAGE = 10;
-var foodSort = 'score';   // 'score' | 'count'
-var foodPage = 1;
 var foodQuery = '';
-
-function setFoodSort(mode) {
-  if (foodSort === mode) return;
-  foodSort = mode;
-  foodPage = 1;                     // a new ordering makes the old page number meaningless
-  var s = document.getElementById('fl-sort-score');
-  var c = document.getElementById('fl-sort-count');
-  if (s) s.classList.toggle('active', mode === 'score');
-  if (c) c.classList.toggle('active', mode === 'count');
-  renderFood();
-}
+var foodPages = { score: 1, count: 1 };
 
 function foodSearchInput() {
   var el = document.getElementById('fl-q');
   foodQuery = el ? el.value.trim().toLowerCase() : '';
-  foodPage = 1;                     // otherwise you can land past the end of a smaller result set
+  foodPages.score = 1;              // a smaller result set can strand you past the end
+  foodPages.count = 1;
   var clr = document.getElementById('fl-clear');
   if (clr) clr.style.display = foodQuery ? 'flex' : 'none';
   renderFood();
@@ -324,11 +314,9 @@ function foodSearchClear() {
   foodSearchInput();
 }
 
-function foodPageGo(delta) {
-  foodPage += delta;
+function foodPageGo(which, delta) {
+  foodPages[which] += delta;
   renderFood();
-  var card = document.querySelector('#view-food .goldcard');
-  if (card) card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 
 // match on item, park and spot so "epcot" or a restaurant name both work
@@ -342,63 +330,71 @@ function foodRowKey(e, el) {
   if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openFoodDetailEl(el); }
 }
 
-function renderFood() {
-  var list = document.getElementById('food-list');
-  var pager = document.getElementById('fl-pager');
+function foodRowHtml(item, rank) {
+  var loc = item.park + (item.spot ? ' \u00B7 ' + item.spot : '');
+  return '<div class="fl-row" tabindex="0" role="button"' +
+    ' data-n="' + encodeURIComponent(item.itemName) + '"' +
+    ' data-p="' + encodeURIComponent(item.park) + '"' +
+    ' data-s="' + encodeURIComponent(item.spot) + '"' +
+    ' onclick="openFoodDetailEl(this)" onkeydown="foodRowKey(event, this)">' +
+    '<div class="fl-rank">' + rank + '</div>' +
+    '<div class="fl-emoji">' + foodEmoji(item.itemName) + '</div>' +
+    '<div class="fl-info">' +
+      '<div class="fl-name">' + escapeHtml(item.itemName) + '</div>' +
+      '<div class="fl-loc">' + escapeHtml(loc) + '</div>' +
+    '</div>' +
+    '<div class="fl-score">' +
+      '<div class="fl-score-n">' + item.avgScore.toFixed(1) + '</div>' +
+      '<div class="fl-score-c">' + item.count.toLocaleString() + ' review' + (item.count === 1 ? '' : 's') + '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+// one column: sort the shared pool its own way, page it, draw its own pager
+function renderFoodColumn(which, matched, listId, pagerId) {
+  var list = document.getElementById(listId);
+  var pager = document.getElementById(pagerId);
   if (!list) return;
 
-  var all = getFoodAggregates();
-  var matched = all.filter(function (item) { return foodMatchesQuery(item, foodQuery); });
-  matched.sort(foodSort === 'count'
+  var items = matched.slice().sort(which === 'count'
     ? function (a, b) { return b.count - a.count || b.avgScore - a.avgScore; }
     : function (a, b) { return b.avgScore - a.avgScore || b.count - a.count; });
 
-  var pages = Math.max(1, Math.ceil(matched.length / FOOD_PER_PAGE));
-  if (foodPage > pages) foodPage = pages;
-  if (foodPage < 1) foodPage = 1;
-  var from = (foodPage - 1) * FOOD_PER_PAGE;
-  var slice = matched.slice(from, from + FOOD_PER_PAGE);
+  var pages = Math.max(1, Math.ceil(items.length / FOOD_PER_PAGE));
+  if (foodPages[which] > pages) foodPages[which] = pages;
+  if (foodPages[which] < 1) foodPages[which] = 1;
+  var page = foodPages[which];
+  var from = (page - 1) * FOOD_PER_PAGE;
 
-  if (!matched.length) {
+  if (!items.length) {
     list.innerHTML = '<div class="fl-empty">' +
       (foodQuery
-        ? '<div class="fl-empty-t">No matches</div><div class="fl-empty-s">Nothing found for &ldquo;' + escapeHtml(foodQuery) + '&rdquo;.<br>Try a different item, park or restaurant.</div>'
+        ? '<div class="fl-empty-t">No matches</div><div class="fl-empty-s">Nothing found for &ldquo;' + escapeHtml(foodQuery) + '&rdquo;.</div>'
         : '<div class="fl-empty-t">No ratings yet</div><div class="fl-empty-s">Be the first to rate an item.</div>') +
       '</div>';
     if (pager) pager.innerHTML = '';
     return;
   }
 
-  list.innerHTML = slice.map(function (item, i) {
-    var loc = item.park + (item.spot ? ' \u00B7 ' + item.spot : '');
-    return '<div class="fl-row" tabindex="0" role="button"' +
-      ' data-n="' + encodeURIComponent(item.itemName) + '"' +
-      ' data-p="' + encodeURIComponent(item.park) + '"' +
-      ' data-s="' + encodeURIComponent(item.spot) + '"' +
-      ' onclick="openFoodDetailEl(this)" onkeydown="foodRowKey(event, this)">' +
-      '<div class="fl-rank">' + (from + i + 1) + '</div>' +
-      '<div class="fl-emoji">' + foodEmoji(item.itemName) + '</div>' +
-      '<div class="fl-info">' +
-        '<div class="fl-name">' + escapeHtml(item.itemName) + '</div>' +
-        '<div class="fl-loc">' + escapeHtml(loc) + '</div>' +
-      '</div>' +
-      '<div class="fl-score">' +
-        '<div class="fl-score-n">' + item.avgScore.toFixed(1) + '</div>' +
-        '<div class="fl-score-c">' + item.count.toLocaleString() + ' review' + (item.count === 1 ? '' : 's') + '</div>' +
-      '</div>' +
-    '</div>';
+  list.innerHTML = items.slice(from, from + FOOD_PER_PAGE).map(function (item, i) {
+    return foodRowHtml(item, from + i + 1);
   }).join('');
 
   if (!pager) return;
   if (pages < 2) {
-    // one page of results still deserves a count, but not arrows
-    pager.innerHTML = '<div class="fl-pg-info">' + matched.length + ' item' + (matched.length === 1 ? '' : 's') + '</div>';
+    pager.innerHTML = '<div class="fl-pg-info">' + items.length + ' item' + (items.length === 1 ? '' : 's') + '</div>';
     return;
   }
   pager.innerHTML =
-    '<button class="fl-pg-btn" onclick="foodPageGo(-1)" aria-label="Previous page"' + (foodPage === 1 ? ' disabled' : '') + '><i class="ti ti-chevron-left"></i></button>' +
-    '<div class="fl-pg-info">Page ' + foodPage + ' of ' + pages + ' \u00B7 ' + matched.length + ' items</div>' +
-    '<button class="fl-pg-btn" onclick="foodPageGo(1)" aria-label="Next page"' + (foodPage === pages ? ' disabled' : '') + '><i class="ti ti-chevron-right"></i></button>';
+    '<button class="fl-pg-btn" onclick="foodPageGo(\'' + which + '\', -1)" aria-label="Previous page"' + (page === 1 ? ' disabled' : '') + '><i class="ti ti-chevron-left"></i></button>' +
+    '<div class="fl-pg-info">' + page + ' / ' + pages + '</div>' +
+    '<button class="fl-pg-btn" onclick="foodPageGo(\'' + which + '\', 1)" aria-label="Next page"' + (page === pages ? ' disabled' : '') + '><i class="ti ti-chevron-right"></i></button>';
+}
+
+function renderFood() {
+  var matched = getFoodAggregates().filter(function (item) { return foodMatchesQuery(item, foodQuery); });
+  renderFoodColumn('score', matched, 'food-list-score', 'fl-pager-score');
+  renderFoodColumn('count', matched, 'food-list-count', 'fl-pager-count');
 }
 
 function openFoodDetailEl(el) {

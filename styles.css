@@ -219,48 +219,49 @@ body {
 .nextier-bar span { display: block; height: 100%; border-radius: 3px; transition: width 0.5s ease; }
 @media (prefers-reduced-motion: reduce) { .nextier-bar span { transition: none; } }
 
-/* ── FOOD SCORES — searchable, paged list on a gold card ────────────────
-   Same material as the profile credential (.cred), so the two pages read as
-   one system. It carries its own --fc-* palette rather than borrowing the
-   card's --cd-* ones: they are different surfaces with different jobs (a
-   credential vs. a long list) and keeping them separate means either can be
-   retuned without disturbing the other. If you recolour one and want them to
-   match, change both.
+/* ── FOOD SCORES — two paged parchment lists ────────────────────────────
+   Top Rated and Most Reviewed sit side by side, each paging independently,
+   with one search box filtering both. (An earlier pass collapsed these into
+   a single list with a sort toggle to avoid two paginators; the user wanted
+   the two columns back, so two pagers it is - they are labelled and scoped
+   to their own column, which is what makes that readable.)
 
-   Two columns (Top Rated / Most Reviewed) became one list with a sort
-   toggle, because paging two side-by-side lists means two paginators. */
-.goldcard {
-  --fc-ink:   #1A2A3A;                                   /* primary text */
-  --fc-dim:   rgba(26,42,58,0.86);                       /* labels — 0.86, see .cred note on contrast */
-  --fc-face:  linear-gradient(158deg, #EFDCA1, #D3AE58); /* the card */
-  --fc-weave: rgba(26,42,58,0.045);                      /* faint ring pattern */
-  --fc-edge:  rgba(26,42,58,0.28);
-  --fc-rule:  rgba(26,42,58,0.16);                       /* row dividers */
-  --fc-hover: rgba(255,255,255,0.32);
-  --fc-foil:  linear-gradient(90deg, transparent, #8E6E17 18%, #5C4A22 50%, #8E6E17 82%, transparent);
+   Parchment rather than the credential's gold: nothing else on this page
+   competes with it. Note the profile page deliberately is NOT parchment,
+   because there it would collide with the .passport ticket beside it.
+
+   Class is .foodcard, not .parchcard, so a future recolour does not make
+   the name lie. */
+.foodcard {
+  --pc-ink:   #1A2A3A;                                   /* primary text */
+  --pc-dim:   rgba(26,42,58,0.78);                       /* labels - 0.78 not 0.70: at 0.70 the small ones land on 4.57, too close to the 4.5 line to survive a gradient tweak */
+  --pc-score: #8A5A1E;                                   /* the score figure */
+  --pc-face:  linear-gradient(158deg, #F7EFDA, #E4D2AC); /* the card */
+  --pc-weave: rgba(26,42,58,0.032);                      /* faint ring pattern */
+  --pc-edge:  rgba(26,42,58,0.20);
+  --pc-rule:  rgba(26,42,58,0.12);                       /* row dividers */
+  --pc-hover: rgba(255,255,255,0.52);
+  --pc-foil:  linear-gradient(90deg, transparent, var(--gold) 18%, #8E6E17 50%, var(--gold) 82%, transparent);
 
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--fc-edge);
+  border: 1px solid var(--pc-edge);
   border-radius: 12px;
   background:
-    repeating-radial-gradient(circle at 108% -8%, transparent 0 7px, var(--fc-weave) 7px 8px),
-    var(--fc-face);
-  box-shadow: 0 18px 44px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.5);
+    repeating-radial-gradient(circle at 108% -8%, transparent 0 7px, var(--pc-weave) 7px 8px),
+    var(--pc-face);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.6);
 }
-.goldcard::before {
+.foodcard::before {
   content: '';
   position: absolute; inset: 0 0 auto 0; height: 2px;
-  background: var(--fc-foil);
-  opacity: 0.8;
+  background: var(--pc-foil);
+  opacity: 0.7;
 }
 
-/* ---- controls sit on the dark page, so they stay page-coloured ---- */
-.fl-controls {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
-}
-.fl-search { position: relative; flex: 1 1 300px; max-width: 460px; }
+/* ---- search sits on the dark page, so it stays page-coloured ---- */
+.fl-controls { margin-bottom: 20px; }
+.fl-search { position: relative; max-width: 440px; }
 .fl-search > i {
   position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
   font-size: 15px; color: rgba(244,239,227,0.4); pointer-events: none;
@@ -288,92 +289,73 @@ body {
 .fl-clear:hover { color: #F4EFE3; }
 .fl-clear:focus-visible { outline: 2px solid var(--gold-lt); outline-offset: 2px; border-radius: 50%; }
 
-.fl-sorts { display: flex; gap: 6px; flex-shrink: 0; }
-.fl-sort {
-  font-family: 'Josefin Sans', sans-serif;
-  font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-  color: rgba(244,239,227,0.55);
-  background: transparent;
-  border: 1px solid rgba(231,206,138,0.18);
-  border-radius: 999px; padding: 9px 16px; cursor: pointer;
-  transition: all 0.16s ease; white-space: nowrap;
-}
-.fl-sort:hover { color: #F4EFE3; border-color: rgba(231,206,138,0.45); }
-.fl-sort.active { color: #14213a; background: linear-gradient(180deg, #F0D27E, #DDB247); border-color: transparent; }
-.fl-sort:focus-visible { outline: 2px solid var(--gold-lt); outline-offset: 3px; }
-
 /* ---- rows ---- */
 .fl-row {
-  display: flex; align-items: center; gap: 13px;
-  padding: 13px 20px;
-  border-bottom: 1px solid var(--fc-rule);
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--pc-rule);
   cursor: pointer;
   transition: background 0.12s ease;
 }
 .fl-row:last-child { border-bottom: none; }
-.fl-row:hover { background: var(--fc-hover); }
-.fl-row:focus-visible { outline: 2px solid var(--fc-ink); outline-offset: -3px; }
+.fl-row:hover { background: var(--pc-hover); }
+.fl-row:focus-visible { outline: 2px solid var(--pc-ink); outline-offset: -3px; }
 .fl-rank {
-  font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px;
-  color: var(--fc-dim); min-width: 28px; text-align: center;
+  font-family: 'Bebas Neue', sans-serif; font-size: 19px; letter-spacing: 1px;
+  color: var(--pc-dim); min-width: 24px; text-align: center;
   font-variant-numeric: tabular-nums; flex-shrink: 0;
 }
-.fl-emoji { font-size: 21px; width: 32px; text-align: center; flex-shrink: 0; }
+.fl-emoji { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
 .fl-info { flex: 1; min-width: 0; }
 .fl-name {
-  font-size: 13.5px; font-weight: 700; letter-spacing: 0.5px;
-  color: var(--fc-ink); margin-bottom: 2px;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
+  color: var(--pc-ink); margin-bottom: 2px;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .fl-loc {
-  font-size: 10.5px; font-weight: 400; letter-spacing: 0.4px; color: var(--fc-dim);
+  font-size: 10px; font-weight: 400; letter-spacing: 0.4px; color: var(--pc-dim);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .fl-score { text-align: right; flex-shrink: 0; }
 .fl-score-n {
-  font-family: 'Bebas Neue', sans-serif; font-size: 23px; letter-spacing: 1px;
-  line-height: 1; color: var(--fc-ink); font-variant-numeric: tabular-nums;
+  font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px;
+  line-height: 1; color: var(--pc-score); font-variant-numeric: tabular-nums;
 }
-.fl-score-c { font-size: 9.5px; font-weight: 600; letter-spacing: 0.3px; color: var(--fc-dim); margin-top: 2px; }
+.fl-score-c { font-size: 9px; font-weight: 600; letter-spacing: 0.3px; color: var(--pc-dim); margin-top: 2px; }
 
-.fl-empty { padding: 46px 24px; text-align: center; }
+.fl-empty { padding: 40px 20px; text-align: center; }
 .fl-empty-t {
-  font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px;
-  color: var(--fc-ink); margin-bottom: 6px;
+  font-family: 'Bebas Neue', sans-serif; font-size: 19px; letter-spacing: 1px;
+  color: var(--pc-ink); margin-bottom: 5px;
 }
-.fl-empty-s { font-size: 12.5px; font-weight: 300; line-height: 1.6; color: var(--fc-dim); }
+.fl-empty-s { font-size: 12px; font-weight: 300; line-height: 1.6; color: var(--pc-dim); }
 
-/* ---- pager ---- */
+/* ---- per-column pager ---- */
 .fl-pager {
-  display: flex; align-items: center; justify-content: center; gap: 14px;
-  margin-top: 18px; flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  margin-top: 12px; min-height: 34px;
 }
 .fl-pg-btn {
-  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(231,206,138,0.22);
-  color: #F4EFE3; cursor: pointer; font-size: 17px;
+  color: #F4EFE3; cursor: pointer; font-size: 15px;
   transition: all 0.16s ease;
 }
 .fl-pg-btn:hover:not(:disabled) { background: rgba(231,206,138,0.14); border-color: rgba(231,206,138,0.55); }
 .fl-pg-btn:disabled { opacity: 0.28; cursor: not-allowed; }
 .fl-pg-btn:focus-visible { outline: 2px solid var(--gold-lt); outline-offset: 3px; }
 .fl-pg-info {
-  font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase;
   color: rgba(244,239,227,0.5); font-variant-numeric: tabular-nums; text-align: center;
 }
 
 @media (max-width: 620px) {
-  .fl-controls { flex-direction: column; align-items: stretch; }
-  /* flex-basis is the CROSS axis once this flips to column - left as
-     "flex: 1 1 300px" the search box grows to 300px tall and leaves a
-     gap the size of a phone screen above the sort buttons */
-  .fl-search { flex: 0 0 auto; max-width: none; }
-  .fl-sorts .fl-sort { flex: 1; text-align: center; }
-  .fl-row { padding: 12px 14px; gap: 10px; }
-  .fl-rank { min-width: 20px; font-size: 17px; }
-  .fl-emoji { width: 26px; font-size: 19px; }
+  .fl-search { max-width: none; }
+  .fl-row { padding: 11px 13px; gap: 10px; }
+  .fl-rank { min-width: 19px; font-size: 17px; }
+  .fl-emoji { width: 24px; font-size: 18px; }
 }
 
 /* ── HOME HERO — PASSHOLDER CREDENTIAL ──────────────────────────────────
