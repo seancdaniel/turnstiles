@@ -39,9 +39,6 @@ function openUserProfile(userId) {
 
   var my = STATE.checkins.filter(function (c) { return c.userId === userId; });
   var miles = my.reduce(function (s, c) { return s + (c.miles || 0); }, 0);
-  var foods = [];
-  var seenFood = {};
-  my.forEach(function (c) { (c.foods || []).forEach(function (f) { if (!seenFood[f]) { seenFood[f] = true; foods.push(f); } }); });
   var scores = my.filter(function (c) { return c.score != null; }).map(function (c) { return c.score; });
   var avg = scores.length ? (scores.reduce(function (a, b) { return a + b; }, 0) / scores.length).toFixed(1) : '—';
   var monthlyTier = getMonthlyTier(checkinsThisMonth(userId));
@@ -53,7 +50,7 @@ function openUserProfile(userId) {
   document.getElementById('up-bio').textContent = u.bio || 'No bio yet.';
   document.getElementById('up-stat-visits').textContent = my.length;
   document.getElementById('up-stat-miles').textContent = miles.toFixed(1);
-  document.getElementById('up-stat-foods').textContent = foods.length;
+  document.getElementById('up-stat-foods').textContent = foodsTriedFor(userId);
   document.getElementById('up-stat-avg').textContent = avg;
 
   var badges = [];
@@ -62,7 +59,7 @@ function openUserProfile(userId) {
   if (my.length >= 50) badges.push('Gold Passholder');
   var parkSet = {}; my.forEach(function (c) { parkSet[c.park] = true; });
   if (Object.keys(parkSet).length >= 4) badges.push('Park Hopper');
-  if (foods.length >= 10) badges.push('Foodie');
+  if (foodsTriedFor(userId) >= 10) badges.push('Foodie');
   document.getElementById('up-badges').innerHTML =
     tierBadge(monthlyTier, 'Monthly') + tierBadge(yearlyTier, 'Yearly') +
     badges.map(function (b) {

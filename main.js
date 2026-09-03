@@ -674,14 +674,13 @@ function renderPastAccomplishments() {
   const u = STATE.currentUser;
   if (!el || !u) return;
   const my = userCheckins();
-  const foods = [...new Set(my.flatMap(c => c.foods || []))];
 
   const badges = [];
   if (my.length >= 1) badges.push('First Visit');
   if (my.length >= 10) badges.push('Regular');
   if (my.length >= 50) badges.push('Gold Passholder');
   if ([...new Set(my.map(c => c.park))].length >= 4) badges.push('Park Hopper');
-  if (foods.length >= 10) badges.push('Foodie');
+  if (foodsTriedFor(u.id) >= 10) badges.push('Foodie');
 
   const past = pastRankRows(u.id);
   let html = '';
@@ -706,12 +705,34 @@ function renderPastAccomplishments() {
     '<div class="empty-state-sub">Badges and the ranks you finish each month and year will collect here.</div></div>';
 }
 
+// How many different foods this user has actually reviewed, across the
+// year-round Food Scores list and the Epcot Festivals one.
+//
+// Deliberately NOT derived from `checkins.foods`. That array is a leftover
+// from an older check-in form that asked what you ate; the current one never
+// writes it (see submitCheckin in supabase-data.js, which inserts no `foods`
+// at all), so anything counted from it is frozen at whatever legacy rows a
+// user happens to have - which is why this read 1 forever while the same
+// account had nine reviews sitting in food_reviews.
+//
+// Distinct by item name, case-insensitive: the same Dole Whip at two parks is
+// one food tried, and it stops "Churro"/"churro" counting twice.
+function foodsTriedFor(userId) {
+  const seen = {};
+  const add = r => {
+    if (r.userId !== userId || !r.itemName) return;
+    seen[r.itemName.trim().toLowerCase()] = true;
+  };
+  (STATE.foodReviews || []).forEach(add);
+  (STATE.festivalReviews || []).forEach(add);
+  return Object.keys(seen).length;
+}
+
 function updatePassport() {
   const u = STATE.currentUser; if(!u) return;
   const my = userCheckins();
   const total = my.length;
   const miles = my.reduce((s,c)=>s+(c.miles||0),0);
-  const allFoods = [...new Set(my.flatMap(c=>c.foods||[]))];
   const scores = my.filter(c=>c.score).map(c=>c.score);
   const avgScore = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '—';
 
@@ -722,7 +743,7 @@ function updatePassport() {
   // Update hero stats
   document.getElementById('stat-visits').textContent = total;
   document.getElementById('stat-miles').textContent = miles.toFixed(1);
-  document.getElementById('stat-foods').textContent = allFoods.length;
+  document.getElementById('stat-foods').textContent = foodsTriedFor(u.id);
   document.getElementById('stat-rank').textContent = rank ? '#'+rank : '#—';
 
   // Passport card
@@ -1026,10 +1047,6 @@ function openPhotoView(id) {
 function renderProfile() {
   const u = STATE.currentUser; if(!u) return;
   const my = userCheckins();
-  const miles = my.reduce((s,c)=>s+(c.miles||0),0);
-  const foods = [...new Set(my.flatMap(c=>c.foods||[]))];
-  const scores = my.filter(c=>c.score).map(c=>c.score);
-  const avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '—';
   const monthlyTier = getMonthlyTier(checkinsThisMonth(u.id));
   const yearlyTier = getYearlyTier(checkinsThisYear(u.id));
 
