@@ -323,6 +323,53 @@ body {
   .lb2-row { padding: 10px 13px; gap: 9px; }
 }
 
+/* Boards scroll internally rather than growing without limit. There was no
+   cap at all before: every passholder with a check-in rendered, so the page
+   would have stretched forever as the community grew. Capped at roughly
+   eight and a half rows so a partial row is always visible at the cut - that
+   half-row is the affordance that says "there is more here". */
+.lb2-list {
+  max-height: 428px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(26,42,58,0.28) rgba(26,42,58,0.06);
+}
+.lb2-list::-webkit-scrollbar { width: 8px; }
+.lb2-list::-webkit-scrollbar-track { background: rgba(26,42,58,0.06); }
+.lb2-list::-webkit-scrollbar-thumb { background: rgba(26,42,58,0.24); border-radius: 4px; }
+.lb2-list::-webkit-scrollbar-thumb:hover { background: rgba(26,42,58,0.36); }
+
+/* All-Time runs full width under the two period boards, in two columns.
+   `grid-auto-flow: column` with an explicit row count (set from JS as
+   ceil(rows/2)) fills the left column top-to-bottom and then the right, so
+   rank order still reads downwards. Row-major would scatter 1,2 / 3,4 across
+   the page, which is unreadable for a ranked list. Two columns also close
+   the gap a full-width single column leaves between a name and its count. */
+.lb2-grid {
+  display: grid;
+  grid-auto-flow: column;
+  max-height: 470px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(26,42,58,0.28) rgba(26,42,58,0.06);
+}
+.lb2-grid::-webkit-scrollbar { width: 8px; }
+.lb2-grid::-webkit-scrollbar-track { background: rgba(26,42,58,0.06); }
+.lb2-grid::-webkit-scrollbar-thumb { background: rgba(26,42,58,0.24); border-radius: 4px; }
+.lb2-grid::-webkit-scrollbar-thumb:hover { background: rgba(26,42,58,0.36); }
+/* divider between the two columns */
+.lb2-grid .lb2-row.col2 { border-left: 1px solid var(--pc-rule); }
+
+.lb2-alltime { margin-top: 22px; }
+
+@media (max-width: 700px) {
+  /* one column on a phone - two would leave nothing but ellipsised names */
+  .lb2-grid { grid-auto-flow: row !important; grid-template-rows: none !important; }
+  .lb2-grid .lb2-row.col2 { border-left: none; }
+}
+
 /* ── FOOD SCORES — two paged parchment lists ────────────────────────────
    Top Rated and Most Reviewed sit side by side, each paging independently,
    with one search box filtering both. (An earlier pass collapsed these into

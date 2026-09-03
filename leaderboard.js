@@ -7,7 +7,7 @@ var LB_GROUPS = {
 };
 // Each board keeps its own park filter, so Monthly and Yearly can be looked
 // at side by side rather than one at a time behind a period selector.
-var lbPark = { month: 'all', year: 'all' };
+var lbPark = { month: 'all', year: 'all', all: 'all' };
 
 function buildLeaderboard(filter, period) {
   var parks = null;
@@ -76,22 +76,34 @@ function renderLeaderboardBoard(period) {
   if (sub) sub.textContent = lbParkLabel(period) + ' \u00B7 ' + rows.length + ' passholder' + (rows.length === 1 ? '' : 's');
 
   if (!rows.length) {
+    el.removeAttribute('style');
     el.innerHTML = '<div class="lb2-empty">' +
       '<div class="lb2-empty-t">Nobody yet</div>' +
       '<div class="lb2-empty-s">No check-ins logged here ' +
-      (period === 'month' ? 'this month.' : 'this year.') + '</div></div>';
+      (period === 'month' ? 'this month.' : period === 'year' ? 'this year.' : 'yet.') +
+      '</div></div>';
     return;
   }
+
+  // All-Time lays out in two columns, filling the left top-to-bottom before
+  // the right, so rank order still reads downwards. That needs an explicit
+  // row count - without it the grid would spill into a third column.
+  if (period === 'all') {
+    el.style.gridTemplateRows = 'repeat(' + Math.ceil(rows.length / 2) + ', min-content)';
+  }
+  var half = Math.ceil(rows.length / 2);
 
   var me = STATE.currentUser;
   el.innerHTML = rows.map(function (r, i) {
     var isYou = me && r.userId === me.id;
-    // only this board's own ladder - showing both was noise
-    var tier = period === 'month'
-      ? getMonthlyTier(checkinsThisMonth(r.userId))
-      : getYearlyTier(checkinsThisYear(r.userId));
+    // the emblem describes the ladder the board is ranking by. All-Time has
+    // no ladder, so it shows none rather than an emblem meaning nothing here.
+    var emblem = '';
+    if (period === 'month') emblem = tierEmblem(getMonthlyTier(checkinsThisMonth(r.userId)), 'Monthly');
+    else if (period === 'year') emblem = tierEmblem(getYearlyTier(checkinsThisYear(r.userId)), 'Yearly');
     var medal = i === 0 ? ' g1' : i === 1 ? ' g2' : i === 2 ? ' g3' : '';
-    return '<div class="lb2-row' + (isYou ? ' you' : '') + '" tabindex="0" role="button"' +
+    var col2 = (period === 'all' && i >= half) ? ' col2' : '';
+    return '<div class="lb2-row' + (isYou ? ' you' : '') + col2 + '" tabindex="0" role="button"' +
       ' onclick="openUserProfile(\'' + r.userId + '\')"' +
       ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();openUserProfile(\'' + r.userId + '\');}">' +
       '<div class="lb2-rank' + medal + '">' + (i + 1) + '</div>' +
@@ -99,16 +111,15 @@ function renderLeaderboardBoard(period) {
       '<div class="lb2-info">' +
         '<span class="lb2-name">' + escapeHtml(r.username) + '</span>' +
         (isYou ? '<span class="lb2-you">You</span>' : '') +
-        tierEmblem(tier, period === 'month' ? 'Monthly' : 'Yearly') +
+        emblem +
       '</div>' +
       '<div class="lb2-visits">' + r.visits + '</div>' +
     '</div>';
   }).join('');
 }
-
 function renderLeaderboard() {
-  buildLbParkOptions('month');
-  buildLbParkOptions('year');
-  renderLeaderboardBoard('month');
-  renderLeaderboardBoard('year');
+  ['month', 'year', 'all'].forEach(function (p) {
+    buildLbParkOptions(p);
+    renderLeaderboardBoard(p);
+  });
 }

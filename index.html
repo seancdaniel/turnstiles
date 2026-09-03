@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=76">
+  <link rel="stylesheet" href="styles.css?v=77">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -1396,7 +1396,7 @@
               <select class="lb2-park" id="lb-park-month" aria-label="Filter the monthly board by park"
                       onchange="setLbPark('month', this.value)"></select>
             </div>
-            <div id="lb-list-month"></div>
+            <div id="lb-list-month" class="lb2-list"></div>
           </div>
           <div class="foodcard">
             <div class="lb2-hd">
@@ -1407,8 +1407,24 @@
               <select class="lb2-park" id="lb-park-year" aria-label="Filter the yearly board by park"
                       onchange="setLbPark('year', this.value)"></select>
             </div>
-            <div id="lb-list-year"></div>
+            <div id="lb-list-year" class="lb2-list"></div>
           </div>
+        </div>
+
+        <!-- All-Time runs the full width below the two period boards, in two
+             columns so a name and its count are not stranded at opposite ends
+             of the page. This is also the board the profile's Community Rank
+             figure refers to, which was otherwise unbrowsable. -->
+        <div class="foodcard lb2-alltime">
+          <div class="lb2-hd">
+            <div>
+              <div class="lb2-title">All-Time</div>
+              <div class="lb2-sub" id="lb-sub-all">Every check-in ever logged</div>
+            </div>
+            <select class="lb2-park" id="lb-park-all" aria-label="Filter the all-time board by park"
+                    onchange="setLbPark('all', this.value)"></select>
+          </div>
+          <div id="lb-list-all" class="lb2-grid"></div>
         </div>
 
         <div class="light-card" style="margin-top:18px;padding:20px 22px">
@@ -1965,6 +1981,6 @@
 <script src="supabase-festivals.js?v=2"></script>
 <script src="supabase-waittimes.js?v=3"></script>
 <script src="supabase-donors.js?v=2"></script>
-<script src="leaderboard.js?v=6"></script>
+<script src="leaderboard.js?v=7"></script>
 </body>
 </html>
