@@ -817,40 +817,9 @@ function buildLeaderboard(filter) {
   }).sort((a,b)=>b.visits-a.visits);
 }
 
-let lbFilter = 'all';
-function switchLbFilter(f, btn) {
-  lbFilter=f;
-  document.querySelectorAll('[id^="lb-btn-"]').forEach(b=>{b.className='btn-sm';});
-  btn.className='btn-sm primary';
-  renderLeaderboard();
-}
-
-function renderLeaderboard() {
-  const period = (typeof lbPeriod !== 'undefined') ? lbPeriod : 'all';
-  const lb = buildLeaderboard(lbFilter, period);
-  const el = document.getElementById('leaderboard-list');
-  const u = STATE.currentUser;
-  const rankColors = ['gold','silver','bronze'];
-  const visitsLbl = period==='month' ? 'this month' : period==='year' ? 'this year' : 'all-time';
-  el.innerHTML = lb.map((row,i) => {
-    const isYou = u && row.userId===u.id;
-    const monthlyTier = getMonthlyTier(checkinsThisMonth(row.userId));
-    const yearlyTier = getYearlyTier(checkinsThisYear(row.userId));
-    return `<div class="lb-row${isYou?' you':''}" onclick="openUserProfile('${row.userId}')">
-      <span class="lb-rank ${rankColors[i]||''}">${i+1}</span>
-      <div class="lb-av" style="background:var(--coral-lt);color:var(--coral)">${avatarHtml(row.avatarUrl, row.avatar)}</div>
-      <div class="lb-info">
-        <div class="lb-username">${escapeHtml(row.username)}${isYou?'<span class="you-tag">YOU</span>':''}</div>
-        <div class="lb-detail">${tierEmblem(monthlyTier,'Monthly')} ${tierEmblem(yearlyTier,'Yearly')}</div>
-      </div>
-      <div class="lb-visits-wrap">
-        <div class="lb-visits" style="${isYou?'color:var(--coral)':''}">${row.visits}</div>
-        <div class="lb-visits-lbl">${visitsLbl}</div>
-      </div>
-    </div>`;
-  }).join('') || '<div class="empty-state"><div class="empty-state-sub">No data yet.</div></div>';
-}
-
+// renderLeaderboard/lbFilter used to live here, driving a single list behind
+// a period selector. Both boards and their per-card park pickers are owned by
+// leaderboard.js now (which already overrode buildLeaderboard anyway).
 function renderCommunityFeed() {
   const items = [...STATE.checkins].sort((a,b)=>b.ts-a.ts).slice(0,20);
   const el = document.getElementById('community-feed-list');

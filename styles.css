@@ -219,6 +219,110 @@ body {
 .nextier-bar span { display: block; height: 100%; border-radius: 3px; transition: width 0.5s ease; }
 @media (prefers-reduced-motion: reduce) { .nextier-bar span { transition: none; } }
 
+/* ── LEADERBOARD — two parchment boards, each with its own park picker ──
+   Same material as the Food Scores lists (.foodcard supplies the --pc-*
+   palette), so Community, Food Scores and the profile read as one system.
+
+   Replaced a single list driven by a 3-way period selector (Month / Year /
+   All-Time) plus a two-level resort -> park tab rack. Monthly and Yearly are
+   now separate boards that filter independently, which is what the tab rack
+   made awkward: you could only ever look at one period at a time.
+
+   Deliberate readability changes, since "hard to read" was the complaint:
+   the period label ("this month") used to repeat on every single row and now
+   sits once in the card header, and each board shows only ITS OWN tier
+   emblem rather than both - a yearly emblem on the monthly board is noise. */
+/* each board sizes to its own content. .food-cols defaults to stretch, which
+   is right on Food Scores (both columns hold exactly 10 rows) but leaves a
+   tall slab of empty parchment here when one period has fewer passholders
+   than the other. Scoped so that page is unaffected. */
+.lb2-cols { align-items: start; }
+.lb2-hd {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 12px; padding: 14px 16px 13px;
+  border-bottom: 1px solid var(--pc-rule);
+}
+.lb2-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1.2px;
+  line-height: 1; color: var(--pc-ink);
+}
+.lb2-sub {
+  font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--pc-dim); margin-top: 4px;
+}
+.lb2-park {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
+  color: var(--pc-ink);
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(26,42,58,0.22);
+  border-radius: 999px; padding: 7px 9px;
+  max-width: 165px; cursor: pointer; flex-shrink: 0;
+}
+.lb2-park:focus-visible { outline: 2px solid var(--pc-ink); outline-offset: 2px; }
+
+.lb2-row {
+  display: flex; align-items: center; gap: 11px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--pc-rule);
+  cursor: pointer; transition: background 0.12s ease;
+}
+.lb2-row:last-child { border-bottom: none; }
+.lb2-row:hover { background: var(--pc-hover); }
+.lb2-row:focus-visible { outline: 2px solid var(--pc-ink); outline-offset: -3px; }
+/* your own row, so you can find yourself without reading every name */
+.lb2-row.you { background: rgba(184,61,43,0.10); }
+.lb2-row.you:hover { background: rgba(184,61,43,0.17); }
+
+.lb2-rank {
+  font-family: 'Bebas Neue', sans-serif; font-size: 19px; letter-spacing: 0.5px;
+  min-width: 22px; text-align: center; color: var(--pc-dim);
+  font-variant-numeric: tabular-nums; flex-shrink: 0;
+}
+/* top three get metal, but darkened for a light ground - the usual bright
+   gold/silver washes out completely on parchment */
+.lb2-rank.g1 { color: #8A6A12; }
+.lb2-rank.g2 { color: #5E6670; }
+.lb2-rank.g3 { color: #8A4522; }
+
+.lb2-av {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+  background: rgba(26,42,58,0.07); border: 1px solid rgba(26,42,58,0.16);
+}
+.lb2-av img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%; }
+
+.lb2-info { flex: 1; min-width: 0; display: flex; align-items: center; gap: 7px; }
+.lb2-name {
+  font-size: 12.5px; font-weight: 700; letter-spacing: 0.4px; color: var(--pc-ink);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.lb2-you {
+  font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  color: #fff; background: var(--coral); border-radius: 2px; padding: 2px 5px; flex-shrink: 0;
+}
+/* the tier discs carry their own colours; a couple of them are close in value
+   to parchment, so they get the same dark ring the credential plates use */
+.lb2-info .tier-emblem { box-shadow: 0 0 0 1.5px rgba(26,42,58,0.32); width: 19px; height: 19px; font-size: 11px; }
+
+.lb2-visits {
+  font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.5px;
+  line-height: 1; color: var(--pc-ink); font-variant-numeric: tabular-nums; flex-shrink: 0;
+}
+
+.lb2-empty { padding: 34px 20px; text-align: center; }
+.lb2-empty-t {
+  font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 1px;
+  color: var(--pc-ink); margin-bottom: 5px;
+}
+.lb2-empty-s { font-size: 12px; font-weight: 300; line-height: 1.55; color: var(--pc-dim); }
+
+@media (max-width: 620px) {
+  .lb2-hd { flex-direction: column; }
+  .lb2-park { max-width: none; width: 100%; }
+  .lb2-row { padding: 10px 13px; gap: 9px; }
+}
+
 /* ── FOOD SCORES — two paged parchment lists ────────────────────────────
    Top Rated and Most Reviewed sit side by side, each paging independently,
    with one search box filtering both. (An earlier pass collapsed these into

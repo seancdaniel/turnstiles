@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=74">
+  <link rel="stylesheet" href="styles.css?v=76">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -1382,22 +1382,34 @@
 
       <!-- Leaderboard tab -->
       <div id="ctab-leaderboard">
-        <div class="section-head" style="margin-bottom:14px">
-          <div style="display:flex;flex-direction:column;gap:8px;width:100%">
-            <div class="lb-tabs">
-              <button class="lb-tab" id="lb-period-month" onclick="selectLbPeriod('month')">This Month</button>
-              <button class="lb-tab" id="lb-period-year" onclick="selectLbPeriod('year')">This Year</button>
-              <button class="lb-tab active" id="lb-period-all" onclick="selectLbPeriod('all')">All-Time</button>
+        <!-- Two boards that filter independently, replacing one list behind a
+             3-way period selector plus a two-level resort/park tab rack. Each
+             card owns its own park picker; both are built and filled by
+             leaderboard.js. -->
+        <div class="food-cols lb2-cols">
+          <div class="foodcard">
+            <div class="lb2-hd">
+              <div>
+                <div class="lb2-title">This Month</div>
+                <div class="lb2-sub" id="lb-sub-month">Check-ins since the 1st</div>
+              </div>
+              <select class="lb2-park" id="lb-park-month" aria-label="Filter the monthly board by park"
+                      onchange="setLbPark('month', this.value)"></select>
             </div>
-            <div class="lb-tabs">
-              <button class="lb-tab active" id="lb-btn-all" onclick="selectResort('all')">All Parks</button>
-              <button class="lb-tab" id="lb-btn-disney" onclick="selectResort('disney')">Disney</button>
-              <button class="lb-tab" id="lb-btn-universal" onclick="selectResort('universal')">Universal</button>
+            <div id="lb-list-month"></div>
+          </div>
+          <div class="foodcard">
+            <div class="lb2-hd">
+              <div>
+                <div class="lb2-title">This Year</div>
+                <div class="lb2-sub" id="lb-sub-year">Check-ins since January</div>
+              </div>
+              <select class="lb2-park" id="lb-park-year" aria-label="Filter the yearly board by park"
+                      onchange="setLbPark('year', this.value)"></select>
             </div>
-            <div id="lb-park-row" class="lb-tabs" style="display:none;flex-wrap:wrap"></div>
+            <div id="lb-list-year"></div>
           </div>
         </div>
-        <div class="light-card" id="leaderboard-list"></div>
 
         <div class="light-card" style="margin-top:18px;padding:20px 22px">
           <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--ink);margin-bottom:4px">Rank Tiers</div>
@@ -1945,7 +1957,7 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
-<script src="main.js?v=35"></script>
+<script src="main.js?v=36"></script>
 <script src="restaurants-data.js?v=3"></script>
 <script src="supabase-auth.js?v=11"></script>
 <script src="supabase-data.js?v=20"></script>
@@ -1953,6 +1965,6 @@
 <script src="supabase-festivals.js?v=2"></script>
 <script src="supabase-waittimes.js?v=3"></script>
 <script src="supabase-donors.js?v=2"></script>
-<script src="leaderboard.js?v=5"></script>
+<script src="leaderboard.js?v=6"></script>
 </body>
 </html>
