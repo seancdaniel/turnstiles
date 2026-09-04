@@ -370,6 +370,34 @@ body {
   .lb2-grid .lb2-row.col2 { border-left: none; }
 }
 
+/* ── INVITE A FRIEND modal ──────────────────────────────── */
+.inv-blurb {
+  margin: 0 0 18px;
+  font-size: 14px; line-height: 1.55;
+  color: var(--ink-faint);
+}
+
+/* "or share the link yourself" as a labelled rule, so the copy fallback
+   reads as a second option rather than another required field */
+.inv-or {
+  display: flex; align-items: center; gap: 12px;
+  margin: 20px 0 12px;
+}
+.inv-or::before, .inv-or::after {
+  content: ''; flex: 1 1 auto; height: 1px; background: var(--border);
+}
+.inv-or span {
+  flex: 0 0 auto;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.inv-link-row { display: flex; gap: 8px; align-items: stretch; }
+/* min-width:0 so the input can shrink instead of shoving the button out of
+   the modal on a narrow phone */
+.inv-link-row .field-input { flex: 1 1 auto; min-width: 0; }
+.inv-link-row .btn-sm { flex: 0 0 auto; white-space: nowrap; }
+
 /* ── FOOD SCORES — two paged parchment lists ────────────────────────────
    Top Rated and Most Reviewed sit side by side, each paging independently,
    with one search box filtering both. (An earlier pass collapsed these into

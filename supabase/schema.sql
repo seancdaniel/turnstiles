@@ -431,3 +431,27 @@ alter table public.festival_reviews drop column if exists location;
 alter table public.festival_favorites add column if not exists item_name text;
 alter table public.festival_favorites alter column booth_name drop not null;
 alter table public.festival_favorites drop column if exists location;
+
+-- ============================================================
+-- MIGRATION — "Invite a Friend" from the profile dropdown.
+-- Every invite sent is logged here, which is what api/invite.js
+-- reads back to enforce its daily cap per user. Safe to re-run.
+-- ============================================================
+create table if not exists public.invites (
+  id         uuid primary key default gen_random_uuid(),
+  inviter_id uuid not null references auth.users(id) on delete cascade,
+  email      text not null,
+  created_at timestamptz not null default now()
+);
+alter table public.invites enable row level security;
+
+-- No update or delete policy on purpose. A user who could clear their own
+-- rows could reset the daily cap, so the log is append-only to everyone
+-- except the service role.
+drop policy if exists "invites are own" on public.invites;
+create policy "invites are own" on public.invites for select using (auth.uid() = inviter_id);
+drop policy if exists "insert own invite" on public.invites;
+create policy "insert own invite" on public.invites for insert with check (auth.uid() = inviter_id);
+
+create index if not exists invites_inviter_created_idx
+  on public.invites (inviter_id, created_at desc);

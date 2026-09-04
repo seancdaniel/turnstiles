@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=77">
+  <link rel="stylesheet" href="styles.css?v=78">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -764,6 +764,40 @@
   </div>
 </div>
 
+<!-- Invite a Friend -->
+<div class="overlay" id="overlay-invite">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Invite a Friend</span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-invite')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <p class="inv-blurb">Send someone an email invite to Turnstiles. They will get a link to create their own account.</p>
+      <div class="field">
+        <label class="field-lbl" for="inv-email">Their Email</label>
+        <input class="field-input" id="inv-email" type="email" autocomplete="off" placeholder="friend@example.com"
+               onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('inv-send').click();}">
+      </div>
+      <div class="field">
+        <label class="field-lbl" for="inv-note">Add a Note (optional)</label>
+        <textarea class="field-input" id="inv-note" rows="3" maxlength="300" style="resize:none;height:80px"
+                  placeholder="You need this for our next park day."></textarea>
+      </div>
+      <div class="field-error" id="inv-err"></div>
+      <div class="inv-or"><span>or share the link yourself</span></div>
+      <div class="inv-link-row">
+        <input class="field-input" id="inv-link" value="https://goturnstiles.com" readonly
+               aria-label="Turnstiles link" onclick="this.select()">
+        <button class="btn-sm" id="inv-copy" type="button" onclick="copyInviteLink(this)"><i class="ti ti-copy"></i> Copy</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeOverlay('overlay-invite')">Cancel</button>
+      <button class="btn-sm primary" id="inv-send" onclick="submitInvite(this)">Send Invite</button>
+    </div>
+  </div>
+</div>
+
 <!-- View a Community Member's Profile (read-only) -->
 <div class="overlay" id="overlay-user-profile">
   <div class="modal modal-wide">
@@ -956,6 +990,9 @@
             <div class="dropdown-divider"></div>
             <div class="dropdown-item" onclick="openEditProfile();closeDropdown()">
               <i class="ti ti-pencil"></i> Edit Profile
+            </div>
+            <div class="dropdown-item" onclick="openInvite();closeDropdown()">
+              <i class="ti ti-user-plus"></i> Invite a Friend
             </div>
             <div class="dropdown-divider"></div>
             <div class="dropdown-item danger" onclick="doSignOut()">
@@ -1981,6 +2018,7 @@
 <script src="supabase-festivals.js?v=2"></script>
 <script src="supabase-waittimes.js?v=3"></script>
 <script src="supabase-donors.js?v=2"></script>
+<script src="supabase-invite.js?v=1"></script>
 <script src="leaderboard.js?v=7"></script>
 </body>
 </html>
