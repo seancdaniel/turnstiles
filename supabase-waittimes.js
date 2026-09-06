@@ -66,13 +66,65 @@ var RIDES_BY_PARK = {
   ]
 };
 
-function updateRideOptions() {
+// The ride list is built from the live feed rather than RIDES_BY_PARK, which
+// had already drifted: only 84 of its 101 names still matched, and some of the
+// misses were real closures (DINOSAUR, TriceraTop Spin) rather than wording.
+// RIDES_BY_PARK stays below as the offline fallback.
+async function updateRideOptions() {
   var park = document.getElementById('wt-park').value;
   var sel = document.getElementById('wt-ride');
-  var rides = RIDES_BY_PARK[park];
-  if (!rides) { sel.innerHTML = '<option value="">Choose a park first</option>'; return; }
-  sel.innerHTML = '<option value="">Select a ride...</option>' +
-    rides.map(function (r) { return '<option>' + escapeHtml(r) + '</option>'; }).join('');
+  clearPostedFill();
+  if (!park) { sel.innerHTML = '<option value="">Choose a park first</option>'; return; }
+
+  sel.innerHTML = '<option value="">Loading rides...</option>';
+  sel.disabled = true;
+  var data = typeof tpFetchPark === 'function' ? await tpFetchPark(park) : null;
+  sel.disabled = false;
+
+  // a park change while this was in flight wins - do not stomp the newer list
+  if (document.getElementById('wt-park').value !== park) return;
+
+  var opts;
+  if (data && data.attractions.length) {
+    opts = data.attractions.slice().sort(function (a, b) {
+      return a.name.localeCompare(b.name);
+    }).map(function (e) {
+      var wait = tpWaitOf(e);
+      var live = (wait != null && e.status === 'OPERATING') ? ' data-tp-wait="' + wait + '"' : '';
+      return '<option value="' + escapeHtml(e.name) + '" data-tp-id="' + escapeHtml(e.id) + '"' +
+        live + '>' + escapeHtml(e.name) + '</option>';
+    }).join('');
+  } else {
+    opts = (RIDES_BY_PARK[park] || []).map(function (r) {
+      return '<option>' + escapeHtml(r) + '</option>';
+    }).join('');
+  }
+  sel.innerHTML = '<option value="">Select a ride...</option>' + opts;
+}
+
+function clearPostedFill() {
+  var posted = document.getElementById('wt-posted');
+  var note = document.getElementById('wt-posted-note');
+  if (posted) { posted.value = ''; posted.classList.remove('is-autofilled'); }
+  if (note) note.style.display = 'none';
+}
+
+// Pre-fill the posted wait from the live feed and say so. It stays editable on
+// purpose: the sign in front of the ride is the source of truth, and the feed
+// can be a few minutes behind it. Actual Wait is never guessed at - that is the
+// number this whole page exists to collect.
+function handleRideSelect() {
+  var sel = document.getElementById('wt-ride');
+  var opt = sel.options[sel.selectedIndex];
+  var posted = document.getElementById('wt-posted');
+  var note = document.getElementById('wt-posted-note');
+  clearPostedFill();
+  if (!opt) return;
+  var wait = opt.getAttribute('data-tp-wait');
+  if (wait == null) return;
+  posted.value = wait;
+  posted.classList.add('is-autofilled');
+  if (note) note.style.display = 'block';
 }
 
 function isSameLocalDay(ts, dayOffset) {
@@ -82,24 +134,42 @@ function isSameLocalDay(ts, dayOffset) {
   return d.getFullYear() === ref.getFullYear() && d.getMonth() === ref.getMonth() && d.getDate() === ref.getDate();
 }
 
-async function submitWaitTime() {
+async function submitWaitTime(btn) {
   if (!STATE.currentUser) { openOverlay('overlay-register'); return; }
+  if (btn && btn.disabled) return; // see submitCheckin - same double-click guard
   var park = document.getElementById('wt-park').value;
-  var ride = document.getElementById('wt-ride').value;
+  var sel = document.getElementById('wt-ride');
+  var ride = sel.value;
+  var opt = sel.options[sel.selectedIndex];
+  // the feed's stable id, so a later rename does not split this ride's history
+  var rideId = opt ? opt.getAttribute('data-tp-id') : null;
   var posted = parseInt(document.getElementById('wt-posted').value, 10);
   var actual = parseInt(document.getElementById('wt-actual').value, 10);
   if (!park || !ride) { toast('Pick a park and a ride.', 'error'); return; }
   if (isNaN(posted) || isNaN(actual) || posted < 0 || actual < 0) { toast('Enter both wait times in minutes.', 'error'); return; }
-  var res = await sb.from('wait_times').insert({ user_id: STATE.currentUser.id, park: park, ride: ride, posted_wait: posted, actual_wait: actual });
-  if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
-  closeOverlay('overlay-wait-time');
-  document.getElementById('wt-park').value = '';
-  document.getElementById('wt-ride').innerHTML = '<option value="">Choose a park first</option>';
-  document.getElementById('wt-posted').value = '';
-  document.getElementById('wt-actual').value = '';
-  await loadData();
-  showView('waittimes');
-  toast(ride + ' wait time logged!');
+  if (btn) btn.disabled = true;
+  try {
+    var row = { user_id: STATE.currentUser.id, park: park, ride: ride, ride_id: rideId || null, posted_wait: posted, actual_wait: actual };
+    var res = await sb.from('wait_times').insert(row);
+    // Vercel deploys the moment this is pushed, but the ride_id migration is
+    // run by hand afterwards. Rather than leave logging broken in that window,
+    // fall back to the old shape if the column is not there yet.
+    if (res.error && /ride_id/.test(res.error.message || '')) {
+      delete row.ride_id;
+      res = await sb.from('wait_times').insert(row);
+    }
+    if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
+    closeOverlay('overlay-wait-time');
+    document.getElementById('wt-park').value = '';
+    document.getElementById('wt-ride').innerHTML = '<option value="">Choose a park first</option>';
+    document.getElementById('wt-actual').value = '';
+    clearPostedFill();
+    await loadData();
+    showView('waittimes');
+    toast(ride + ' wait time logged!');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
 }
 
 async function deleteWaitTime(id) {
@@ -112,16 +182,23 @@ async function deleteWaitTime(id) {
   toast('Wait time deleted.');
 }
 
-var waitTimesTab = 'today';
+var waitTimesTab = 'live';
 function switchWaitTimesTab(btn, tab) {
   waitTimesTab = tab;
   document.querySelectorAll('#view-waittimes .page-tab').forEach(function (b) { b.classList.remove('active'); });
   btn.classList.add('active');
-  document.getElementById('wttab-today').style.display = tab === 'today' ? 'block' : 'none';
-  document.getElementById('wttab-yesterday').style.display = tab === 'yesterday' ? 'block' : 'none';
+  ['live', 'today', 'yesterday'].forEach(function (t) {
+    var el = document.getElementById('wttab-' + t);
+    if (el) el.style.display = tab === t ? 'block' : 'none';
+  });
+  if (tab === 'live') renderLiveWaits();
 }
 
 function renderWaitTimes() {
+  // Live is deliberately NOT awaited and its failure is swallowed inside
+  // renderLiveWaits - a third-party outage must never stop the two boards
+  // below from rendering the community's own data.
+  if (typeof renderLiveWaits === 'function') renderLiveWaits();
   renderWaitTimesToday();
   renderWaitTimesYesterday();
 }
@@ -168,7 +245,9 @@ function renderWaitTimesYesterday() {
   }
   var map = {};
   yesterday.forEach(function (w) {
-    var key = w.park + '|' + w.ride;
+    // group on the feed's id when we have it, so a ride being renamed upstream
+    // does not silently split its history into two half-length averages
+    var key = w.park + '|' + (w.rideId || w.ride);
     if (!map[key]) map[key] = { park: w.park, ride: w.ride, posted: [], actual: [] };
     map[key].posted.push(w.postedWait);
     map[key].actual.push(w.actualWait);

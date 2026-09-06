@@ -370,6 +370,79 @@ body {
   .lb2-grid .lb2-row.col2 { border-left: none; }
 }
 
+/* ── LIVE WAIT TIMES ───────────────────────────────────── */
+/* Same parchment .foodcard material as Food Scores and the leaderboard, so the
+   Wait Times page joins the system the rest of the site already uses. Rows
+   reuse .lb2-row for its padding, rule and hover, but a live row is not
+   clickable, so the pointer cursor is taken back off. */
+.lw-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.lw-refresh {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--pc-ink);
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(26,42,58,0.22);
+  border-radius: 999px; padding: 8px 13px; cursor: pointer; white-space: nowrap;
+}
+.lw-refresh:hover { background: rgba(255,255,255,0.8); }
+.lw-refresh:focus-visible { outline: 2px solid var(--pc-ink); outline-offset: 2px; }
+
+.lb2-row.lw-row { cursor: default; gap: 14px; }
+.lb2-row.lw-row:hover { background: none; }
+.lw-name {
+  flex: 1; min-width: 0;
+  font-size: 13.5px; font-weight: 500; line-height: 1.35; color: var(--pc-ink);
+}
+/* a shut ride stays legible but visibly steps back, so the eye runs down the
+   open ones first */
+.lb2-row.lw-row.is-shut .lw-name { color: var(--pc-dim); }
+
+.lw-wait { display: flex; align-items: baseline; gap: 4px; flex-shrink: 0; }
+.lw-min {
+  font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 0.5px;
+  line-height: 1; color: var(--pc-score); font-variant-numeric: tabular-nums;
+}
+.lw-unit {
+  font-size: 8.5px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase;
+  color: var(--pc-dim);
+}
+
+.lw-chip {
+  flex-shrink: 0;
+  font-size: 9px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+  border-radius: 999px; padding: 5px 10px; white-space: nowrap;
+}
+.lw-chip.lw-open { color: #1B6B4A; background: rgba(27,107,74,0.12); border: 1px solid rgba(27,107,74,0.3); }
+.lw-chip.lw-shut { color: #8A3527; background: rgba(138,53,39,0.10); border: 1px solid rgba(138,53,39,0.28); }
+
+.lw-note {
+  padding: 12px 16px;
+  font-size: 12px; font-weight: 300; line-height: 1.55;
+  color: var(--pc-dim);
+  border-bottom: 1px solid var(--pc-rule);
+}
+
+/* sits on the dark page under the card, so it stays page-coloured */
+.lw-credit {
+  margin-top: 12px;
+  font-size: 11.5px; font-weight: 300; line-height: 1.6;
+  color: rgba(244,239,227,0.55);
+}
+.lw-credit a { color: var(--gold-lt); text-decoration: underline; }
+
+/* the auto-filled posted wait: marked so it is obvious the number was not
+   typed, without making the field look disabled - it stays fully editable */
+.field-input.is-autofilled { background: rgba(194,154,44,0.10); border-color: rgba(194,154,44,0.5); }
+.wt-fill-note {
+  margin-top: 5px;
+  font-size: 11px; font-weight: 300; line-height: 1.45; color: var(--ink-faint);
+}
+
+@media (max-width: 620px) {
+  .lw-actions { width: 100%; }
+  .lw-actions .lb2-park { flex: 1; max-width: none; }
+}
+
 /* ── INVITE A FRIEND modal ──────────────────────────────── */
 .inv-blurb {
   margin: 0 0 18px;

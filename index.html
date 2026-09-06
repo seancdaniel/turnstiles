@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=78">
+  <link rel="stylesheet" href="styles.css?v=79">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -742,7 +742,7 @@
       </div>
       <div class="field">
         <label class="field-lbl">Ride</label>
-        <select class="field-input" id="wt-ride">
+        <select class="field-input" id="wt-ride" onchange="handleRideSelect()">
           <option value="">Choose a park first</option>
         </select>
       </div>
@@ -750,6 +750,7 @@
         <div class="field">
           <label class="field-lbl">Posted Wait (min)</label>
           <input class="field-input" id="wt-posted" type="number" min="0" max="300" placeholder="e.g. 45">
+          <div class="wt-fill-note" id="wt-posted-note" style="display:none">Filled from the live feed. Change it if the sign says otherwise.</div>
         </div>
         <div class="field">
           <label class="field-lbl">Actual Wait (min)</label>
@@ -759,7 +760,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn-sm" onclick="closeOverlay('overlay-wait-time')">Cancel</button>
-      <button class="btn-sm primary" onclick="submitWaitTime()">Submit</button>
+      <button class="btn-sm primary" onclick="submitWaitTime(this)">Submit</button>
     </div>
   </div>
 </div>
@@ -1623,12 +1624,36 @@
         <button class="btn-sm primary" onclick="actionOrSignup('overlay-wait-time')"><i class="ti ti-plus" style="font-size:12px"></i> Log a Wait Time</button>
       </div>
       <div class="page-tabs">
-        <button class="page-tab active" onclick="switchWaitTimesTab(this,'today')">Today</button>
+        <button class="page-tab active" onclick="switchWaitTimesTab(this,'live')">Live Now</button>
+        <button class="page-tab" onclick="switchWaitTimesTab(this,'today')">Today</button>
         <button class="page-tab" onclick="switchWaitTimesTab(this,'yesterday')">Yesterday's Averages</button>
       </div>
 
+      <!-- Live tab: posted waits straight from themeparks.wiki. Default tab,
+           because it has something to show before anyone has logged anything.
+           Everything driving it lives in waittimes-live.js. -->
+      <div id="wttab-live">
+        <div class="foodcard">
+          <div class="lb2-hd">
+            <div>
+              <div class="lb2-title">Live Now</div>
+              <div class="lb2-sub" id="lw-sub">Checking...</div>
+            </div>
+            <div class="lw-actions">
+              <select class="lb2-park" id="lw-park" aria-label="Choose a park" onchange="setLwPark(this.value)"></select>
+              <button class="lw-refresh" type="button" onclick="refreshLiveWaits()">Refresh</button>
+            </div>
+          </div>
+          <div id="lw-list"></div>
+        </div>
+        <div class="lw-credit">
+          Live posted waits from <a href="https://themeparks.wiki" target="_blank" rel="noopener">themeparks.wiki</a>.
+          These are the times on the sign. The actual waits logged by passholders are on the other two tabs.
+        </div>
+      </div>
+
       <!-- Today tab: live, ungrouped, no averaging -->
-      <div id="wttab-today">
+      <div id="wttab-today" style="display:none">
         <div id="wt-today-list"></div>
       </div>
 
@@ -2014,9 +2039,10 @@
 <script src="restaurants-data.js?v=3"></script>
 <script src="supabase-auth.js?v=11"></script>
 <script src="supabase-data.js?v=20"></script>
-<script src="supabase-food.js?v=18"></script>
+<script src="supabase-food.js?v=19"></script>
 <script src="supabase-festivals.js?v=2"></script>
-<script src="supabase-waittimes.js?v=3"></script>
+<script src="supabase-waittimes.js?v=5"></script>
+<script src="waittimes-live.js?v=2"></script>
 <script src="supabase-donors.js?v=2"></script>
 <script src="supabase-invite.js?v=1"></script>
 <script src="leaderboard.js?v=7"></script>

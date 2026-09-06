@@ -57,7 +57,8 @@ async function loadData() {
         username: (idMap[w.user_id] && idMap[w.user_id].username) || 'someone',
         avatar: (idMap[w.user_id] && idMap[w.user_id].avatar) || '\u{1F3A2}',
         avatarUrl: (idMap[w.user_id] && idMap[w.user_id].avatarUrl) || '',
-        park: w.park, ride: w.ride, postedWait: w.posted_wait, actualWait: w.actual_wait,
+        park: w.park, ride: w.ride, rideId: w.ride_id || null,
+        postedWait: w.posted_wait, actualWait: w.actual_wait,
         ts: new Date(w.created_at).getTime() };
     });
     // donor wall entries: user_id links to a live account (if it still exists and

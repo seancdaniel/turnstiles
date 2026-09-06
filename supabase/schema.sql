@@ -455,3 +455,11 @@ create policy "insert own invite" on public.invites for insert with check (auth.
 
 create index if not exists invites_inviter_created_idx
   on public.invites (inviter_id, created_at desc);
+
+-- ============================================================
+-- MIGRATION — live wait times: the feed's stable ride id, so an
+-- upstream rename does not split a ride's averages in two. Full
+-- version with the one-time backfill is in
+-- supabase/waittimes-ride-id.sql. Safe to re-run.
+-- ============================================================
+alter table public.wait_times add column if not exists ride_id text;
