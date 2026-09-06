@@ -240,7 +240,9 @@ function renderWaitTimesYesterday() {
   if (!el) return;
   var yesterday = STATE.waitTimes.filter(function (w) { return isSameLocalDay(w.ts, -1); });
   if (!yesterday.length) {
-    el.innerHTML = '<div class="empty-state"><div class="empty-state-sub">No wait times were logged yesterday.</div></div>';
+    el.innerHTML = '<div class="lb2-empty">' +
+      '<div class="lb2-empty-t">Nothing Logged Yesterday</div>' +
+      '<div class="lb2-empty-s">Log a wait from the line today and it lands here tomorrow.</div></div>';
     return;
   }
   var map = {};
@@ -258,10 +260,28 @@ function renderWaitTimesYesterday() {
     return { park: m.park, ride: m.ride, count: m.posted.length, avgPosted: avg(m.posted), avgActual: avg(m.actual) };
   }).sort(function (a, b) { return b.count - a.count; });
   el.innerHTML = rows.map(function (r) {
-    return '<div class="food-item">' +
-      '<div class="food-emoji">' + parkEmoji(r.park) + '</div>' +
-      '<div class="food-info"><div class="food-name">' + escapeHtml(r.ride) + '</div><div class="food-loc">' + escapeHtml(r.park) + ' · ' + r.count + ' report' + (r.count === 1 ? '' : 's') + '</div></div>' +
-      '<div class="food-score-block"><div class="food-score-num">' + r.avgPosted + '<span style="font-size:14px;color:var(--ink-faint)"> / ' + r.avgActual + '</span></div><div class="food-rev-count">posted / actual</div></div>' +
-      '</div>';
+    // The gap between the sign and the stopwatch is the only figure on this
+    // site that nobody else publishes, so the row is built around it rather
+    // than around a slash between two equal-looking numbers.
+    var diff = r.avgPosted - r.avgActual;
+    var dir = diff > 0 ? 'under' : diff < 0 ? 'over' : 'exact';
+    var gap = diff > 0 ? Math.abs(diff) + ' min shorter than posted'
+            : diff < 0 ? Math.abs(diff) + ' min longer than posted'
+            : 'Exactly as posted';
+    return '<div class="lb2-row wty-row">' +
+      '<div class="wty-emoji">' + parkEmoji(r.park) + '</div>' +
+      '<div class="wty-info">' +
+        '<div class="wty-name">' + escapeHtml(r.ride) + '</div>' +
+        '<div class="wty-meta">' + escapeHtml(r.park) + ' · ' + r.count + ' report' + (r.count === 1 ? '' : 's') + '</div>' +
+      '</div>' +
+      '<div class="wty-nums">' +
+        '<div class="wty-pair">' +
+          '<span class="wty-posted">' + r.avgPosted + '</span>' +
+          '<span class="wty-arrow">' + String.fromCharCode(8594) + '</span>' +
+          '<span class="wty-actual ' + dir + '">' + r.avgActual + '</span>' +
+        '</div>' +
+        '<div class="wty-gap ' + dir + '">' + gap + '</div>' +
+      '</div>' +
+    '</div>';
   }).join('');
 }

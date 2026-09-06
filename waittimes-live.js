@@ -94,6 +94,20 @@ var TP_STATUS_LABEL = {
   REFURBISHMENT: 'Refurb'
 };
 
+/* Three wait bands, because a board of 34 identical brass numerals makes you
+   read every row to find the short line, which is the one thing someone
+   standing in a park actually wants.
+   Three and not five: colour says which category, the bar under the row says
+   how long. Five bands on parchment forced two pairs so close together that
+   the distinction stopped reading, and a distinction you cannot see is just
+   noise. The hues are the site's own teal, brass and oxblood rather than a
+   traffic-light ramp, which belongs to no other part of this site. */
+function tpTier(wait) {
+  if (wait <= 25) return 1;   // walk on or close to it
+  if (wait <= 55) return 2;   // worth planning around
+  return 3;                   // commit to it
+}
+
 // ============================================================
 // LIVE TAB
 // ============================================================
@@ -168,7 +182,17 @@ async function renderLiveWaits(force) {
       return (tpWaitOf(b) || 0) - (tpWaitOf(a) || 0);
     });
 
-    if (sub) sub.textContent = 'Updated ' + timeAgo(data.at);
+    // the header answers "how busy is it" before you read a single row
+    var open = rows.filter(function (e) { return e.status === 'OPERATING' && tpWaitOf(e) != null; });
+    var longest = open.reduce(function (m, e) { return Math.max(m, tpWaitOf(e)); }, 0);
+    if (sub) {
+      var bits = ['Updated ' + timeAgo(data.at)];
+      if (open.length) {
+        bits.push(open.length + ' open');
+        bits.push('longest ' + longest + ' min');
+      }
+      sub.textContent = bits.join(' ' + String.fromCharCode(183) + ' ');
+    }
 
     if (!rows.length) {
       el.innerHTML = '<div class="lb2-empty">' +
@@ -187,11 +211,21 @@ async function renderLiveWaits(force) {
         'This park looks closed for the day.</div>';
     }
 
+    // every bar is measured against the longest wait in THIS park right now, so
+    // the board reads as the shape of this park today rather than against some
+    // fixed ceiling that would leave a quiet morning looking uniformly empty
+    var peak = rows.reduce(function (m, e) {
+      return e.status === 'OPERATING' ? Math.max(m, tpWaitOf(e) || 0) : m;
+    }, 0);
+
     el.innerHTML = note + rows.map(function (e) {
       var wait = tpWaitOf(e);
       var open = e.status === 'OPERATING';
-      var right;
+      var right, tier = '', fill = 0;
       if (open && wait != null) {
+        tier = ' t' + tpTier(wait);
+        // a floor of 4% so a walk-on still reads as a mark rather than nothing
+        fill = peak > 0 ? Math.max(4, Math.round(wait / peak * 100)) : 0;
         right = '<div class="lw-wait"><span class="lw-min">' + wait + '</span><span class="lw-unit">min</span></div>';
       } else if (open) {
         right = '<div class="lw-chip lw-open">Open</div>';
@@ -199,7 +233,8 @@ async function renderLiveWaits(force) {
         right = '<div class="lw-chip lw-shut">' +
           escapeHtml(TP_STATUS_LABEL[e.status] || 'Closed') + '</div>';
       }
-      return '<div class="lb2-row lw-row' + (open ? '' : ' is-shut') + '">' +
+      return '<div class="lb2-row lw-row' + tier + (open ? '' : ' is-shut') + '"' +
+          (fill ? ' style="--lw-fill:' + fill + '%"' : '') + '>' +
         '<div class="lw-name">' + escapeHtml(e.name) + '</div>' +
         right +
       '</div>';

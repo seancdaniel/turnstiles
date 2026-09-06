@@ -387,8 +387,45 @@ body {
 .lw-refresh:hover { background: rgba(255,255,255,0.8); }
 .lw-refresh:focus-visible { outline: 2px solid var(--pc-ink); outline-offset: 2px; }
 
-.lb2-row.lw-row { cursor: default; gap: 14px; }
+/* ---- the wait bands ----------------------------------------------------
+   34 rides rendered in one brass numeral makes you read every row to find the
+   short line, which is the single thing someone standing in a park wants. The
+   hues are the site's own teal, brass and oxblood rather than a traffic-light
+   green-to-red, which belongs to no other part of this site. Each clears 4.5:1
+   against the DARK end of the parchment gradient (measured: 4.93 / 4.81 /
+   6.05), which is the real worst case since the gradient runs darker toward
+   the bottom of the card. Colour is redundant with the number itself, so it
+   never carries meaning alone. */
+.lw-row.t1 { --lw-hue: #0F6155; }   /* teal,    0-25  */
+.lw-row.t2 { --lw-hue: #824A08; }   /* brass,  30-55  */
+.lw-row.t3 { --lw-hue: #8A2318; }   /* oxblood,  60+  */
+
+.lb2-row.lw-row {
+  cursor: default; gap: 14px;
+  position: relative;
+  border-bottom: none;            /* replaced by the gauge below */
+}
 .lb2-row.lw-row:hover { background: none; }
+
+/* SIGNATURE: the row divider is the queue.
+   Rather than adding a chart, the hairline that already separated rows is made
+   to carry the data. Each rule fills to the ride's share of the longest wait in
+   that park right now, so a board sorted longest-first draws its own descending
+   staircase and you read the shape of the park before you read a single number.
+   The track stays full width so the rows still divide cleanly when nothing is
+   open. */
+.lb2-row.lw-row::before {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0;
+  height: 3px; background: var(--pc-rule);
+}
+.lb2-row.lw-row::after {
+  content: ''; position: absolute; left: 0; bottom: 0;
+  height: 3px; width: var(--lw-fill, 0);
+  background: var(--lw-hue, var(--pc-rule));
+  border-radius: 0 2px 2px 0;
+}
+.lb2-row.lw-row:last-child::before, .lb2-row.lw-row:last-child::after { bottom: 0; }
+
 .lw-name {
   flex: 1; min-width: 0;
   font-size: 13.5px; font-weight: 500; line-height: 1.35; color: var(--pc-ink);
@@ -399,8 +436,10 @@ body {
 
 .lw-wait { display: flex; align-items: baseline; gap: 4px; flex-shrink: 0; }
 .lw-min {
-  font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 0.5px;
-  line-height: 1; color: var(--pc-score); font-variant-numeric: tabular-nums;
+  font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 0.5px;
+  line-height: 1; color: var(--lw-hue, var(--pc-score));
+  font-variant-numeric: tabular-nums;
+  min-width: 42px; text-align: right;
 }
 .lw-unit {
   font-size: 8.5px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase;
@@ -412,7 +451,7 @@ body {
   font-size: 9px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
   border-radius: 999px; padding: 5px 10px; white-space: nowrap;
 }
-.lw-chip.lw-open { color: #1B6B4A; background: rgba(27,107,74,0.12); border: 1px solid rgba(27,107,74,0.3); }
+.lw-chip.lw-open { color: #0F6155; background: rgba(15,97,85,0.12); border: 1px solid rgba(15,97,85,0.3); }
 .lw-chip.lw-shut { color: #8A3527; background: rgba(138,53,39,0.10); border: 1px solid rgba(138,53,39,0.28); }
 
 .lw-note {
@@ -429,6 +468,48 @@ body {
   color: rgba(244,239,227,0.55);
 }
 .lw-credit a { color: var(--gold-lt); text-decoration: underline; }
+
+/* ---- Yesterday: posted against actual ----------------------------------
+   The old row put both numbers either side of a slash at equal weight, which
+   buried the only figure here nobody else publishes: the gap between the sign
+   and the stopwatch. The actual number now carries the colour and the gap is
+   spelled out underneath, so the row says what it found rather than leaving
+   the reader to subtract. */
+.lb2-row.wty-row { cursor: default; gap: 12px; align-items: center; }
+.lb2-row.wty-row:hover { background: none; }
+.wty-emoji { font-size: 21px; line-height: 1; flex-shrink: 0; }
+.wty-info { flex: 1; min-width: 0; }
+.wty-name {
+  font-size: 13.5px; font-weight: 500; line-height: 1.35; color: var(--pc-ink);
+}
+.wty-meta {
+  font-size: 9px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase;
+  color: var(--pc-dim); margin-top: 3px;
+}
+.wty-nums { flex-shrink: 0; text-align: right; }
+.wty-pair { display: flex; align-items: baseline; justify-content: flex-end; gap: 6px; }
+.wty-posted, .wty-actual {
+  font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.5px;
+  line-height: 1; font-variant-numeric: tabular-nums;
+}
+.wty-posted { color: var(--pc-dim); }
+.wty-arrow { font-size: 12px; color: var(--pc-dim); }
+.wty-actual.under { color: #0F6155; }
+.wty-actual.over  { color: #9E3B25; }
+.wty-actual.exact { color: var(--pc-ink); }
+.wty-gap {
+  font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  margin-top: 5px;
+}
+.wty-gap.under { color: #0F6155; }
+.wty-gap.over  { color: #9E3B25; }
+.wty-gap.exact { color: var(--pc-dim); }
+
+@media (max-width: 620px) {
+  /* the ride name gets the room; the figures keep their own column */
+  .wty-meta { letter-spacing: 1px; }
+  .wty-gap { letter-spacing: 0.6px; }
+}
 
 /* the auto-filled posted wait: marked so it is obvious the number was not
    typed, without making the field look disabled - it stays fully editable */
