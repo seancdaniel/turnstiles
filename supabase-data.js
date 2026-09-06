@@ -71,7 +71,15 @@ function openUserProfile(userId) {
 
   var visitsEl = document.getElementById('up-visits');
   var recent = my.slice().sort(function (a, b) { return b.ts - a.ts; }).slice(0, 10);
-  if (!recent.length) {
+  // Recent Visits is the same when-and-where rundown as the community feed,
+  // just for one person, so the same switch covers it. Everything above it
+  // (totals, tiers, badges, rank) stays visible by design.
+  if (u.shareActivity === false) {
+    visitsEl.innerHTML = '<div class="up-private">' +
+      '<div class="up-private-t">Visits Are Private</div>' +
+      '<div class="up-private-s">' + escapeHtml(u.username) + ' keeps their check-in history off their public profile. ' +
+      'Their totals and ranking are still shown above.</div></div>';
+  } else if (!recent.length) {
     visitsEl.innerHTML = '<div class="empty-state"><div class="empty-state-sub">No visits logged yet.</div></div>';
   } else {
     visitsEl.innerHTML = '<table class="visit-table"><thead><tr><th>Park</th><th>Date</th><th>Miles</th><th>Food Score</th></tr></thead><tbody>' +

@@ -463,3 +463,11 @@ create index if not exists invites_inviter_created_idx
 -- supabase/waittimes-ride-id.sql. Safe to re-run.
 -- ============================================================
 alter table public.wait_times add column if not exists ride_id text;
+
+-- ============================================================
+-- MIGRATION — Activity Feed opt-out. Defaults true so nothing
+-- changes until somebody turns it off. Full version with the
+-- reasoning is in supabase/activity-privacy.sql. Safe to re-run.
+-- ============================================================
+alter table public.profiles
+  add column if not exists share_activity boolean not null default true;

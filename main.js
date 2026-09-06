@@ -820,14 +820,33 @@ function buildLeaderboard(filter) {
 // renderLeaderboard/lbFilter used to live here, driving a single list behind
 // a period selector. Both boards and their per-card park pickers are owned by
 // leaderboard.js now (which already overrode buildLeaderboard anyway).
+// Who has opted out of the activity feed. This is the ONE place on the site
+// that publishes when and where somebody was, which is a different kind of
+// disclosure from a leaderboard position, so it gets its own switch. Totals,
+// tiers and rank are untouched by it.
+function activityHiddenIds() {
+  const hidden = {};
+  (STATE.users || []).forEach(u => { if (u.shareActivity === false) hidden[u.id] = true; });
+  return hidden;
+}
+
 function renderCommunityFeed() {
-  const items = [...STATE.checkins].sort((a,b)=>b.ts-a.ts).slice(0,20);
+  const hidden = activityHiddenIds();
+  // filter BEFORE the slice, or opting out would silently shorten the feed
+  const items = [...STATE.checkins].filter(c => !hidden[c.userId])
+    .sort((a,b)=>b.ts-a.ts).slice(0,20);
   const el = document.getElementById('community-feed-list');
+  const me = STATE.currentUser;
+  // tell you why you cannot see yourself here, so it reads as your setting
+  // working rather than as the feed being broken
+  const mine = me && hidden[me.id]
+    ? '<div class="feed-optout">Your check-ins are hidden from this feed. You can turn that back on in Edit Profile.</div>'
+    : '';
   if(!items.length) {
-    el.innerHTML='<div class="empty-state"><div class="empty-state-icon">📡</div><div class="empty-state-title">No Activity Yet</div><div class="empty-state-sub">Check-ins from the community will appear here.</div></div>';
+    el.innerHTML = mine + '<div class="empty-state"><div class="empty-state-icon">📡</div><div class="empty-state-title">No Activity Yet</div><div class="empty-state-sub">Check-ins from the community will appear here.</div></div>';
     return;
   }
-  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' +
+  el.innerHTML = mine + '<div style="display:flex;flex-direction:column;gap:10px">' +
     items.map(c => {
       const user = STATE.users.find(u=>u.id===c.userId);
       if(!user) return '';

@@ -13,6 +13,10 @@ function profileToUser(p, email) {
     bio: p.bio || '', location: p.location || '',
     disneyPass: p.disney_pass || '', universalPass: p.universal_pass || '',
     isAdmin: !!p.is_admin, welcomed: !!p.welcomed,
+    // opt-OUT, so anything other than an explicit false means "show me" - that
+    // way existing rows and a database that has not run the migration yet both
+    // behave exactly as before
+    shareActivity: p.share_activity !== false,
     parks: [], joinYear: p.join_year || new Date().getFullYear()
   };
 }
@@ -190,6 +194,7 @@ function openEditProfile() {
   document.getElementById('ep-location').value = u.location || '';
   document.getElementById('ep-disney-pass').value = u.disneyPass || '';
   document.getElementById('ep-universal-pass').value = u.universalPass || '';
+  document.getElementById('ep-share-activity').checked = u.shareActivity !== false;
   document.getElementById('ep-user-err').classList.remove('show');
   openOverlay('overlay-edit-profile');
 }
@@ -203,6 +208,7 @@ async function submitEditProfile() {
   const location = document.getElementById('ep-location').value.trim();
   const disneyPass = document.getElementById('ep-disney-pass').value;
   const universalPass = document.getElementById('ep-universal-pass').value;
+  const shareActivity = document.getElementById('ep-share-activity').checked;
   const err = document.getElementById('ep-user-err');
   err.classList.remove('show');
   if (!fname || !username) { toast('First name and username are required.', 'error'); return; }
@@ -225,16 +231,23 @@ async function submitEditProfile() {
     }
   }
 
-  const { error } = await sb.from('profiles').update({
+  const patch = {
     first_name: fname, last_name: lname, username: username,
     avatar: editSelectedAvatar || u.avatar, avatar_url: avatarUrl, bio: bio, location: location,
-    disney_pass: disneyPass, universal_pass: universalPass
-  }).eq('id', u.id);
+    disney_pass: disneyPass, universal_pass: universalPass, share_activity: shareActivity
+  };
+  let { error } = await sb.from('profiles').update(patch).eq('id', u.id);
+  // same reasoning as wait_times.ride_id: the deploy lands before the migration
+  // is run by hand, and profile editing must not be broken during that gap
+  if (error && /share_activity/.test(error.message || '')) {
+    delete patch.share_activity;
+    ({ error } = await sb.from('profiles').update(patch).eq('id', u.id));
+  }
   if (error) { toast('Could not save: ' + error.message, 'error'); return; }
   STATE.currentUser = Object.assign({}, u, {
     fname: fname, lname: lname, username: username,
     avatar: editSelectedAvatar || u.avatar, avatarUrl: avatarUrl || '', bio: bio, location: location,
-    disneyPass: disneyPass, universalPass: universalPass
+    disneyPass: disneyPass, universalPass: universalPass, shareActivity: shareActivity
   });
   document.getElementById('nav-avatar').innerHTML = avatarHtml(STATE.currentUser.avatarUrl, STATE.currentUser.avatar);
   document.getElementById('nav-username').textContent = STATE.currentUser.username;

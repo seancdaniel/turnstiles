@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=81">
+  <link rel="stylesheet" href="styles.css?v=82">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -891,6 +891,17 @@
       <div class="field">
         <label class="field-lbl">Home Location</label>
         <input class="field-input" id="ep-location" placeholder="Orlando, FL">
+      </div>
+      <div class="field">
+        <label class="field-lbl">Privacy</label>
+        <label class="priv-row" for="ep-share-activity">
+          <input type="checkbox" id="ep-share-activity" checked>
+          <span class="priv-switch" aria-hidden="true"></span>
+          <span class="priv-text">
+            <span class="priv-title">Show my check-ins in the Activity Feed</span>
+            <span class="priv-sub">Turn this off and your check-ins stay off the community Activity Feed and off the Recent Visits list on your public profile. Your visit total, miles, tiers and leaderboard position are not affected.</span>
+          </span>
+        </label>
       </div>
       <div class="field-row">
         <div class="field">
@@ -2043,10 +2054,10 @@
      JAVASCRIPT
      ====================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
-<script src="main.js?v=36"></script>
+<script src="main.js?v=37"></script>
 <script src="restaurants-data.js?v=3"></script>
-<script src="supabase-auth.js?v=11"></script>
-<script src="supabase-data.js?v=20"></script>
+<script src="supabase-auth.js?v=12"></script>
+<script src="supabase-data.js?v=21"></script>
 <script src="supabase-food.js?v=19"></script>
 <script src="supabase-festivals.js?v=2"></script>
 <script src="supabase-waittimes.js?v=7"></script>
