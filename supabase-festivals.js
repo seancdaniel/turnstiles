@@ -281,7 +281,7 @@ function openFestivalDetail(itemName, boothName, festivalId) {
         '<span class="fd-review-score">' + Number(r.score).toFixed(1) + '</span>' +
       '</div>' +
       (r.review ? '<div class="fd-review-text">' + escapeHtml(r.review) + '</div>' : '') +
-      (r.photoUrl ? '<img class="fd-review-photo" src="' + r.photoUrl + '" alt="Photo from ' + escapeHtml(r.username) + '\'s review">' : '') +
+      (r.photoUrl ? '<img class="fd-review-photo" src="' + escapeHtml(safeImageUrl(r.photoUrl)) + '" alt="Photo from ' + escapeHtml(r.username) + '\'s review">' : '') +
       '</div>';
   }).join('');
   openOverlay('overlay-festival-detail');
@@ -416,7 +416,8 @@ function editFestivalReview(id) {
   document.getElementById('fv-review').value = r.review || '';
   var pv = document.getElementById('fv-photo-preview');
   var pi = document.getElementById('fv-photo-img');
-  if (r.photoUrl) { pi.src = r.photoUrl; pv.style.display = 'block'; }
+  var rpSrc = safeImageUrl(r.photoUrl);
+  if (rpSrc) { pi.src = rpSrc; pv.style.display = 'block'; }
   else { pi.removeAttribute('src'); pv.style.display = 'none'; }
   var t = document.querySelector('#overlay-festival-review .modal-hd-title'); if (t) t.textContent = 'Edit Your Review';
   var b = document.querySelector('#overlay-festival-review .modal-footer .btn-sm.primary'); if (b) b.textContent = 'Save Changes';

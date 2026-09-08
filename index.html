@@ -2053,13 +2053,19 @@
 <!-- ======================================================
      JAVASCRIPT
      ====================================================== -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
-<script src="main.js?v=37"></script>
+<!-- Pinned to an exact version with an integrity hash. A floating "@2" means a
+     compromised or malicious release would execute here with full access to
+     every visitor's session, and SRI cannot protect a moving target. Upgrading
+     is deliberate: bump the version AND recompute the hash together. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"
+        integrity="sha384-JBR+x8blGwjDRO63aHCGiZMD4VNiTR4ZUGA+N6ZKLf3zNt1fK8IBpcgPaMrxqWBp"
+        crossorigin="anonymous"></script>
+<script src="main.js?v=39"></script>
 <script src="restaurants-data.js?v=3"></script>
 <script src="supabase-auth.js?v=12"></script>
 <script src="supabase-data.js?v=21"></script>
-<script src="supabase-food.js?v=19"></script>
-<script src="supabase-festivals.js?v=2"></script>
+<script src="supabase-food.js?v=20"></script>
+<script src="supabase-festivals.js?v=3"></script>
 <script src="supabase-waittimes.js?v=7"></script>
 <script src="waittimes-live.js?v=4"></script>
 <script src="supabase-donors.js?v=2"></script>

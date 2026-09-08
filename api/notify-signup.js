@@ -38,9 +38,23 @@ module.exports = async function handler(req, res) {
     return;
   }
 
+  // Both of these come from signup metadata, which is entirely attacker
+  // controlled: anyone can pass arbitrary `data` to signUp(). They land in an
+  // HTML email addressed to the site owner, so they are escaped like any other
+  // untrusted input, and the subject has control characters stripped because a
+  // newline in a header value is the classic header-injection trick.
+  var esc = function (s) {
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  };
+  var header = function (s) {
+    return String(s).replace(/[\u0000-\u001F\u007F]/g, ' ').trim().slice(0, 80);
+  };
+
   var username = record.username || 'someone';
   var firstName = record.first_name || '';
-  var whoLine = firstName ? firstName + ' (@' + username + ')' : '@' + username;
+  var whoLine = firstName ? esc(firstName) + ' (@' + esc(username) + ')' : '@' + esc(username);
 
   try {
     var emailRes = await fetch('https://api.resend.com/emails', {
@@ -52,7 +66,7 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         from: 'Turnstiles <notify@goturnstiles.com>',
         to: process.env.NOTIFY_EMAIL,
-        subject: 'New Turnstiles signup: ' + username,
+        subject: 'New Turnstiles signup: ' + header(username),
         html: '<p>' + whoLine + ' just signed up for Turnstiles.</p>'
       })
     });

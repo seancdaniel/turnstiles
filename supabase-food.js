@@ -429,7 +429,7 @@ function openFoodDetail(name, park, spot) {
         '<span class="fd-review-score">' + Number(r.score).toFixed(1) + '</span>' +
       '</div>' +
       (r.review ? '<div class="fd-review-text">' + escapeHtml(r.review) + '</div>' : '') +
-      (r.photoUrl ? '<img class="fd-review-photo" src="' + r.photoUrl + '" alt="Photo from ' + escapeHtml(r.username) + '\'s review">' : '') +
+      (r.photoUrl ? '<img class="fd-review-photo" src="' + escapeHtml(safeImageUrl(r.photoUrl)) + '" alt="Photo from ' + escapeHtml(r.username) + '\'s review">' : '') +
       '</div>';
   }).join('');
   openOverlay('overlay-food-detail');
@@ -565,7 +565,8 @@ function editFoodReview(id) {
   document.getElementById('fr-review').value = r.review || '';
   var pv = document.getElementById('fr-photo-preview');
   var pi = document.getElementById('fr-photo-img');
-  if (r.photoUrl) { pi.src = r.photoUrl; pv.style.display = 'block'; }
+  var rpSrc = safeImageUrl(r.photoUrl);
+  if (rpSrc) { pi.src = rpSrc; pv.style.display = 'block'; }
   else { pi.removeAttribute('src'); pv.style.display = 'none'; }
   var results = document.getElementById('fr-results'); if (results) results.style.display = 'none';
   var picked = document.getElementById('fr-picked'); if (picked) picked.style.display = 'none';

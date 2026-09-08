@@ -1000,15 +1000,18 @@ function renderPhotos() {
     el.innerHTML='<div style="grid-column:1/-1"><div class="empty-state"><div class="empty-state-icon">📸</div><div class="empty-state-title">No Photos Yet</div><div class="empty-state-sub">'+(photoFilter==='all'?'Be the first to share a photo from the parks!':'No photos from this park yet — be the first!')+'</div></div></div>';
     return;
   }
-  el.innerHTML = photos.map((p,i) => `
-    <div class="photo-thumb" style="background:${p.dataUrl?'#000':PHOTO_BG[i%PHOTO_BG.length]};border:1px solid var(--border)" onclick="openPhotoView('${p.id}')">
-      ${p.dataUrl ? '<img alt="Photo shared by a passholder" src="'+p.dataUrl+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">' : '<span style="font-size:32px">'+parkEmoji(p.park)+'</span>'}
+  el.innerHTML = photos.map((p,i) => {
+    const src = safeImageUrl(p.dataUrl);
+    return `
+    <div class="photo-thumb" style="background:${src?'#000':PHOTO_BG[i%PHOTO_BG.length]};border:1px solid var(--border)" onclick="openPhotoView('${p.id}')">
+      ${src ? '<img alt="Photo shared by a passholder" src="'+escapeHtml(src)+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">' : '<span style="font-size:32px">'+parkEmoji(p.park)+'</span>'}
       <div class="photo-overlay">
         <span class="photo-user user-link" onclick="event.stopPropagation();openUserProfile('${p.userId}')">${avatarHtml(p.avatarUrl, p.avatar, 'avatar-img-inline')} ${escapeHtml(p.username)}</span>
         <span class="photo-score" title="${escapeHtml(p.caption||p.park)}">${escapeHtml(p.park.split(' ')[0])}</span>
       </div>
     </div>
-  `).join('') + `
+  `;
+  }).join('') + `
     <div class="photo-thumb" style="background:var(--parchment);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;border:2px dashed var(--border-md)" onclick="openOverlay('overlay-photo')">
       <i class="ti ti-camera-plus" style="font-size:24px;color:var(--ink-faint)"></i>
       <span style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint)">Share a photo</span>
@@ -1020,7 +1023,8 @@ function openPhotoView(id) {
   if(!p) return;
   document.getElementById('pv-park').textContent = p.park;
   const img = document.getElementById('pv-img');
-  if(p.dataUrl) { img.src = p.dataUrl; img.style.display='block'; } else { img.removeAttribute('src'); img.style.display='none'; }
+  const pvSrc = safeImageUrl(p.dataUrl);
+  if(pvSrc) { img.src = pvSrc; img.style.display='block'; } else { img.removeAttribute('src'); img.style.display='none'; }
   document.getElementById('pv-user').innerHTML =
     `<div class="feed-av" style="background:var(--coral-lt);color:var(--coral)">${avatarHtml(p.avatarUrl, p.avatar)}</div>
      <span class="user-link" onclick="closeOverlay('overlay-photo-view');openUserProfile('${p.userId}')" style="font-weight:700;font-size:13px;color:var(--ink)">${escapeHtml(p.username)}</span>
@@ -1117,8 +1121,34 @@ function switchParkTab(btn, tab) {
 // renders an uploaded profile photo if present, else falls back to the emoji.
 // Callers just need width/height/border-radius on the containing element -
 // the <img> fills it via object-fit + border-radius:inherit.
+/* Every image URL on this site comes out of a database column a signed-in user
+   can write to directly through the REST API. RLS only checks who owns the row,
+   never what the column contains, so a URL is untrusted input and gets two
+   checks before it reaches the page:
+
+     1. the scheme is allow-listed, so a row cannot point the site at an
+        arbitrary host (an off-site beacon) or at a javascript: URL
+     2. it is HTML-escaped at the point of use, so it cannot break out of the
+        src="..." attribute it lands in
+
+   Check 2 is the one that mattered: a photos.image_url of
+   `x" onerror="..." data-z="` closed the attribute and ran script for every
+   visitor to the Photos page, guests included. */
+function safeImageUrl(u) {
+  if (!u) return '';
+  var s = String(u).trim();
+  // Every image this app writes is either a Supabase Storage URL or one of the
+  // legacy inline base64 rows, so the allow-list is exactly those two. Letting
+  // any https host through would leave a row able to point the page at an
+  // attacker's server, which turns every viewer into a logged IP address.
+  if (/^https:\/\/[a-z0-9-]+\.supabase\.co\//i.test(s)) return s;
+  if (/^data:image\/(png|jpe?g|gif|webp);base64,/i.test(s)) return s;
+  return '';
+}
+
 function avatarHtml(avatarUrl, emoji, extraClass) {
-  if (avatarUrl) return '<img class="avatar-img' + (extraClass ? ' ' + extraClass : '') + '" src="' + escapeHtml(avatarUrl) + '" alt="">';
+  var safe = safeImageUrl(avatarUrl);
+  if (safe) return '<img class="avatar-img' + (extraClass ? ' ' + extraClass : '') + '" src="' + escapeHtml(safe) + '" alt="">';
   return escapeHtml(emoji || '\u{1F3A2}');
 }
 
