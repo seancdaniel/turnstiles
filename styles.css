@@ -524,6 +524,22 @@ body {
   .lw-actions .lb2-park { flex: 1; max-width: none; }
 }
 
+/* count chip on a page tab: says how much is behind a tab before you open it,
+   so an empty resort is visible rather than a surprise */
+.pt-count {
+  display: inline-block;
+  margin-left: 6px; padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+  background: rgba(244,239,227,0.10);
+  color: rgba(244,239,227,0.55);
+  vertical-align: 1px;
+}
+.page-tab.active .pt-count {
+  background: rgba(184,61,43,0.18);
+  color: var(--coral);
+}
+
 /* ── ACTIVITY FEED PRIVACY ────────────────────────────── */
 /* A real checkbox drives this: it stays keyboard reachable and screen readers
    announce it as the checkbox it is. Only its painting is replaced. */

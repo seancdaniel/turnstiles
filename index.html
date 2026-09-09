@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=82">
+  <link rel="stylesheet" href="styles.css?v=83">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -1503,13 +1503,22 @@
   <div id="view-food" class="screen">
     <div style="max-width:1300px;margin:0 auto;padding:48px 32px">
       <div class="section-head">
-        <div><h2 class="section-title">FOOD SCORES</h2><p class="section-sub">Community-rated across all parks</p></div>
+        <div><h2 class="section-title">FOOD SCORES</h2><p class="section-sub" id="food-sub">Community-rated across all parks</p></div>
         <button class="btn-sm primary" onclick="resetFoodForm();actionOrSignup('overlay-food-review')"><i class="ti ti-plus" style="font-size:12px"></i> Rate an Item</button>
       </div>
       <!-- One search box filtering both columns; each column pages on its own.
            Top Rated and Most Reviewed are separate lists again rather than
            sort modes, so the two pagers are scoped to their own column and
            labelled by the heading above them. Wired up in supabase-food.js. -->
+      <!-- Disney and Universal food is not really comparable, so each resort
+           gets its own board. All Parks stays as the default and as the only
+           place the two are ranked against each other. -->
+      <div class="page-tabs">
+        <button class="page-tab active" onclick="switchFoodResort(this,'all')">All Parks <span class="pt-count" id="food-tab-count-all">0</span></button>
+        <button class="page-tab" onclick="switchFoodResort(this,'disney')">Disney World <span class="pt-count" id="food-tab-count-disney">0</span></button>
+        <button class="page-tab" onclick="switchFoodResort(this,'universal')">Universal <span class="pt-count" id="food-tab-count-universal">0</span></button>
+      </div>
+
       <div class="fl-controls">
         <div class="fl-search">
           <i class="ti ti-search"></i>
@@ -2064,7 +2073,7 @@
 <script src="restaurants-data.js?v=3"></script>
 <script src="supabase-auth.js?v=12"></script>
 <script src="supabase-data.js?v=21"></script>
-<script src="supabase-food.js?v=20"></script>
+<script src="supabase-food.js?v=21"></script>
 <script src="supabase-festivals.js?v=3"></script>
 <script src="supabase-waittimes.js?v=7"></script>
 <script src="waittimes-live.js?v=4"></script>

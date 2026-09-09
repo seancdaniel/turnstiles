@@ -296,8 +296,53 @@ function getFoodAggregates() {
 // state, so paging one does not disturb the other. The search filters the
 // pool both columns are drawn from.
 var FOOD_PER_PAGE = 10;
+/* Which resort a review belongs to.
+   Deliberately NOT a hardcoded list of park names like LB_GROUPS uses. The
+   food form offers 31 places, not 10: the four Disney parks, two water parks,
+   Disney Springs and twenty Disney resort hotels, because people eat at 'Ohana
+   and Boma. A theme-park-only list would have silently dropped every resort
+   review from the Disney tab (three of the twelve reviews live at the time this
+   was written), and NOTES already flags that resort roster as drift-prone.
+   Matching on the name prefix instead means a resort added to
+   restaurants-data.js later is covered with no change here. */
+var FOOD_RESORTS = {
+  all: {
+    label: 'All Parks',
+    sub: 'Community-rated across all parks',
+    match: function () { return true; }
+  },
+  disney: {
+    label: 'Disney World',
+    sub: 'Community-rated across Walt Disney World',
+    match: function (park) {
+      return /^(Disney|Walt Disney)/i.test(park) ||
+        ['Magic Kingdom', 'EPCOT', 'Hollywood Studios', 'Animal Kingdom',
+         'Blizzard Beach', 'Typhoon Lagoon'].indexOf(park) >= 0;
+    }
+  },
+  universal: {
+    label: 'Universal',
+    sub: 'Community-rated across Universal Orlando',
+    match: function (park) {
+      return /^Universal/i.test(park) ||
+        ['Islands of Adventure', 'Epic Universe', 'Volcano Bay'].indexOf(park) >= 0;
+    }
+  }
+};
+
+var foodResort = 'all';
 var foodQuery = '';
 var foodPages = { score: 1, count: 1 };
+
+function switchFoodResort(btn, key) {
+  foodResort = key;
+  document.querySelectorAll('#view-food .page-tab').forEach(function (b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  // a narrower set can strand you past the end, same reason the search resets
+  foodPages.score = 1;
+  foodPages.count = 1;
+  renderFood();
+}
 
 function foodSearchInput() {
   var el = document.getElementById('fl-q');
@@ -371,7 +416,11 @@ function renderFoodColumn(which, matched, listId, pagerId) {
     list.innerHTML = '<div class="fl-empty">' +
       (foodQuery
         ? '<div class="fl-empty-t">No matches</div><div class="fl-empty-s">Nothing found for &ldquo;' + escapeHtml(foodQuery) + '&rdquo;.</div>'
-        : '<div class="fl-empty-t">No ratings yet</div><div class="fl-empty-s">Be the first to rate an item.</div>') +
+        : '<div class="fl-empty-t">No ratings yet</div><div class="fl-empty-s">' +
+          (foodResort === 'all'
+            ? 'Be the first to rate an item.'
+            : 'Nothing rated at ' + escapeHtml(FOOD_RESORTS[foodResort].label) + ' yet. Be the first.') +
+          '</div>') +
       '</div>';
     if (pager) pager.innerHTML = '';
     return;
@@ -393,7 +442,21 @@ function renderFoodColumn(which, matched, listId, pagerId) {
 }
 
 function renderFood() {
-  var matched = getFoodAggregates().filter(function (item) { return foodMatchesQuery(item, foodQuery); });
+  var all = getFoodAggregates();
+
+  // counts go on the tabs themselves, so an empty resort is visible before you
+  // click it rather than after
+  Object.keys(FOOD_RESORTS).forEach(function (key) {
+    var el = document.getElementById('food-tab-count-' + key);
+    if (el) el.textContent = all.filter(function (i) { return FOOD_RESORTS[key].match(i.park); }).length;
+  });
+
+  var sub = document.getElementById('food-sub');
+  if (sub) sub.textContent = FOOD_RESORTS[foodResort].sub;
+
+  var matched = all.filter(function (item) {
+    return FOOD_RESORTS[foodResort].match(item.park) && foodMatchesQuery(item, foodQuery);
+  });
   renderFoodColumn('score', matched, 'food-list-score', 'fl-pager-score');
   renderFoodColumn('count', matched, 'food-list-count', 'fl-pager-count');
 }
