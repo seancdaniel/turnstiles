@@ -116,6 +116,8 @@ function rerenderActive() {
   if (id === 'view-festivals') renderFestivalView();
   if (id === 'view-photos') renderPhotos();
   if (id === 'view-waittimes') renderWaitTimes();
+  if (id === 'view-rides') renderRidesView();
+  if (id === 'view-foodlb') renderFoodLbView();
   if (id === 'view-thanks') renderThanks();
 }
 

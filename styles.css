@@ -540,6 +540,120 @@ body {
   color: var(--coral);
 }
 
+/* ── RIDE + FOOD TALLY BOARDS ───────────────────────────── */
+/* Same parchment .foodcard and .lb2-row system as the other boards, so these
+   pages join what is already there instead of inventing a third look. */
+
+/* ride picker: a select, because there are roughly two hundred attractions */
+.tly-pick { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+.tly-pick-l {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase;
+  color: rgba(244,239,227,0.5);
+}
+.tly-select {
+  font-family: 'Josefin Sans', sans-serif; font-size: 14px; font-weight: 600;
+  color: #F4EFE3; background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(231,206,138,0.28); border-radius: 999px;
+  padding: 11px 18px; min-width: 330px; max-width: 100%; cursor: pointer;
+}
+.tly-select option { background: #142636; }
+.tly-select:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* food picker: a dozen categories, so it gets to be visual instead of a list */
+.fdx-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 10px; margin-bottom: 26px;
+}
+.fdx-tile {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 14px 8px 12px; cursor: pointer; font-family: inherit;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(231,206,138,0.16); border-radius: 10px;
+  transition: background .14s ease, border-color .14s ease;
+}
+.fdx-tile:hover { background: rgba(255,255,255,0.08); border-color: rgba(231,206,138,0.34); }
+.fdx-tile:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.fdx-tile.on {
+  background: linear-gradient(180deg, rgba(240,210,126,0.18), rgba(221,178,71,0.10));
+  border-color: var(--gold);
+}
+.fdx-emoji { font-size: 27px; line-height: 1; }
+.fdx-name { font-size: 11.5px; font-weight: 600; letter-spacing: 0.3px; color: #F4EFE3; text-align: center; }
+.fdx-mine {
+  font-size: 9px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase;
+  color: rgba(244,239,227,0.42);
+}
+.fdx-tile.on .fdx-mine { color: var(--gold-lt); }
+
+/* board rows */
+.lb2-row.tly-row { gap: 11px; }
+.tly-name { flex: 1; min-width: 0; font-size: 13.5px; font-weight: 500; color: var(--pc-ink); }
+.tly-name small {
+  display: block; font-size: 9px; font-weight: 700; letter-spacing: 1.2px;
+  text-transform: uppercase; color: var(--pc-dim); margin-top: 3px;
+}
+.tly-count {
+  font-family: 'Bebas Neue', sans-serif; font-size: 23px; letter-spacing: 0.5px;
+  line-height: 1; color: var(--pc-score); font-variant-numeric: tabular-nums;
+  flex-shrink: 0; text-align: right; min-width: 54px;
+}
+.tly-count span {
+  display: block; font-family: 'Josefin Sans', sans-serif;
+  font-size: 8px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--pc-dim); margin-top: 4px;
+}
+
+/* the log panel. Two states: checked in and not, because the closed state is
+   the one most people meet first and it has to explain itself rather than
+   just look broken. */
+.tly-log {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  border: 1px dashed rgba(231,206,138,0.34); border-radius: 12px;
+  padding: 18px 22px; margin-top: 22px;
+  background: rgba(255,255,255,0.03);
+}
+.tly-log.live { border-style: solid; border-color: rgba(27,143,137,0.45); background: rgba(27,143,137,0.07); }
+.tly-log-main { flex: 1; min-width: 240px; }
+.tly-log-t { font-family: 'Bebas Neue',sans-serif; font-size: 19px; letter-spacing: 1px; color: #F4EFE3; }
+.tly-log-s {
+  font-size: 12.5px; font-weight: 300; line-height: 1.55;
+  color: rgba(244,239,227,0.55); margin-top: 3px; max-width: 62ch;
+}
+.tly-log-btns { margin-left: auto; display: flex; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
+.tly-tap {
+  font-family: 'Josefin Sans',sans-serif; font-size: 12px; font-weight: 700;
+  letter-spacing: 1.4px; text-transform: uppercase;
+  background: linear-gradient(180deg,#F0D27E,#DDB247); color: #14213a;
+  border: none; border-radius: 999px; padding: 12px 20px; cursor: pointer; white-space: nowrap;
+}
+.tly-tap:hover { filter: brightness(1.06); }
+.tly-tap:focus-visible { outline: 2px solid var(--gold-lt); outline-offset: 3px; }
+.tly-tap:disabled { opacity: .55; cursor: not-allowed; filter: none; }
+.tly-tap.ghost { background: transparent; color: rgba(244,239,227,0.7); border: 1px solid rgba(231,206,138,0.3); }
+.tly-tap.ghost:hover { color: #F4EFE3; border-color: rgba(231,206,138,0.55); filter: none; }
+
+.tly-here {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase;
+  color: #6FD3C3; margin-bottom: 6px;
+}
+.tly-here i { width: 7px; height: 7px; border-radius: 50%; background: #1B8F89; box-shadow: 0 0 0 3px rgba(27,143,137,0.25); }
+
+.tly-parkpick, .tly-ridepick {
+  font-family: 'Josefin Sans', sans-serif; font-size: 13px; font-weight: 600;
+  color: #F4EFE3; background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(231,206,138,0.26); border-radius: 8px;
+  padding: 9px 12px; margin-top: 10px; margin-right: 8px; max-width: 100%; cursor: pointer;
+}
+.tly-parkpick option, .tly-ridepick option { background: #142636; }
+.tly-ridepick { min-width: 260px; }
+
+@media (max-width: 760px) {
+  .tly-select, .tly-ridepick { min-width: 0; width: 100%; }
+  .tly-log-btns { margin-left: 0; width: 100%; }
+  .tly-tap { flex: 1; text-align: center; }
+}
+
 /* ── ACTIVITY FEED PRIVACY ────────────────────────────── */
 /* A real checkbox drives this: it stays keyboard reachable and screen readers
    announce it as the checkbox it is. Only its painting is replaced. */

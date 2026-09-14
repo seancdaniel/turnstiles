@@ -21,7 +21,9 @@ async function loadData() {
       sb.from('donors').select('*').order('created_at', { ascending: false }),
       sb.from('festivals').select('*').order('created_at', { ascending: false }),
       sb.from('festival_reviews').select('*').order('created_at', { ascending: false }),
-      sb.from('festival_favorites').select('*').order('created_at', { ascending: false })
+      sb.from('festival_favorites').select('*').order('created_at', { ascending: false }),
+      sb.from('ride_logs').select('*').order('created_at', { ascending: false }),
+      sb.from('food_tallies').select('*').order('created_at', { ascending: false })
     ]);
     var profiles = r[0].data || [];
     var idMap = {};
@@ -85,6 +87,14 @@ async function loadData() {
         avatarUrl: (idMap[f.user_id] && idMap[f.user_id].avatarUrl) || '',
         itemName: f.item_name, boothName: f.booth_name || '', score: Number(f.score),
         review: f.review || '', photoUrl: f.photo_url || '', ts: new Date(f.created_at).getTime() };
+    });
+    STATE.rideLogs = (r[10].data || []).map(function (x) {
+      return { id: x.id, userId: x.user_id, ride: x.ride, rideId: x.ride_id || null,
+        park: x.park, date: x.logged_on, ts: new Date(x.created_at).getTime() };
+    });
+    STATE.foodTallies = (r[11].data || []).map(function (x) {
+      return { id: x.id, userId: x.user_id, foodKey: x.food_key, park: x.park || '',
+        date: x.logged_on, ts: new Date(x.created_at).getTime() };
     });
     STATE.festivalFavorites = (r[9].data || []).map(function (f) {
       return { id: f.id, userId: f.user_id, festivalId: f.festival_id,

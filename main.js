@@ -129,11 +129,15 @@ function showView(name) {
   // Epcot Festivals lives in a submenu off Food Scores - light up the parent
   // link too so there's still a visible "you are here" cue in the main nav
   if(name==='festivals') { const foodEl = document.getElementById('nav-food'); if(foodEl) foodEl.classList.add('active'); }
+  // Rides and Food hang off the Leaderboard submenu, so light the parent too
+  if(name==='rides'||name==='foodlb') { const cEl = document.getElementById('nav-community'); if(cEl) cEl.classList.add('active'); }
   if(name==='community') renderCommunity();
   if(name==='food') renderFood();
   if(name==='festivals') renderFestivalView();
   if(name==='photos') renderPhotos();
   if(name==='waittimes') renderWaitTimes();
+  if(name==='rides') renderRidesView();
+  if(name==='foodlb') renderFoodLbView();
   if(name==='thanks') renderThanks();
   if(name==='home') renderProfile();
   window.scrollTo(0,0);
