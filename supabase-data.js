@@ -404,5 +404,18 @@ async function submitPhoto(btn) {
   }
 }
 
-// initial community load so guest browsing shows real data
-loadData();
+// Initial community load so guest browsing shows real data.
+//
+// Deferred to DOMContentLoaded on purpose, and this is load-bearing. Calling
+// loadData() here directly would bind to the definition in THIS file, because
+// this line runs while supabase-data.js is still executing and long before
+// supabase-food.js has parsed and replaced it. The result was a first fetch of
+// only the four tables this older version knows about, leaving festivals, wait
+// times, donors, ride logs and food tallies undefined in STATE until something
+// called loadData() a second time - and then re-fetching those four.
+//
+// Every script tag sits at the end of <body>, so DOMContentLoaded fires after
+// the last override is in place and the call resolves to the real one. A
+// setTimeout would NOT be safe here: the parser is allowed to yield between
+// script tags, so a zero-delay timer can run before later scripts have.
+document.addEventListener('DOMContentLoaded', function () { loadData(); });

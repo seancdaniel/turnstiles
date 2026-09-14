@@ -9,7 +9,23 @@ function escapeHtml(s) {
 // full data load (overrides supabase-data.js loadData; adds `spot` to reviews)
 var frEditId = null;
 
+/* Overlapping callers share one round of fetches.
+   Three things can ask for a refresh at nearly the same moment: the
+   DOMContentLoaded bootstrap in supabase-data.js, restoreSession -> enterApp
+   for a signed-in visitor, and any write that finishes nearby. Without this
+   guard a returning user paid for twenty-four table fetches on every page
+   load instead of twelve. Only CONCURRENT calls are shared: once a load
+   settles the next call fetches fresh, which is what every post-write
+   loadData() depends on. */
+var loadInFlight = null;
+
 async function loadData() {
+  if (loadInFlight) return loadInFlight;
+  loadInFlight = loadDataNow();
+  try { return await loadInFlight; } finally { loadInFlight = null; }
+}
+
+async function loadDataNow() {
   try {
     var r = await Promise.all([
       sb.from('profiles').select('*'),
