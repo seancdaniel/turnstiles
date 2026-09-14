@@ -122,7 +122,6 @@ var RESTAURANTS_BY_PARK = {
     ["Louie's Italian Restaurant", 'quick'],
     ["Mel's Drive-In", 'quick'],
     ['Minion Cafe', 'quick'],
-    ['KidZone Pizza Company', 'quick'],
     ['Krusty Burger', 'quick'],
     ["Luigi's Pizza", 'quick'],
     ["Moe's Tavern", 'quick'],
