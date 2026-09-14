@@ -121,7 +121,7 @@ var RESTAURANTS_BY_PARK = {
     ['Leaky Cauldron', 'table'],
     ["Louie's Italian Restaurant", 'quick'],
     ["Mel's Drive-In", 'quick'],
-    ['Monsters Café', 'quick'],
+    ['Minion Cafe', 'quick'],
     ['KidZone Pizza Company', 'quick'],
     ['Krusty Burger', 'quick'],
     ["Luigi's Pizza", 'quick'],
