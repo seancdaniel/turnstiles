@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=84">
+  <link rel="stylesheet" href="styles.css?v=85">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -140,7 +140,7 @@
       <h3>What we don't do</h3>
       <p>We don't sell your data. We don't run ads. We don't share your information with anyone outside of what's needed to run the site.</p>
       <h3>Your choices</h3>
-      <p>You can edit your profile, delete individual check-ins, reviews, or photos, and change your password at any time from your account settings. If you want your account removed entirely, email <a href="mailto:help@goturnstiles.com">help@goturnstiles.com</a> and we will take care of it.</p>
+      <p>You can edit your profile, delete individual check-ins, reviews, or photos, and change your password at any time from your account settings. You can delete your account at any time from Edit Profile. That removes your profile, check-ins, photos and lists straight away. The ratings and wait times you contributed stay on the site as anonymous community data, because other passholders rely on those numbers, and they are no longer linked to you.</p>
       <h3>Changes</h3>
       <p>This policy may get updated as the site grows. Check back here if you want to stay current.</p>
     </div>
@@ -765,6 +765,51 @@
   </div>
 </div>
 
+<!-- Delete Account.
+     Required by Apple 5.1.1(v) to be reachable from inside the app. Typing the
+     word is the guard: this is irreversible and a stray tap on a phone should
+     not be able to reach it. -->
+<div class="overlay" id="overlay-delete-account">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Delete Account</span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-delete-account')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <p class="da-lead">This cannot be undone.</p>
+      <div class="da-cols">
+        <div class="da-col">
+          <div class="da-col-t da-gone">Deleted for good</div>
+          <ul class="da-list">
+            <li>Your profile, name and photo</li>
+            <li>Every check-in and your visit history</li>
+            <li>Photos you shared, including the files</li>
+            <li>Your Want to Try lists</li>
+            <li>Your ride and snack tallies</li>
+          </ul>
+        </div>
+        <div class="da-col">
+          <div class="da-col-t da-kept">Kept, without your name</div>
+          <ul class="da-list">
+            <li>Food and festival ratings you left</li>
+            <li>Wait times you logged</li>
+          </ul>
+          <div class="da-why">Other passholders rely on those numbers, so they stay as anonymous community data. They will no longer be linked to you.</div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:20px">
+        <label class="field-lbl" for="da-confirm">Type DELETE to confirm</label>
+        <input class="field-input" id="da-confirm" autocomplete="off" placeholder="DELETE" oninput="daConfirmInput()">
+      </div>
+      <div class="field-error" id="da-err"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeOverlay('overlay-delete-account')">Cancel</button>
+      <button class="btn-sm danger" id="da-go" disabled onclick="deleteOwnAccount(this)">Delete My Account</button>
+    </div>
+  </div>
+</div>
+
 <!-- Invite a Friend -->
 <div class="overlay" id="overlay-invite">
   <div class="modal">
@@ -930,6 +975,11 @@
         <label class="field-lbl">Password</label>
         <button type="button" class="btn-sm" onclick="openChangePassword()"><i class="ti ti-lock" style="font-size:12px"></i> Change Password</button>
       </div>
+    </div>
+    <div class="danger-zone">
+      <div class="danger-zone-t">Delete Account</div>
+      <div class="danger-zone-s">Removes your profile, check-ins, photos and lists. The ratings and wait times you contributed stay on the site without your name on them.</div>
+      <button class="btn-sm danger" onclick="openDeleteAccount()">Delete My Account</button>
     </div>
     <div class="modal-footer">
       <button class="btn-sm" onclick="closeOverlay('overlay-edit-profile')">Cancel</button>
@@ -2159,13 +2209,13 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"
         integrity="sha384-JBR+x8blGwjDRO63aHCGiZMD4VNiTR4ZUGA+N6ZKLf3zNt1fK8IBpcgPaMrxqWBp"
         crossorigin="anonymous"></script>
-<script src="main.js?v=40"></script>
+<script src="main.js?v=41"></script>
 <script src="restaurants-data.js?v=5"></script>
-<script src="supabase-auth.js?v=12"></script>
+<script src="supabase-auth.js?v=13"></script>
 <script src="supabase-data.js?v=23"></script>
-<script src="supabase-food.js?v=23"></script>
-<script src="supabase-festivals.js?v=3"></script>
-<script src="supabase-waittimes.js?v=7"></script>
+<script src="supabase-food.js?v=24"></script>
+<script src="supabase-festivals.js?v=4"></script>
+<script src="supabase-waittimes.js?v=8"></script>
 <script src="waittimes-live.js?v=4"></script>
 <script src="supabase-donors.js?v=2"></script>
 <script src="supabase-invite.js?v=1"></script>

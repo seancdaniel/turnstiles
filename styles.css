@@ -654,6 +654,54 @@ body {
   .tly-tap { flex: 1; text-align: center; }
 }
 
+/* ── DELETE ACCOUNT ────────────────────────────────────── */
+/* Set apart from the rest of Edit Profile rather than sitting in the flow of
+   it, so nobody reaches it while tabbing through their bio. */
+.danger-zone {
+  margin: 4px 24px 0; padding: 16px 18px;
+  border: 1px solid rgba(192,57,43,0.32); border-radius: 8px;
+  background: rgba(192,57,43,0.05);
+}
+.danger-zone-t {
+  font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 1px;
+  color: #C0392B; margin-bottom: 5px;
+}
+.danger-zone-s {
+  font-size: 11.5px; font-weight: 300; line-height: 1.5;
+  color: var(--ink-faint); margin-bottom: 12px; max-width: 60ch;
+}
+
+.da-lead {
+  margin: 0 0 16px; font-family: 'Bebas Neue', sans-serif;
+  font-size: 19px; letter-spacing: 1px; color: #C0392B;
+}
+/* two columns so what survives is as prominent as what does not. Somebody
+   deciding whether to leave should not have to read a paragraph to find out
+   their ratings stay behind. */
+.da-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.da-col-t {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.da-col-t.da-gone { color: #C0392B; }
+.da-col-t.da-kept { color: #1B8F89; }
+.da-list { margin: 0; padding-left: 17px; }
+.da-list li {
+  font-size: 12.5px; font-weight: 300; line-height: 1.6; color: var(--ink-light);
+}
+.da-why {
+  margin-top: 10px; font-size: 11.5px; font-weight: 300; line-height: 1.5;
+  color: var(--ink-faint);
+}
+
+/* an author who deleted their account: still readable, just not a link */
+.is-anon { cursor: default; opacity: 0.82; }
+
+@media (max-width: 560px) {
+  .da-cols { grid-template-columns: 1fr; gap: 14px; }
+  .danger-zone { margin-left: 20px; margin-right: 20px; }
+}
+
 /* ── ACTIVITY FEED PRIVACY ────────────────────────────── */
 /* A real checkbox drives this: it stays keyboard reachable and screen readers
    announce it as the checkbox it is. Only its painting is replaced. */

@@ -217,7 +217,8 @@ function renderWaitTimesToday() {
       var mine = STATE.currentUser && w.userId === STATE.currentUser.id;
       return '<div class="feed-card">' +
         '<div class="feed-top">' +
-          '<div class="feed-user-link user-link" onclick="openUserProfile(\'' + w.userId + '\')" style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0">' +
+          (w.userId ? '<div class="feed-user-link user-link" onclick="openUserProfile(\'' + w.userId + '\')"' : '<div class="feed-user-link is-anon"') +
+            ' style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0">' +
             '<div class="feed-av" style="background:var(--coral-lt);color:var(--coral)">' + avatarHtml(w.avatarUrl, w.avatar) + '</div>' +
             '<div class="feed-meta">' +
               '<div class="feed-username">' + escapeHtml(w.username) + '</div>' +

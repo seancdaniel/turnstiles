@@ -514,7 +514,7 @@ function openFoodDetail(name, park, spot) {
     var yTier = getYearlyTier(checkinsThisYear(r.userId));
     return '<div class="fd-review">' +
       '<div class="fd-review-hd">' +
-        '<span class="fd-review-user user-link" onclick="openUserProfile(\'' + r.userId + '\')">' + avatarHtml(r.avatarUrl, r.avatar, 'avatar-img-inline') + ' ' + escapeHtml(r.username) + ' ' + tierEmblem(mTier, 'Monthly') + ' ' + tierEmblem(yTier, 'Yearly') + '</span>' +
+        authorHtml(r.userId, avatarHtml(r.avatarUrl, r.avatar, 'avatar-img-inline') + ' ' + escapeHtml(r.username) + ' ' + tierEmblem(mTier, 'Monthly') + ' ' + tierEmblem(yTier, 'Yearly'), 'fd-review-user') +
         '<span class="fd-review-score">' + Number(r.score).toFixed(1) + '</span>' +
       '</div>' +
       (r.review ? '<div class="fd-review-text">' + escapeHtml(r.review) + '</div>' : '') +

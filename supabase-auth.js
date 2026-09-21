@@ -333,6 +333,78 @@ sb.auth.onAuthStateChange(function (event) {
   }
 });
 
+/* ---- Delete your account ---------------------------------------------------
+   Apple 5.1.1(v) requires this to be doable from inside the app; an email
+   address is explicitly not enough. See supabase/account-deletion.sql for the
+   database half and for what survives.
+
+   Order matters and is not arbitrary. The storage delete policy checks
+   auth.uid() against the folder name, so the files have to go while the session
+   still exists. After delete_own_account() there is no session to authorise
+   anything. */
+function openDeleteAccount() {
+  if (!STATE.currentUser) return;
+  document.getElementById('da-confirm').value = '';
+  document.getElementById('da-err').classList.remove('show');
+  document.getElementById('da-go').disabled = true;
+  closeDropdown();
+  openOverlay('overlay-delete-account');
+  setTimeout(function () { document.getElementById('da-confirm').focus(); }, 60);
+}
+
+// typing the word is the guard. This is irreversible and a stray tap on a
+// phone should not be able to reach it.
+function daConfirmInput() {
+  var v = document.getElementById('da-confirm').value.trim().toUpperCase();
+  document.getElementById('da-go').disabled = v !== 'DELETE';
+}
+
+async function deleteOwnAccount(btn) {
+  if (!STATE.currentUser) return;
+  if (btn && btn.disabled) return;
+  var err = document.getElementById('da-err');
+  err.classList.remove('show');
+  var uid = STATE.currentUser.id;
+  var label = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Deleting...'; }
+  try {
+    // 1. the photos, while we still have the rights to remove them. A failure
+    //    here is reported rather than swallowed: silently leaving someone's
+    //    pictures on a public URL is the one outcome this feature exists to
+    //    prevent, so it must not be papered over.
+    var listed = await sb.storage.from('photos').list(uid, { limit: 1000 });
+    if (listed.error) throw new Error('Could not reach your uploaded photos: ' + listed.error.message);
+    var files = (listed.data || []).map(function (f) { return uid + '/' + f.name; });
+    if (files.length) {
+      var rm = await sb.storage.from('photos').remove(files);
+      if (rm.error) throw new Error('Could not remove your uploaded photos: ' + rm.error.message);
+    }
+
+    // 2. the account. One call; the database does the rest.
+    var res = await sb.rpc('delete_own_account');
+    if (res.error) {
+      throw new Error(/function .*delete_own_account/i.test(res.error.message || '')
+        ? 'Account deletion is not set up yet. Email help@goturnstiles.com and we will do it for you.'
+        : res.error.message);
+    }
+
+    // 3. tear down locally and land on the marketing page
+    await sb.auth.signOut();
+    STATE.currentUser = null;
+    closeOverlay('overlay-delete-account');
+    document.getElementById('app-shell').style.display = 'none';
+    document.getElementById('landing-shell').style.display = 'block';
+    document.body.classList.add('guest');
+    await loadData();
+    toast('Your account has been deleted.', 'info');
+  } catch (e) {
+    err.textContent = e.message || 'Could not delete your account. Try again.';
+    err.classList.add('show');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = label; }
+  }
+}
+
 async function doSignOut() {
   await sb.auth.signOut();
   STATE.currentUser = null;

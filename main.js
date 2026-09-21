@@ -1156,6 +1156,19 @@ function avatarHtml(avatarUrl, emoji, extraClass) {
   return escapeHtml(emoji || '\u{1F3A2}');
 }
 
+/* An author who may have deleted their account.
+   Food reviews, festival reviews and wait times outlive the person who wrote
+   them (see supabase/account-deletion.sql): the score stays as community data,
+   the identity goes and `user_id` becomes null. Those rows already render as
+   "someone" because the loaders fall back to it, but they must NOT be wrapped
+   in a profile link - openUserProfile('null') is a dead click that looks like a
+   broken page. Returns the inner markup either way; only the link differs. */
+function authorHtml(userId, inner, extraClass) {
+  var cls = 'user-link' + (extraClass ? ' ' + extraClass : '');
+  if (!userId) return '<span class="' + (extraClass || '') + ' is-anon">' + inner + '</span>';
+  return '<span class="' + cls + '" onclick="openUserProfile(\'' + userId + '\')">' + inner + '</span>';
+}
+
 function parkEmoji(park) {
   const map={'Magic Kingdom':'🏰','EPCOT':'🌍','Hollywood Studios':'🎬','Animal Kingdom':'🦁',
     'Universal Studios Florida':'🎥','Islands of Adventure':'⚓','Epic Universe':'🌌',
