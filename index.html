@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=85">
+  <link rel="stylesheet" href="styles.css?v=88">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -765,6 +765,37 @@
   </div>
 </div>
 
+<!-- Report content.
+     Apple 1.2 requires a way to report and a timely response. The report lands
+     in `reports` and emails the site owner through the same Resend account the
+     signup notifier uses, because a table nobody checks is not a response. -->
+<div class="overlay" id="overlay-report">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Report</span>
+      <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-report')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <p class="rp-lead">Reporting <strong id="rp-what">this content</strong>. We look at every report and act on the ones that need it.</p>
+      <div class="field">
+        <label class="field-lbl" for="rp-reason">What is wrong with it</label>
+        <select class="field-input" id="rp-reason"></select>
+      </div>
+      <div class="field">
+        <label class="field-lbl" for="rp-note">Anything else (optional)</label>
+        <textarea class="field-input" id="rp-note" rows="3" maxlength="500" style="resize:none;height:80px"
+                  placeholder="Tell us what we should be looking at."></textarea>
+      </div>
+      <div class="field-error" id="rp-err"></div>
+      <div class="rp-hint">If someone is making you uncomfortable, you can also block them from their profile. Blocking hides their photos and reviews from you straight away.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeOverlay('overlay-report')">Cancel</button>
+      <button class="btn-sm primary" onclick="submitReport(this)">Send Report</button>
+    </div>
+  </div>
+</div>
+
 <!-- Delete Account.
      Required by Apple 5.1.1(v) to be reachable from inside the app. Typing the
      word is the guard: this is irreversible and a stray tap on a phone should
@@ -862,6 +893,7 @@
           </div>
         </div>
         <div class="profile-badges" id="up-badges"></div>
+        <div class="up-mod-acts" id="up-mod-acts"></div>
       </div>
       <div style="padding:24px">
         <div class="stat-cards">
@@ -1065,6 +1097,9 @@
             </div>
             <div class="dropdown-item" onclick="openInvite();closeDropdown()">
               <i class="ti ti-user-plus"></i> Invite a Friend
+            </div>
+            <div class="dropdown-item" id="nav-reports-item" style="display:none" onclick="showView('reports');closeDropdown()">
+              <i class="ti ti-flag"></i> Reports
             </div>
             <div class="dropdown-divider"></div>
             <div class="dropdown-item danger" onclick="doSignOut()">
@@ -1562,6 +1597,32 @@
   </div>
 
   <!-- ── FOOD SCORES VIEW ── -->
+  <!-- ── REPORTS ── admin only (moderation.js)
+       Gated in the UI by is_admin and in the database by the RLS policies on
+       `reports`, so a non-admin who reaches this view sees nothing either way. -->
+  <div id="view-reports" class="screen">
+    <div style="max-width:1000px;margin:0 auto;padding:48px 32px">
+      <div class="section-head">
+        <div><h2 class="section-title">REPORTS</h2><p class="section-sub">Reported content, newest first</p></div>
+      </div>
+      <div id="rq-gate" style="display:none">
+        <div class="light-card" style="padding:28px;text-align:center">
+          <div class="lb2-empty-t">Admins only</div>
+          <div class="lb2-empty-s">This page is for handling reported content.</div>
+        </div>
+      </div>
+      <div id="rq-body" style="display:none">
+        <div class="page-tabs">
+          <button class="page-tab active" data-f="open" onclick="setReportFilter('open')">Open</button>
+          <button class="page-tab" data-f="actioned" onclick="setReportFilter('actioned')">Actioned</button>
+          <button class="page-tab" data-f="dismissed" onclick="setReportFilter('dismissed')">Dismissed</button>
+          <button class="page-tab" data-f="all" onclick="setReportFilter('all')">All</button>
+        </div>
+        <div class="light-card" id="rq-list"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── RIDE LEADERBOARD ── (supabase-tallies.js)
        Tally boards, not reviews. The picker is built from rides people have
        actually logged rather than the full roster, because a dropdown of two
@@ -1771,6 +1832,7 @@
         <div style="padding:16px 20px">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px" id="pv-user"></div>
           <div id="pv-caption" style="font-size:13px;color:var(--ink-light);line-height:1.5"></div>
+          <button class="btn-sm pv-report" id="pv-report" style="display:none">Report photo</button>
         </div>
       </div>
     </div>
@@ -2209,17 +2271,18 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"
         integrity="sha384-JBR+x8blGwjDRO63aHCGiZMD4VNiTR4ZUGA+N6ZKLf3zNt1fK8IBpcgPaMrxqWBp"
         crossorigin="anonymous"></script>
-<script src="main.js?v=41"></script>
+<script src="main.js?v=42"></script>
 <script src="restaurants-data.js?v=5"></script>
-<script src="supabase-auth.js?v=13"></script>
-<script src="supabase-data.js?v=23"></script>
-<script src="supabase-food.js?v=24"></script>
-<script src="supabase-festivals.js?v=4"></script>
+<script src="supabase-auth.js?v=14"></script>
+<script src="supabase-data.js?v=24"></script>
+<script src="supabase-food.js?v=25"></script>
+<script src="supabase-festivals.js?v=5"></script>
 <script src="supabase-waittimes.js?v=8"></script>
 <script src="waittimes-live.js?v=4"></script>
 <script src="supabase-donors.js?v=2"></script>
 <script src="supabase-invite.js?v=1"></script>
 <script src="leaderboard.js?v=7"></script>
 <script src="supabase-tallies.js?v=3"></script>
+<script src="moderation.js?v=1"></script>
 </body>
 </html>

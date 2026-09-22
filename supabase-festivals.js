@@ -75,6 +75,10 @@ function handleFestivalPhoto(e) {
 }
 
 async function submitFestivalReview(btn) {
+  if (typeof passesWordFilter === 'function' &&
+      !passesWordFilter([document.getElementById('fv-review').value,
+                         document.getElementById('fv-item').value,
+                         document.getElementById('fv-booth').value])) return;
   if (!STATE.currentUser) { openOverlay('overlay-register'); return; }
   // same rapid-double-click guard as submitCheckin/submitFoodReview/etc.
   if (btn && btn.disabled) return;

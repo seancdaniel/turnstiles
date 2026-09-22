@@ -103,6 +103,19 @@ function openUserProfile(userId) {
     }).join('');
   }
 
+  // Report and block live here rather than on every row: this modal is where
+  // you end up when somebody's behaviour is the problem, and one clear place
+  // beats a button scattered through every list.
+  var acts = document.getElementById('up-mod-acts');
+  if (acts) {
+    var blocked = typeof isBlocked === 'function' && isBlocked(userId);
+    acts.innerHTML = !STATE.currentUser ? '' :
+      '<button class="btn-sm" onclick="openReport(\'profile\', \'' + u.id + '\', \'' + u.id + '\', \'@' + escapeHtml(u.username) + '\')">Report</button>' +
+      (blocked
+        ? '<button class="btn-sm" onclick="unblockUser(\'' + u.id + '\', this)">Unblock</button>'
+        : '<button class="btn-sm danger" onclick="blockUser(\'' + u.id + '\', this)">Block</button>');
+  }
+
   openOverlay('overlay-user-profile');
 }
 
@@ -117,6 +130,7 @@ function rerenderActive() {
   if (id === 'view-photos') renderPhotos();
   if (id === 'view-waittimes') renderWaitTimes();
   if (id === 'view-rides') renderRidesView();
+  if (id === 'view-reports') renderReportsView();
   if (id === 'view-foodlb') renderFoodLbView();
   if (id === 'view-thanks') renderThanks();
 }
@@ -170,6 +184,10 @@ function enterApp(user) {
     openOverlay('overlay-welcome');
     user.welcomed = true; // don't reshow if enterApp somehow runs again this session
     sb.from('profiles').update({ welcomed: true }).eq('id', user.id);
+  // the Reports queue is admin-only; the RLS policies enforce it, this just
+  // keeps the menu honest for everybody else
+  var repItem = document.getElementById('nav-reports-item');
+  if (repItem) repItem.style.display = user.isAdmin ? 'flex' : 'none';
   }
 }
 
@@ -384,6 +402,7 @@ async function submitPhoto(btn) {
   try {
     var park = document.getElementById('ph-park').value;
     var caption = document.getElementById('ph-caption').value.trim();
+    if (typeof passesWordFilter === 'function' && !passesWordFilter([caption])) return;
     var img = document.getElementById('ph-preview-img');
     var url = null;
     if (img && img.src && img.src.indexOf('data:') === 0) {

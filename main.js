@@ -137,6 +137,7 @@ function showView(name) {
   if(name==='photos') renderPhotos();
   if(name==='waittimes') renderWaitTimes();
   if(name==='rides') renderRidesView();
+  if(name==='reports') renderReportsView();
   if(name==='foodlb') renderFoodLbView();
   if(name==='thanks') renderThanks();
   if(name==='home') renderProfile();
@@ -831,6 +832,9 @@ function buildLeaderboard(filter) {
 function activityHiddenIds() {
   const hidden = {};
   (STATE.users || []).forEach(u => { if (u.shareActivity === false) hidden[u.id] = true; });
+  // somebody you blocked drops out of the feed too, for the same reason the
+  // opt-out exists: this is the surface showing what people are doing
+  if (typeof blockedIds === 'function') Object.assign(hidden, blockedIds());
   return hidden;
 }
 
@@ -995,7 +999,10 @@ function renderPhotoParkTabs() {
 
 function renderPhotos() {
   const el = document.getElementById('photos-grid');
-  let photos = [...STATE.photos].sort((a,b)=>b.ts-a.ts);
+  // A blocked person's photos disappear from the gallery. Their rows are still
+  // public data; this hides them from you, which is what blocking means here.
+  const blocked = typeof blockedIds === 'function' ? blockedIds() : {};
+  let photos = [...STATE.photos].filter(p => !blocked[p.userId]).sort((a,b)=>b.ts-a.ts);
   if(photoFilter!=='all') {
     const parks = (photoFilter==='disney'||photoFilter==='universal') ? LB_GROUPS[photoFilter].parks : [photoFilter];
     photos = photos.filter(p => parks.includes(p.park));
@@ -1034,6 +1041,13 @@ function openPhotoView(id) {
      <span class="user-link" onclick="closeOverlay('overlay-photo-view');openUserProfile('${p.userId}')" style="font-weight:700;font-size:13px;color:var(--ink)">${escapeHtml(p.username)}</span>
      <span style="font-size:11px;color:var(--ink-faint)">${timeAgo(p.ts)}</span>`;
   document.getElementById('pv-caption').textContent = p.caption || '';
+  var pvRep = document.getElementById('pv-report');
+  if (pvRep) {
+    var mine = STATE.currentUser && p.userId === STATE.currentUser.id;
+    pvRep.style.display = (STATE.currentUser && !mine) ? 'inline-flex' : 'none';
+    pvRep.setAttribute('onclick',
+      "openReport('photo','" + p.id + "','" + p.userId + "','a photo by @" + (p.username || '') + "')");
+  }
   openOverlay('overlay-photo-view');
 }
 

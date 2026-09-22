@@ -39,7 +39,9 @@ async function loadDataNow() {
       sb.from('festival_reviews').select('*').order('created_at', { ascending: false }),
       sb.from('festival_favorites').select('*').order('created_at', { ascending: false }),
       sb.from('ride_logs').select('*').order('created_at', { ascending: false }),
-      sb.from('food_tallies').select('*').order('created_at', { ascending: false })
+      sb.from('food_tallies').select('*').order('created_at', { ascending: false }),
+      sb.from('blocks').select('*'),
+      sb.from('reports').select('*').order('created_at', { ascending: false })
     ]);
     var profiles = r[0].data || [];
     var idMap = {};
@@ -103,6 +105,17 @@ async function loadDataNow() {
         avatarUrl: (idMap[f.user_id] && idMap[f.user_id].avatarUrl) || '',
         itemName: f.item_name, boothName: f.booth_name || '', score: Number(f.score),
         review: f.review || '', photoUrl: f.photo_url || '', ts: new Date(f.created_at).getTime() };
+    });
+    // Blocks are own-rows-only under RLS, so this is just your list. Reports
+    // are admin-read-only, so for everybody else the query succeeds and returns
+    // nothing, which is exactly right and needs no special casing here.
+    STATE.blocks = (r[12].data || []).map(function (b) {
+      return { id: b.id, blockerId: b.blocker_id, blockedId: b.blocked_id };
+    });
+    STATE.reports = (r[13].data || []).map(function (x) {
+      return { id: x.id, reporterId: x.reporter_id, targetType: x.target_type,
+        targetId: x.target_id, targetOwnerId: x.target_owner_id, reason: x.reason,
+        note: x.note || '', status: x.status, ts: new Date(x.created_at).getTime() };
     });
     STATE.rideLogs = (r[10].data || []).map(function (x) {
       return { id: x.id, userId: x.user_id, ride: x.ride, rideId: x.ride_id || null,
@@ -248,6 +261,9 @@ function handleFoodPhoto(e) {
 }
 
 async function submitFoodReview(btn) {
+  if (typeof passesWordFilter === 'function' &&
+      !passesWordFilter([document.getElementById('fr-review').value,
+                         document.getElementById('fr-item').value])) return;
   if (!STATE.currentUser) { openOverlay('overlay-register'); return; }
   // guards against a rapid double-click (or an impatient re-click on a slow
   // connection) firing this whole insert+photo-upload sequence a second time
