@@ -240,7 +240,7 @@ function renderRideLogPanel() {
   el.innerHTML =
     '<div class="tly-log-main">' +
       '<div class="tly-here"><i></i> Checked in at ' + escapeHtml(rideLogPark) + '</div>' +
-      '<div class="tly-log-t">Log a lap</div>' +
+      '<div class="tly-log-t">Log a Ride</div>' +
       (parks.length > 1
         ? '<select class="tly-parkpick" aria-label="Which park" onchange="rideLogPark=this.value;renderRideLogPanel()">' +
             parks.map(function (p) {
