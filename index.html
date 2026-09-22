@@ -18,6 +18,19 @@
 <meta name="twitter:title" content="Turnstiles — Theme Park Visit Tracker">
 <meta name="twitter:description" content="Log every visit, rate the food, share photos, and climb the passholder leaderboard.">
 <link rel="icon" type="image/png" href="img/favicon.png?v=1">
+<!-- Home screen / installable app.
+     The About page has been telling people to Add to Home Screen for a while,
+     but with no manifest and no apple-touch-icon that produced a screenshot
+     thumbnail and a browser chrome bar. These are what make it land as a real
+     icon opening in standalone mode.
+     `apple-mobile-web-app-capable` is the deprecated-but-still-required iOS
+     spelling; `mobile-web-app-capable` is the standard one, so both ship. -->
+<link rel="manifest" href="/manifest.json?v=1">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png?v=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Turnstiles">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
