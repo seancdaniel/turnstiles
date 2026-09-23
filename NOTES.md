@@ -269,9 +269,8 @@ Six items were identified. Status:
    it fixes the Add to Home Screen flow that had been advertised for months
    while producing a screenshot thumbnail.
 4. **Geolocation-verified check-in** (the Apple 4.2 "minimum functionality"
-   answer) - **CODE DONE, SQL NOT RUN YET.** Run `supabase/checkin-verify.sql`
-   in the Supabase SQL editor. Until then the toggle and Verify button show
-   "Verification is not switched on yet" and nothing else is affected.
+   answer) - **DONE, SQL run, live** (2026-09-23). Confirmed the RPC exists and
+   refuses anonymous callers. Not yet tried with a real check-in inside a park.
 5. **Capacitor + CI build** - not started.
 6. **Trademark / store metadata** - not started, no code. Keep Disney and
    Universal out of the app NAME, subtitle and keywords; that is where reviewers
