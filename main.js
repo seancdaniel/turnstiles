@@ -864,7 +864,7 @@ function renderCommunityFeed() {
             <div class="feed-av" style="background:var(--coral-lt);color:var(--coral)">${avatarHtml(user.avatarUrl, user.avatar)}</div>
             <div class="feed-meta">
               <div class="feed-username">${escapeHtml(user.username)}</div>
-              <div class="feed-parkname">${parkEmoji(c.park)} ${escapeHtml(c.park)}</div>
+              <div class="feed-parkname">${parkEmoji(c.park)} ${escapeHtml(c.park)}${c.verified&&typeof verifiedBadgeHtml==='function'?' '+verifiedBadgeHtml():''}</div>
             </div>
           </div>
           <div class="feed-time">${timeAgo(c.ts)}</div>
@@ -1103,7 +1103,7 @@ function renderProfile() {
     </tr></thead>
     <tbody>
       ${my.slice(0,20).map(c=>`<tr>
-        <td>${parkEmoji(c.park)} ${escapeHtml(c.park)}</td>
+        <td>${parkEmoji(c.park)} ${escapeHtml(c.park)} ${typeof checkinVerifyCellHtml==='function'?checkinVerifyCellHtml(c):''}</td>
         <td>${formatDate(c.date)}</td>
         <td>${c.miles?c.miles+' mi':'<button class="btn-sm" onclick="openAddMiles(\''+c.id+'\')">Add Miles</button>'}</td>
         <td>${c.score?'<span class="visit-tag">'+c.score.toFixed(1)+'/10</span>':'—'}</td>

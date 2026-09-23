@@ -35,7 +35,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=88">
+  <link rel="stylesheet" href="styles.css?v=89">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -426,8 +426,18 @@
         </div>
         <div class="field">
           <label class="field-lbl">Date</label>
-          <input class="field-input" id="ci-date" type="date">
+          <input class="field-input" id="ci-date" type="date" onchange="syncCheckinVerifyRow()">
         </div>
+      </div>
+      <div class="field" id="ci-verify-row">
+        <label class="priv-row" for="ci-verify">
+          <input type="checkbox" id="ci-verify">
+          <span class="priv-switch" aria-hidden="true"></span>
+          <span class="priv-text">
+            <span class="priv-title">Verify I'm at the park</span>
+            <span class="priv-sub">Checks your location once and adds a Verified badge to this visit. Your location is not saved.</span>
+          </span>
+        </label>
       </div>
       <div class="field">
         <label class="field-lbl">Review (optional)</label>
@@ -2284,10 +2294,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"
         integrity="sha384-JBR+x8blGwjDRO63aHCGiZMD4VNiTR4ZUGA+N6ZKLf3zNt1fK8IBpcgPaMrxqWBp"
         crossorigin="anonymous"></script>
-<script src="main.js?v=42"></script>
+<script src="main.js?v=43"></script>
 <script src="restaurants-data.js?v=5"></script>
 <script src="supabase-auth.js?v=14"></script>
-<script src="supabase-data.js?v=24"></script>
+<script src="supabase-data.js?v=25"></script>
 <script src="supabase-food.js?v=25"></script>
 <script src="supabase-festivals.js?v=5"></script>
 <script src="supabase-waittimes.js?v=8"></script>
@@ -2297,5 +2307,6 @@
 <script src="leaderboard.js?v=7"></script>
 <script src="supabase-tallies.js?v=3"></script>
 <script src="moderation.js?v=1"></script>
+<script src="checkin-verify.js?v=1"></script>
 </body>
 </html>

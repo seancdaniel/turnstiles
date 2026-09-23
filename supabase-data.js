@@ -84,7 +84,7 @@ function openUserProfile(userId) {
   } else {
     visitsEl.innerHTML = '<table class="visit-table"><thead><tr><th>Park</th><th>Date</th><th>Miles</th><th>Food Score</th></tr></thead><tbody>' +
       recent.map(function (c) {
-        return '<tr><td>' + parkEmoji(c.park) + ' ' + escapeHtml(c.park) + '</td><td>' + formatDate(c.date) + '</td><td>' + (c.miles ? c.miles + ' mi' : '—') + '</td><td>' + (c.score ? '<span class="visit-tag">' + c.score.toFixed(1) + '/10</span>' : '—') + '</td></tr>';
+        return '<tr><td>' + parkEmoji(c.park) + ' ' + escapeHtml(c.park) + (c.verified && typeof verifiedBadgeHtml === 'function' ? ' ' + verifiedBadgeHtml() : '') + '</td><td>' + formatDate(c.date) + '</td><td>' + (c.miles ? c.miles + ' mi' : '—') + '</td><td>' + (c.score ? '<span class="visit-tag">' + c.score.toFixed(1) + '/10</span>' : '—') + '</td></tr>';
       }).join('') + '</tbody></table>';
   }
 
@@ -208,6 +208,7 @@ var ciEditId = null;
 function resetCheckinForm() {
   ciEditId = null;
   document.getElementById('ci-review').value = '';
+  document.getElementById('ci-verify').checked = false;
   document.getElementById('ci-photo-preview').style.display = 'none';
   document.getElementById('ci-photo-img').removeAttribute('src');
   document.getElementById('ci-photo-input').value = '';
@@ -215,16 +216,23 @@ function resetCheckinForm() {
   var b = document.querySelector('#overlay-checkin .modal-footer .btn-sm.primary'); if (b) b.textContent = 'Submit Check-In';
 }
 
+// Florida's date, not UTC's: valueAsDate = new Date() put an evening
+// check-in on tomorrow, which the tally gate and verification then refused
+function setCheckinDateToday() {
+  document.getElementById('ci-date').value = parkTodayStr();
+  syncCheckinVerifyRow();
+}
+
 function newCheckin() {
   resetCheckinForm();
-  document.getElementById('ci-date').valueAsDate = new Date();
+  setCheckinDateToday();
   openOverlay('overlay-checkin');
 }
 
 function quickCheckin(park) {
   resetCheckinForm();
   document.getElementById('ci-park').value = park;
-  document.getElementById('ci-date').valueAsDate = new Date();
+  setCheckinDateToday();
   openOverlay('overlay-checkin');
 }
 
@@ -236,6 +244,7 @@ function editCheckin(id) {
   ciEditId = id;
   document.getElementById('ci-park').value = c.park;
   document.getElementById('ci-date').value = c.date;
+  syncCheckinVerifyRow();
   document.getElementById('ci-review').value = c.review || '';
   var t = document.querySelector('#overlay-checkin .modal-hd-title'); if (t) t.textContent = 'Edit Check-In';
   var b = document.querySelector('#overlay-checkin .modal-footer .btn-sm.primary'); if (b) b.textContent = 'Save Changes';
@@ -252,7 +261,8 @@ async function submitCheckin(btn) {
   if (btn) btn.disabled = true;
   try {
     var park = document.getElementById('ci-park').value;
-    var date = document.getElementById('ci-date').value || new Date().toISOString().split('T')[0];
+    var date = document.getElementById('ci-date').value || parkTodayStr();
+    var wantVerify = document.getElementById('ci-verify').checked && date === parkTodayStr();
     var review = document.getElementById('ci-review').value.trim();
     var uid = STATE.currentUser.id;
     var wasEdit = !!ciEditId;
@@ -261,8 +271,9 @@ async function submitCheckin(btn) {
       // miles isn't touched here - it's edited separately via openAddMiles()/the Complete Check-In flow
       res = await sb.from('checkins').update({ park: park, visit_date: date, review: review }).eq('id', ciEditId).eq('user_id', uid);
     } else {
-      res = await sb.from('checkins').insert({ user_id: uid, park: park, visit_date: date, review: review });
+      res = await sb.from('checkins').insert({ user_id: uid, park: park, visit_date: date, review: review }).select('id').single();
     }
+    var checkinId = wasEdit ? ciEditId : (res.data && res.data.id);
     if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
     var photoImg = document.getElementById('ci-photo-img');
     if (photoImg && photoImg.src && photoImg.src.indexOf('data:') === 0) {
@@ -272,10 +283,13 @@ async function submitCheckin(btn) {
     }
     closeOverlay('overlay-checkin');
     resetCheckinForm();
-    document.getElementById('ci-date').valueAsDate = new Date();
+    setCheckinDateToday();
     await loadData();
     showView('home');
     toast(wasEdit ? 'Check-in updated!' : 'Check-in at ' + park + ' logged!');
+    // after the save, never instead of it: a failed location check must
+    // not cost anyone their check-in
+    if (wantVerify && checkinId) await verifyCheckin(checkinId);
   } finally {
     if (btn) btn.disabled = false;
   }

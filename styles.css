@@ -2261,6 +2261,18 @@ select.field-input { cursor: pointer; }
   background: var(--coral-lt); color: var(--coral);
 }
 
+/* Location-verified check-in. Darker teal than --teal so the small
+   text clears 4.5:1 on both white and parchment. */
+.verified-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.8px;
+  text-transform: uppercase; white-space: nowrap; vertical-align: middle;
+  padding: 2px 7px; border-radius: 2px;
+  background: var(--teal-lt); color: #0F6155;
+}
+.verified-badge .ti { font-size: 11px; }
+.visit-table td .btn-sm { vertical-align: middle; }
+
 /* ── Auth screens ── */
 .auth-wrap {
   min-height: 100vh; display: flex;

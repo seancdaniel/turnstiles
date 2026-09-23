@@ -15,7 +15,7 @@ Theme-park visit tracker. Vanilla HTML/CSS/JS front-end + Supabase backend
 
 ## File architecture (SCRIPT LOAD ORDER MATTERS)
 index.html loads scripts in this order, each with a `?v=N` cache-buster:
-supabase-js CDN -> main.js -> restaurants-data.js -> supabase-auth.js -> supabase-data.js -> supabase-food.js -> supabase-festivals.js -> supabase-waittimes.js -> waittimes-live.js -> supabase-donors.js -> supabase-invite.js -> leaderboard.js -> supabase-tallies.js -> moderation.js
+supabase-js CDN -> main.js -> restaurants-data.js -> supabase-auth.js -> supabase-data.js -> supabase-food.js -> supabase-festivals.js -> supabase-waittimes.js -> waittimes-live.js -> supabase-donors.js -> supabase-invite.js -> leaderboard.js -> supabase-tallies.js -> moderation.js -> checkin-verify.js
 
 Later files intentionally OVERRIDE functions from earlier ones (plain function
 declarations; the last definition wins). That is how the backend was layered on
@@ -269,7 +269,9 @@ Six items were identified. Status:
    it fixes the Add to Home Screen flow that had been advertised for months
    while producing a screenshot thumbnail.
 4. **Geolocation-verified check-in** (the Apple 4.2 "minimum functionality"
-   answer) - **NOT STARTED.** Research below.
+   answer) - **CODE DONE, SQL NOT RUN YET.** Run `supabase/checkin-verify.sql`
+   in the Supabase SQL editor. Until then the toggle and Verify button show
+   "Verification is not switched on yet" and nothing else is affected.
 5. **Capacitor + CI build** - not started.
 6. **Trademark / store metadata** - not started, no code. Keep Disney and
    Universal out of the app NAME, subtitle and keywords; that is where reviewers
@@ -277,7 +279,39 @@ Six items were identified. Status:
    Galaxy Defender, Tri-Wizard Cup, Club 33) are trademarked properties used as
    product features: low practical risk, trivial to rename, worth knowing.
 
-### #4 research already done - do not redo it
+### #4 as built (2026-09-23)
+
+Decisions made with Sean: **optional**, and **a badge only**. The ride and food
+tallies still accept any same-day check-in, unchanged.
+
+- **Server:** `supabase/checkin-verify.sql` (also appended to `schema.sql`).
+  A `before insert or update` trigger forces `verified` for the `anon` and
+  `authenticated` roles: always false on insert, kept as-is on update, and
+  cleared if the park or date changes. `verify_checkin(id, lat, lng, accuracy)`
+  is `security definer`, so inside it `current_user` is the owner and the
+  trigger lets its update through. It refuses a check-in not dated
+  `park_today()`, a fix worse than 500m accuracy, and then applies **nearest
+  park wins with slack**: the claimed park must be within its radius (1000m,
+  Epic Universe 1300m) AND no more than 250m further than the nearest park.
+  Tested in Python against the table below: standing at the IOA coordinate
+  cannot verify USF, the castle verifies Magic Kingdom, Disney Springs does not
+  verify Typhoon Lagoon. The migration also resets any existing `verified =
+  true` rows, since nothing in the app ever set them.
+- **Client:** `checkin-verify.js` (loaded last). One `getCurrentPosition`, sent
+  to the RPC, never stored. The check-in form has a "Verify I'm at the park"
+  switch, shown only when the date is today; it runs **after** the save, so a
+  failed location check never costs the check-in. Visit History shows a
+  Verified badge, or a Verify button on today's unverified visits. The badge
+  also shows in the Activity Feed and on public profiles.
+- **Fixed along the way:** the check-in form defaulted its date with
+  `valueAsDate = new Date()`, which is UTC, so an evening check-in in Florida
+  was dated tomorrow. That broke the tally gate for evening check-ins too. It
+  now uses `parkTodayStr()`.
+- **For #5 (Capacitor):** WKWebView needs `NSLocationWhenInUseUsageDescription`
+  in Info.plist or the location prompt never appears. The badge's tooltip
+  states the honest claim: the device reported a location at this park.
+
+### #4 research (kept for reference)
 
 **Park coordinates, pulled from the themeparks.wiki entity API** (authoritative,
 not from memory):
