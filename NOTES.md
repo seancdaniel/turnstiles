@@ -246,5 +246,91 @@ without heavily rewriting main.js.
 
 **Run the full migration block in `supabase/schema.sql` against the live project** — it's cumulative and safe to re-run; covers the delete-food policy, the Storage bucket, `food_reviews.photo_url`, the `food_favorites` table/policies, the `wait_times` table/policies, the `handle_new_user()` bio/location fix, the `disney_pass`/`universal_pass` columns, the `donors` table/`is_admin` column, the `welcomed` column, the `festivals`/`festival_reviews`/`festival_favorites` tables, the `invites` table, `wait_times.ride_id`, and `profiles.share_activity` above. **`supabase/leaderboard-sections.sql` and `supabase/security-hardening.sql` are separate and should be run too** - it closes the self-promote-to-admin hole described in the security audit entry. (The rank tier rework needed no schema change.) **Two one-time-only follow-ups after running it** (both called out in the migration comments - don't fold either into future full-file re-runs): set yourself as admin (`update public.profiles set is_admin = true where username = 'YOUR_USERNAME';`) or the Add Donor panel won't appear for you; and backfill everyone's `welcomed` flag (`update public.profiles set welcomed = true where welcomed = false;`) or every existing user will see the new-account welcome message on their next login. **The EPCOT Festivals tables are especially urgent to run promptly** — until they exist, `loadData()` fails entirely (see the EPCOT Festivals entry above), breaking the whole app, not just that one page.
 
+## App Store track (in progress)
+
+Goal: ship Turnstiles to the App Store as a **Capacitor** wrapper around this
+same site. No rewrite; the lack of a build step actually helps. Sean has **no
+Mac**, which is fine: GitHub Actions' `macos-latest` runners are free for this
+repo because it is public, and a Mac only has to exist for the few minutes of
+compiling and signing. Renting one for a day (~$20, MacinCloud/Scaleway) for the
+*first* interactive build is still worth it, because code signing is the
+genuinely miserable part and debugging it blind through CI logs is worse.
+
+Costs: Apple $99/year, Google $25 once. Google Play also gates new personal
+accounts behind a 12-tester, 14-day closed test.
+
+Six items were identified. Status:
+
+1. **In-app account deletion** (Apple 5.1.1(v)) - **DONE, SQL run, live.**
+2. **Report / block / moderation** (Apple 1.2) - **DONE, SQL run, live.** The
+   `notify-report` webhook is created. Contact address requirement was already
+   satisfied by the About page.
+3. **PWA manifest + icons** - **DONE.** No SQL. Not an App Store requirement;
+   it fixes the Add to Home Screen flow that had been advertised for months
+   while producing a screenshot thumbnail.
+4. **Geolocation-verified check-in** (the Apple 4.2 "minimum functionality"
+   answer) - **NOT STARTED.** Research below.
+5. **Capacitor + CI build** - not started.
+6. **Trademark / store metadata** - not started, no code. Keep Disney and
+   Universal out of the app NAME, subtitle and keywords; that is where reviewers
+   and rights holders are strictest. Tier names (Padawan, Prefect, Agent J,
+   Galaxy Defender, Tri-Wizard Cup, Club 33) are trademarked properties used as
+   product features: low practical risk, trivial to rename, worth knowing.
+
+### #4 research already done - do not redo it
+
+**Park coordinates, pulled from the themeparks.wiki entity API** (authoritative,
+not from memory):
+
+| Park | lat | lng |
+|---|---|---|
+| Magic Kingdom | 28.4160036778 | -81.5811902834 |
+| EPCOT | 28.3762301397 | -81.5494047655 |
+| Hollywood Studios | 28.3584111691 | -81.5586892320 |
+| Animal Kingdom | 28.3553842507 | -81.5900898529 |
+| Universal Studios Florida | 28.4779860000 | -81.4683860000 |
+| Islands of Adventure | 28.4722500000 | -81.4675940000 |
+| Epic Universe | 28.4414454549 | -81.4486740912 |
+| Blizzard Beach | 28.3525184499 | -81.5731637729 |
+| Typhoon Lagoon | 28.3650541008 | -81.5278921081 |
+| Volcano Bay | 28.4613550000 | -81.4722860000 |
+
+**The design constraint that falls out of those numbers.** The closest pairs are
+**Universal Studios Florida <-> Islands of Adventure at 642m**, Islands <->
+Volcano Bay at 1295m, Hollywood Studios <-> Blizzard Beach at 1561m, and Animal
+Kingdom <-> Blizzard Beach at 1687m. A park is itself over a kilometre across, so
+a naive "within 2km of the centre" test says you are at three Universal parks at
+once. **Nearest-park-wins is probably the right shape rather than a radius
+test**, or per-park radii tuned to the gaps. This needs deciding before code.
+
+**`verified` is currently unenforceable, and that is the bigger question.**
+`checkins.verified` already exists with the comment "set true when geolocation
+confirms the park". But the insert policy only checks `auth.uid() = user_id` and
+says nothing about `verified`, so today anyone can POST a check-in with
+`verified: true`. Making it mean anything needs, at minimum, a column-level
+`revoke` plus a `security definer` RPC that does the distance check server-side.
+
+**Even then, be honest about the ceiling.** Browser geolocation is spoofable from
+devtools in two clicks, and native geolocation is spoofable on a jailbroken
+device. The strongest truthful claim is *"the device reported coordinates near
+this park at check-in time"*, which is worth having because it stops casual
+inflation, but it is not proof and the UI should not imply it is.
+
+**Open decisions for #4**, none of them made yet:
+- Optional or required? Required punishes anyone who denies location permission.
+  Optional (check in either way, verified ones get a badge) is almost certainly
+  right.
+- Does `verified` gate anything, or is it just a badge? The ride and food tallies
+  currently accept *any* same-day check-in; requiring a verified one would tighten
+  them but changes shipped behaviour.
+- Nearest-park-wins vs per-park radii, per the 642m problem above.
+
+### Worth knowing
+
+**The tally check-in gate is proven in production**, which was previously listed
+as unverified: `ride_logs` holds real rows across 2026-09-14 and 2026-09-22, and
+`food_tallies` has one. Those inserts could only have succeeded through the RLS
+policy, so the gate works end to end with a real session.
+
 ## Resume in a new chat
 Open a new Claude Code session in `C:\Users\SeanDaniel\Desktop\Turnstiles` and say "read NOTES.md and the code, then continue." The repo is the source of truth.
