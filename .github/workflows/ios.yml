@@ -1,0 +1,48 @@
+# Builds the iOS app on a GitHub-hosted Mac. Free for this repo because it
+# is public, which is the whole reason no Mac of our own is needed.
+#
+# For now this is an UNSIGNED simulator build: it proves the Xcode project,
+# the Swift packages and the bundled site all compile together. Signing and
+# the TestFlight upload come once the Apple Developer account exists, and
+# need secrets this repo does not have yet (see NOTES.md, App Store track).
+
+name: iOS build
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'NOTES.md'
+      - 'supabase/**'
+      - 'api/**'
+      - 'tools/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install Capacitor
+        working-directory: app
+        run: npm ci
+
+      - name: Copy the site into the app and sync
+        working-directory: app
+        run: npm run sync
+
+      - name: Build for the simulator (unsigned)
+        working-directory: app/ios/App
+        run: |
+          xcodebuild -project App.xcodeproj -scheme App \
+            -configuration Debug -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO build

@@ -273,7 +273,7 @@ async function submitForgotPassword() {
   const err = document.getElementById('fp-err');
   err.classList.remove('show');
   if (!email) { err.textContent = 'Enter your email address.'; err.classList.add('show'); return; }
-  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin });
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: IN_APP ? SITE_URL : window.location.origin });
   if (error) { err.textContent = error.message; err.classList.add('show'); return; }
   closeOverlay('overlay-forgot-password');
   toast('If that email has an account, a reset link is on its way.');

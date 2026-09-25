@@ -1,0 +1,3 @@
+# The iOS app project. It is built on a Mac by GitHub Actions, not served
+# by Vercel, and without this Vercel would publish app/ as static files.
+app

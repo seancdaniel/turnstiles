@@ -1212,6 +1212,14 @@ document.addEventListener('DOMContentLoaded', () => {
 // Header: transparent over the hero, solid once the page scrolls
 (function(){var onScroll=function(){var h=document.getElementById("site-head");if(h)h.classList.toggle("scrolled",window.scrollY>20);};window.addEventListener("scroll",onScroll,{passive:true});onScroll();})();
 
+// ---- Inside the iOS app ----
+// The app serves these same files from capacitor://localhost, so anything
+// that leans on the page's own address (the api/ functions, auth email
+// links) has to name the real site instead.
+const IN_APP = !/^https?:$/.test(location.protocol);
+const SITE_URL = 'https://goturnstiles.com';
+function siteUrl(path) { return IN_APP ? SITE_URL + path : path; }
+
 // ---- Supabase connection ----
 const SUPABASE_URL = 'https://guglgdsmqbtcvkmvxwrc.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_IIjBhzSs6W-80OWArHjkZQ_ZGJ-Oxjo';

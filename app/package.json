@@ -1,0 +1,16 @@
+{
+  "name": "turnstiles-app",
+  "private": true,
+  "description": "Capacitor wrapper that ships the Turnstiles site as the iOS app. See NOTES.md, App Store track.",
+  "scripts": {
+    "web": "node build-web.mjs",
+    "sync": "node build-web.mjs && npx cap sync ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/ios": "^8.5.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.2"
+  }
+}

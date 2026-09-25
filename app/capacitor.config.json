@@ -1,0 +1,8 @@
+{
+  "appId": "com.goturnstiles.app",
+  "appName": "Turnstiles",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "never"
+  }
+}

@@ -63,7 +63,7 @@ async function submitInvite(btn) {
 
     var who = STATE.currentUser.fname || STATE.currentUser.username || '';
 
-    var res = await fetch('/api/invite', {
+    var res = await fetch(siteUrl('/api/invite'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
       body: JSON.stringify({ to: to, note: note, fromName: who })

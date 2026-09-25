@@ -97,5 +97,31 @@ Emit "icon-192.png"            192 0.78 $false
 Emit "icon-512.png"            512 0.78 $false
 Emit "icon-maskable-512.png"   512 0.58 $false
 
+# ---- 3. the iOS app (app/ios) ----
+# App Store Connect rejects an app icon with an alpha channel, even a fully
+# opaque one, so these are drawn onto a 24-bit bitmap rather than going
+# through Emit. The splash is navy with a small mark: iOS scales it to fill,
+# so a big mark would be cropped on a tall phone.
+$ios = "C:\Users\SeanDaniel\Desktop\Turnstiles\app\ios\App\App\Assets.xcassets"
+function EmitOpaque($path, $size, $inset) {
+  $bmp = New-Object System.Drawing.Bitmap $size, $size, ([System.Drawing.Imaging.PixelFormat]::Format24bppRgb)
+  $gg = [System.Drawing.Graphics]::FromImage($bmp)
+  $gg.SmoothingMode = 'AntiAlias'
+  $gg.InterpolationMode = 'HighQualityBicubic'
+  $gg.PixelOffsetMode = 'HighQuality'
+  $gg.Clear($navy)
+  $m = [int]($size * $inset)
+  $off = [int](($size - $m) / 2)
+  $gg.DrawImage($cut, $off, $off, $m, $m)
+  $gg.Dispose()
+  $bmp.Save($path, [System.Drawing.Imaging.ImageFormat]::Png)
+  $bmp.Dispose()
+  "  wrote $path"
+}
+EmitOpaque "$ios\AppIcon.appiconset\AppIcon-512@2x.png" 1024 0.78
+foreach ($n in "splash-2732x2732.png", "splash-2732x2732-1.png", "splash-2732x2732-2.png") {
+  EmitOpaque "$ios\Splash.imageset\$n" 2732 0.22
+}
+
 $cut.Dispose()
 "done"

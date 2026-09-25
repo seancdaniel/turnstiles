@@ -39,7 +39,26 @@ function looksLikeEmail(s) {
   return typeof s === 'string' && s.length <= 254 && /^[^\s@]+@[^\s@.]+\.[^\s@]+$/.test(s);
 }
 
+// The iOS app serves the site from capacitor://localhost, which makes this
+// a cross-origin call from there. That is the only origin let through:
+// the site itself is same-origin and needs no CORS at all. This does not
+// weaken the checks below, which rest on the access token, not the origin.
+var APP_ORIGINS = ['capacitor://localhost'];
+
 module.exports = async function handler(req, res) {
+  var origin = req.headers.origin;
+  if (APP_ORIGINS.indexOf(origin) !== -1) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Max-Age', '86400');
+  }
+  if (req.method === 'OPTIONS') {
+    res.status(204).end();
+    return;
+  }
+
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'method not allowed' });
     return;

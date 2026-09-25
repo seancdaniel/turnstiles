@@ -271,12 +271,59 @@ Six items were identified. Status:
 4. **Geolocation-verified check-in** (the Apple 4.2 "minimum functionality"
    answer) - **DONE, SQL run, live** (2026-09-23). Confirmed the RPC exists and
    refuses anonymous callers. Not yet tried with a real check-in inside a park.
-5. **Capacitor + CI build** - not started.
+5. **Capacitor + CI build** - **IN PROGRESS.** Project and unsigned CI build
+   done (see "#5 as built" below). Signing + TestFlight upload wait on the
+   Apple Developer account, which Sean does not have yet.
 6. **Trademark / store metadata** - not started, no code. Keep Disney and
    Universal out of the app NAME, subtitle and keywords; that is where reviewers
    and rights holders are strictest. Tier names (Padawan, Prefect, Agent J,
    Galaxy Defender, Tri-Wizard Cup, Club 33) are trademarked properties used as
    product features: low practical risk, trivial to rename, worth knowing.
+
+### #5 as built (2026-09-25)
+
+Decisions made with Sean: bundle ID **`com.goturnstiles.app`** (permanent once
+published), **iOS only** for now, **iPhone only** (`TARGETED_DEVICE_FAMILY = 1`,
+so no iPad screenshots are needed), and the site's files are **bundled into
+the app** rather than the app loading goturnstiles.com live. Sean was unsure on
+that last one; bundled was chosen because Apple 4.2 rejects "repackaged
+website" apps more often, and the app opens with no signal. The trade-off to
+remember: **a site change only reaches app users when a new app build is
+published.** Switching to live loading is one line (`server.url` in
+`app/capacitor.config.json`) if that ever becomes the better deal.
+
+- **Everything lives in `app/`**, with its own `package.json`, so the repo root
+  still has none and Vercel's static deploy is untouched. `.vercelignore`
+  keeps `app/` from being published as static files.
+- `app/build-web.mjs` copies an **allowlist** of the site (index.html,
+  styles.css, manifest.json, every top-level .js, img/) into `app/www`, which
+  is gitignored. `npm run sync` in `app/` does that plus `npx cap sync ios`.
+  **A new top-level file that is not .js needs adding to that list.**
+- Capacitor 8.5, **Swift Package Manager, no CocoaPods**, which is why
+  `npx cap add ios` worked on Windows. `app/ios/` is committed, as Capacitor
+  recommends; `App/App/public` inside it is generated and gitignored.
+- `Info.plist` has the location, camera and photo library usage strings (the
+  file input offers the camera, and iOS kills an app that uses one without
+  its string) and `ITSAppUsesNonExemptEncryption = false`, which skips the
+  export compliance question on every upload.
+- **Icon and splash** come from `tools/make-icons.ps1`, section 3. They are
+  24-bit with no alpha channel, because App Store Connect rejects an icon with
+  one even when it is fully opaque.
+- **Inside the app the page is `capacitor://localhost`**, so `main.js` now has
+  `IN_APP`, `SITE_URL` and `siteUrl(path)`. The invite fetch and the
+  password-reset `redirectTo` go through them. `api/invite.js` answers CORS
+  for `capacitor://localhost` only. Reset links open in Safari on the real
+  site, which is fine: reset there, then sign in in the app.
+- **CI:** `.github/workflows/ios.yml`, `macos-latest`, unsigned Debug build for
+  the simulator on every push to main (skips NOTES/supabase/api/tools-only
+  pushes) and on manual dispatch.
+
+**Next, once the Apple Developer account exists:** create the App ID for
+`com.goturnstiles.app`, an App Store Connect API key, and the app record in
+App Store Connect; add the key as GitHub secrets; then extend the workflow to
+archive, sign, and upload to TestFlight. Renting a Mac for a day for the first
+signed build is still worth considering, per the note at the top of this
+section.
 
 ### #4 as built (2026-09-23)
 
