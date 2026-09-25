@@ -79,6 +79,10 @@ const STATE = {
 // ============================================================
 // UTILITY
 // ============================================================
+// One timer for the one toast: a new message cancels the previous one's
+// timer, or "Check-in logged!" hides the location result that follows it.
+// Errors stay up longer since they are longer and ask for action.
+let toastTimer = null;
 function toast(msg, type='success') {
   const t = document.getElementById('toast');
   const ic = document.getElementById('toast-icon');
@@ -87,7 +91,8 @@ function toast(msg, type='success') {
   ic.className = type==='success' ? 'ti ti-circle-check' : type==='error' ? 'ti ti-alert-circle' : 'ti ti-info-circle';
   m.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), type==='error' ? 7000 : 3000);
 }
 
 function openOverlay(id) {
