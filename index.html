@@ -35,7 +35,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=89">
+  <link rel="stylesheet" href="styles.css?v=90">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -137,25 +137,42 @@
 <div class="overlay" id="overlay-privacy">
   <div class="modal modal-wide">
     <div class="modal-hd">
-      <span class="modal-hd-title">Privacy</span>
+      <span class="modal-hd-title">Privacy Policy</span>
       <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-privacy')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body legal-text">
-      <p>Turnstiles is a small, independently run project. Here is what we collect and why.</p>
+      <p class="legal-date">Last updated September 28, 2026</p>
+      <p>Turnstiles is a small, independently run project. Here is what we collect, why, and who can see it.</p>
       <h3>What we collect</h3>
-      <p>When you make an account we ask for your name, a username, and an email address. You can also add a bio, a location, and a profile photo if you want to. When you use the app we store your check-ins, food reviews, wait time reports, and any photos you share.</p>
+      <p><strong>Your account.</strong> Your first and last name, a username, your email address and a password. The password is stored scrambled by our login provider, so nobody can read it, including us.</p>
+      <p><strong>Your profile, if you add it.</strong> A bio, a home location, a profile photo, and which annual passes you hold.</p>
+      <p><strong>What you log and post.</strong> Check-ins and miles walked, food and festival reviews and scores, wait time reports, ride and food tallies, photos, and your Want to Try lists.</p>
+      <p><strong>Your location, only if you ask.</strong> When you choose to verify a check-in, your device's location is read once and compared with the park's location. Only the result is saved, as a Verified badge on that visit. The location itself is never stored. You can turn location access off in your browser or phone settings at any time.</p>
+      <p><strong>Photos.</strong> Photos are resized before they are uploaded, which also removes the hidden location data many phone cameras attach to them.</p>
+      <p><strong>Invites.</strong> When you invite a friend we use their email address to send that one invite, and keep a record of it so the daily invite limit works.</p>
+      <p><strong>Reports and blocks.</strong> If you report something, we keep the report so it can be reviewed. Your block list is private to you.</p>
+      <p><strong>Technical information.</strong> If something breaks, an error report is sent to our monitoring service with details like your browser, device type and the page you were on. We also count page visits with a privacy friendly analytics tool that uses no cookies and does not follow you to other sites.</p>
       <h3>How it's used</h3>
-      <p>This information runs the core features of the app. Your check-ins power the leaderboard, your reviews show up on the food pages, and your photos show up in the community gallery. Your email is only used for login and account related emails, like password resets.</p>
+      <p>This information runs the core features of the app. Your check-ins power the leaderboard, your reviews show up on the food pages, and your photos show up in the community gallery. Your email is only used for login and account related emails, like confirming your account and password resets. We don't use any of it for advertising.</p>
       <h3>What's public</h3>
-      <p>Your username, avatar, check-ins, food reviews, wait time reports, and shared photos are visible to other users. That's the point of a community app. Your email address is never shown to other users.</p>
-      <h3>Where it's stored</h3>
-      <p>Your data is kept in a secure cloud database, and photos are kept in secure cloud storage.</p>
-      <h3>What we don't do</h3>
-      <p>We don't sell your data. We don't run ads. We don't share your information with anyone outside of what's needed to run the site.</p>
+      <p>Turnstiles is a community app, so most of what you add is visible to other people: your username, your name, your avatar or profile photo, bio, home location, annual passes, check-ins, reviews, wait time reports, tallies, photos, and Verified badges. You can hide your check-ins from the Activity Feed and your public profile in Edit Profile.</p>
+      <p>These stay private: your email address, your password, your Want to Try lists, your block list, the reports you file, and your location.</p>
+      <h3>Who we share it with</h3>
+      <p>We don't sell your data and we don't run ads. We use a handful of services to run the site, and they only handle your data to do that job:</p>
+      <ul>
+        <li><strong>Supabase</strong> stores the database, handles logins, and stores photos.</li>
+        <li><strong>Vercel</strong> hosts the site and provides the visit counts.</li>
+        <li><strong>Resend</strong> sends account and invite emails.</li>
+        <li><strong>Sentry</strong> receives error reports.</li>
+      </ul>
+      <p>Pages also load fonts from Google Fonts and code from jsDelivr, which see your IP address the way any website you visit does. Live wait times come from themeparks.wiki, and nothing about you is sent there. Donations are handled by Ko-fi, and their privacy policy covers anything you give them.</p>
       <h3>Your choices</h3>
       <p>You can edit your profile, delete individual check-ins, reviews, or photos, and change your password at any time from your account settings. You can delete your account at any time from Edit Profile. That removes your profile, check-ins, photos and lists straight away. The ratings and wait times you contributed stay on the site as anonymous community data, because other passholders rely on those numbers, and they are no longer linked to you.</p>
+      <p>To ask for a copy of your data, or for help with anything on this page, email <a href="mailto:help@goturnstiles.com">help@goturnstiles.com</a>.</p>
+      <h3>Children</h3>
+      <p>Turnstiles is not meant for children under 13, and we don't knowingly collect their information. If you believe a child under 13 has made an account, email us and we will delete it.</p>
       <h3>Changes</h3>
-      <p>This policy may get updated as the site grows. Check back here if you want to stay current.</p>
+      <p>This policy may get updated as the site grows. The date at the top shows when it last changed.</p>
     </div>
     <div class="modal-footer">
       <button class="btn-sm primary" onclick="closeOverlay('overlay-privacy')">Close</button>
@@ -171,19 +188,25 @@
       <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-terms')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body legal-text">
+      <p class="legal-date">Last updated September 28, 2026</p>
       <p>By using Turnstiles you're agreeing to a few basic ground rules.</p>
       <h3>The site</h3>
-      <p>Turnstiles is a free tool for logging theme park visits, rating food, and sharing photos with other passholders. It's run by one person, not a company, and it isn't affiliated with Disney, Universal, or any theme park.</p>
+      <p>Turnstiles is a free tool for logging theme park visits, rating food, and sharing photos with other passholders. It's run by one person, not a company, and it isn't affiliated with Disney, Universal, or any theme park. Park names and other trademarks belong to their owners.</p>
       <h3>Your account</h3>
-      <p>You need an account to check in, rate food, or post. Keep your password to yourself and let us know if you think someone else has access to your account.</p>
+      <p>You must be at least 13 years old to make an account. You need an account to check in, rate food, or post. Keep your password to yourself and let us know if you think someone else has access to your account.</p>
+      <h3>Community rules</h3>
+      <p>Turnstiles has zero tolerance for objectionable content and abusive users. Don't post anything hateful, sexually explicit, violent, threatening, or illegal. Don't harass, bully, or impersonate anyone. Don't post spam, and don't post photos or content that aren't yours to share.</p>
+      <p>Everything you post is your own responsibility. If you see something that breaks these rules, use the Report button, and you can block anyone you don't want to see. We review reports within 24 hours. Content that breaks these rules gets removed, and anyone who posts it can lose their account.</p>
       <h3>What you post</h3>
-      <p>Everything you post, reviews, photos, wait times, is your own responsibility. Don't post anything illegal, don't post photos or content that aren't yours to share, and don't harass other users. We can remove content or accounts that break these rules.</p>
+      <p>You keep ownership of your reviews, photos, and everything else you post. By posting, you give Turnstiles permission to show it on the site and in the app. Delete it and it comes down.</p>
       <h3>Wait times and other info</h3>
-      <p>Wait times, ratings, and reviews are submitted by users, not verified by us. Don't rely on them as official park information.</p>
+      <p>Wait times, ratings, and reviews are submitted by users, not verified by us. Don't rely on them as official park information. A Verified badge means the device reported a location at that park when the check-in was verified. It isn't a guarantee.</p>
+      <h3>The iPhone app</h3>
+      <p>If you use Turnstiles on iPhone, Apple's standard terms for apps from the App Store also apply, alongside these.</p>
       <h3>No guarantees</h3>
       <p>This site is provided as is. We do our best to keep it running smoothly, but we can't promise it will always be available or error free.</p>
       <h3>Changes</h3>
-      <p>These terms might change as the site grows. Continuing to use the site after a change means you're okay with the update.</p>
+      <p>These terms might change as the site grows. Continuing to use the site after a change means you're okay with the update. Questions go to <a href="mailto:help@goturnstiles.com">help@goturnstiles.com</a>.</p>
     </div>
     <div class="modal-footer">
       <button class="btn-sm primary" onclick="closeOverlay('overlay-terms')">Close</button>
@@ -385,6 +408,11 @@
           <label class="park-pick-opt"><input type="checkbox" value="Typhoon Lagoon"> 🌊 Typhoon Lagoon</label>
           <label class="park-pick-opt"><input type="checkbox" value="Volcano Bay"> 🌋 Volcano Bay</label>
         </div>
+        <label class="reg-agree" for="reg-agree">
+          <input type="checkbox" id="reg-agree">
+          <span>I'm at least 13 and I agree to the <a href="#" onclick="openLegal('overlay-terms');return false">Terms</a>, including the community rules, and the <a href="#" onclick="openLegal('overlay-privacy');return false">Privacy Policy</a>.</span>
+        </label>
+        <div class="field-error" id="reg-agree-err">Please agree to the Terms to create your account.</div>
       </div>
     </div>
     <div class="modal-footer">
@@ -1530,8 +1558,8 @@
           <div class="footer-tagline">Track every visit. Rate every bite. Climb the board.</div>
         </div>
         <ul class="footer-links">
-          <li><a href="#" onclick="showView('about')">About</a></li><li><a href="#" onclick="openOverlay('overlay-privacy')">Privacy</a></li>
-          <li><a href="#" onclick="openOverlay('overlay-terms')">Terms</a></li><li><a href="#" onclick="openOverlay('overlay-contact')">Contact</a></li>
+          <li><a href="#" onclick="showView('about')">About</a></li><li><a href="#" onclick="openLegal('overlay-privacy');return false">Privacy</a></li>
+          <li><a href="#" onclick="openLegal('overlay-terms');return false">Terms</a></li><li><a href="#" onclick="openOverlay('overlay-contact')">Contact</a></li>
         </ul>
         <div class="footer-copy">© 2026 Turnstiles · Not affiliated with Disney or Universal</div>
       </footer>
@@ -2259,7 +2287,7 @@
     </div>
     <footer class="site-footer">
       <div><div class="footer-brand">TURN<span>STILES</span></div><div class="footer-tagline">Track every visit. Rate every bite. Climb the board.</div></div>
-      <ul class="footer-links"><li><a href="#" onclick="guestBrowse('about')">About</a></li><li><a href="#" onclick="openOverlay('overlay-privacy')">Privacy</a></li><li><a href="#" onclick="openOverlay('overlay-terms')">Terms</a></li><li><a href="#" onclick="openOverlay('overlay-contact')">Contact</a></li></ul>
+      <ul class="footer-links"><li><a href="#" onclick="guestBrowse('about')">About</a></li><li><a href="#" onclick="openLegal('overlay-privacy');return false">Privacy</a></li><li><a href="#" onclick="openLegal('overlay-terms');return false">Terms</a></li><li><a href="#" onclick="openOverlay('overlay-contact')">Contact</a></li></ul>
       <div class="footer-copy">© 2026 Turnstiles · Not affiliated with Disney or Universal</div>
     </footer>
   </div>
@@ -2294,9 +2322,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"
         integrity="sha384-JBR+x8blGwjDRO63aHCGiZMD4VNiTR4ZUGA+N6ZKLf3zNt1fK8IBpcgPaMrxqWBp"
         crossorigin="anonymous"></script>
-<script src="main.js?v=45"></script>
+<script src="main.js?v=46"></script>
 <script src="restaurants-data.js?v=5"></script>
-<script src="supabase-auth.js?v=15"></script>
+<script src="supabase-auth.js?v=16"></script>
 <script src="supabase-data.js?v=25"></script>
 <script src="supabase-food.js?v=25"></script>
 <script src="supabase-festivals.js?v=5"></script>

@@ -2110,6 +2110,21 @@ body {
   color: var(--ink); margin-bottom: 6px;
 }
 .legal-text a { color: var(--coral); text-decoration: underline; }
+.legal-text ul { margin: 0 0 14px 18px; padding: 0; }
+.legal-text li { font-size: 14px; font-weight: 300; line-height: 1.65; color: var(--ink-light); margin-bottom: 4px; }
+.legal-text strong { font-weight: 600; color: var(--ink); }
+.legal-text .legal-date { font-size: 12px; color: var(--ink-faint); margin-bottom: 10px; }
+
+/* Signup agreement, last step of Create Profile */
+.reg-agree {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-top: 18px; padding: 12px 14px;
+  background: var(--parchment); border: 1px solid var(--border); border-radius: 6px;
+  font-size: 13px; line-height: 1.5; color: var(--ink-light); cursor: pointer;
+}
+.reg-agree input { width: 18px; height: 18px; margin: 1px 0 0; flex-shrink: 0; accent-color: var(--coral); cursor: pointer; }
+.reg-agree a { color: var(--coral); text-decoration: underline; }
+#reg-agree-err { margin-top: 8px; }
 .modal-footer {
   padding: 16px 24px;
   border-top: 1px solid var(--border);

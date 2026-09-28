@@ -143,6 +143,11 @@ async function regNext() {
     document.getElementById('reg-step-3').className = 'step-item active';
     document.getElementById('reg-next-btn').textContent = 'Create Account';
   } else if (regStep === 3) {
+    // Apple guideline 1.2: users agree to the community rules before they
+    // can post anything
+    const agreeErr = document.getElementById('reg-agree-err');
+    if (!document.getElementById('reg-agree').checked) { agreeErr.classList.add('show'); return; }
+    agreeErr.classList.remove('show');
     regSubmit();
   }
 }

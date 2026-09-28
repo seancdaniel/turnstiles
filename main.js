@@ -102,10 +102,34 @@ function openOverlay(id) {
 function closeOverlay(id) {
   document.getElementById(id).classList.remove('open');
   resetTicket();
+  if (LEGAL_OVERLAYS.includes(id) && legalReturnTo) {
+    const back = legalReturnTo; legalReturnTo = null;
+    openOverlay(back);
+  }
 }
 document.querySelectorAll('.overlay').forEach(o => {
-  o.addEventListener('click', e => { if(e.target===o){ o.classList.remove('open'); resetTicket(); } });
+  o.addEventListener('click', e => { if(e.target===o) closeOverlay(o.id); });
 });
+
+// Privacy and Terms can be opened from inside signup. Only one overlay is
+// ever open, so closing them has to put signup back, or the half filled
+// form just vanishes.
+const LEGAL_OVERLAYS = ['overlay-privacy', 'overlay-terms'];
+let legalReturnTo = null;
+function openLegal(id) {
+  const open = document.querySelector('.overlay.open');
+  if (open && !LEGAL_OVERLAYS.includes(open.id)) legalReturnTo = open.id;
+  openOverlay(id);
+}
+
+// goturnstiles.com/#privacy and /#terms open the matching page, so each
+// has a real address (the App Store listing needs one for the policy).
+// vercel.json also sends /privacy and /terms here.
+function openLegalFromHash() {
+  const id = { '#privacy': 'overlay-privacy', '#terms': 'overlay-terms' }[location.hash];
+  if (id) openLegal(id);
+}
+window.addEventListener('hashchange', openLegalFromHash);
 
 // Tear the hero ticket's stub off, then open the auth modal
 function ripTicket(which) {
@@ -359,6 +383,8 @@ function resetRegForm() {
   document.getElementById('reg-step-3').className='step-item';
   document.getElementById('reg-back-btn').style.display='none';
   document.getElementById('reg-next-btn').textContent='Next →';
+  document.getElementById('reg-agree').checked=false;
+  document.getElementById('reg-agree-err').classList.remove('show');
   document.querySelectorAll('#reg-pass-reqs .pw-req').forEach(el=>el.classList.remove('met'));
   selectedAvatar='🎢';
   regAvatarMode='emoji';
@@ -1213,6 +1239,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Set today's date in check-in form
   document.getElementById('ci-date').valueAsDate = new Date();
+  openLegalFromHash();
 });
 // Header: transparent over the hero, solid once the page scrolls
 (function(){var onScroll=function(){var h=document.getElementById("site-head");if(h)h.classList.toggle("scrolled",window.scrollY>20);};window.addEventListener("scroll",onScroll,{passive:true});onScroll();})();

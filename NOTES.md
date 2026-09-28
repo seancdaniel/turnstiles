@@ -274,6 +274,20 @@ Six items were identified. Status:
 5. **Capacitor + CI build** - **IN PROGRESS.** Project and unsigned CI build
    done (see "#5 as built" below). Signing + TestFlight upload wait on the
    Apple Developer account, which Sean does not have yet.
+**Found 2026-09-28, not in the original six, now DONE:** Privacy Policy and Terms
+   rewritten to match what the code actually collects (location check, Sentry,
+   Vercel Analytics, invites storing the friend's email, named service
+   providers, under 13 clause, and that **name, bio, home location and passes are
+   public**, since `profiles` is public read). Terms now carry Apple 1.2's zero
+   tolerance line, the 24 hour report review promise, a content licence, and a
+   13+ age floor. Signup's last step has a required "I agree" checkbox
+   (`reg-agree`, checked in `regNext`). Both stay as overlays in `index.html`,
+   but **`goturnstiles.com/privacy` and `/terms` now work** (vercel.json
+   redirects to `/#privacy` / `/#terms`, which `openLegalFromHash` in main.js
+   opens). **Use `https://goturnstiles.com/privacy` as the App Store privacy
+   policy URL.** `openLegal()` remembers the overlay it opened over (signup), and
+   `closeOverlay` puts it back, since only one overlay is ever open at a time.
+   Acceptance is not recorded server side; add a column if that is ever needed.
 6. **Trademark / store metadata** - not started, no code. Keep Disney and
    Universal out of the app NAME, subtitle and keywords; that is where reviewers
    and rights holders are strictest. Tier names (Padawan, Prefect, Agent J,
