@@ -127,7 +127,13 @@ async function regNext() {
     if (pass !== pass2) { perr.classList.add('show'); return; }
     const strength = checkPasswordStrength();
     if (!Object.keys(strength).every(k => strength[k])) { toast('Password does not meet the requirements below.', 'error'); return; }
-    const { data: taken } = await sb.from('profiles').select('id').eq('username', username).maybeSingle();
+    // Signing up happens before there is a session, and profiles are members
+    // only, so this asks a function that can see them. Falls back to the old
+    // direct read until supabase/members-only.sql has been run.
+    let taken;
+    const avail = await sb.rpc('username_available', { p_username: username });
+    if (!avail.error) taken = !avail.data;
+    else ({ data: taken } = await sb.from('profiles').select('id').eq('username', username).maybeSingle());
     if (taken) { err.classList.add('show'); return; }
     regStep = 2;
     document.getElementById('reg-page-1').style.display = 'none';

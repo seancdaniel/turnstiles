@@ -2115,6 +2115,13 @@ body {
 .legal-text strong { font-weight: 600; color: var(--ink); }
 .legal-text .legal-date { font-size: 12px; color: var(--ink-faint); margin-bottom: 10px; }
 
+/* Shown in Sign In when a guest taps a members only page */
+.signin-gate-note {
+  font-size: 13px; line-height: 1.55; color: var(--ink);
+  background: var(--gold-pale); border: 1px solid var(--border-gold); border-radius: 6px;
+  padding: 10px 12px; margin-bottom: 16px;
+}
+
 /* Signup agreement, last step of Create Profile */
 .reg-agree {
   display: flex; align-items: flex-start; gap: 10px;

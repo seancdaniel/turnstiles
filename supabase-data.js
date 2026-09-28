@@ -192,6 +192,7 @@ function enterApp(user) {
 }
 
 function guestBrowse(name) {
+  if (!GUEST_VIEWS.includes(name)) { membersOnly(); return; }
   STATE.currentUser = null;
   document.body.classList.add('guest');
   closeDropdown();

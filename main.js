@@ -98,6 +98,8 @@ function toast(msg, type='success') {
 function openOverlay(id) {
   document.querySelectorAll('.overlay.open').forEach(o => o.classList.remove('open'));
   document.getElementById(id).classList.add('open');
+  // the members only note is added by membersOnly(), after this runs
+  if (id === 'overlay-signin') document.getElementById('signin-gate-note').style.display = 'none';
 }
 function closeOverlay(id) {
   document.getElementById(id).classList.remove('open');
@@ -148,8 +150,8 @@ function resetTicket() {
 function showView(name) {
   // "profile" was merged into the "home" page - keep old callers working
   if(name==='profile') name='home';
-  // Guests can browse public sections; personal pages require an account
-  if(isGuest() && name==='home') { openOverlay('overlay-register'); return; }
+  // Guests only get About; everything else needs an account
+  if(isGuest() && !GUEST_VIEWS.includes(name)) { membersOnly(); return; }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
@@ -177,6 +179,15 @@ function showView(name) {
 // GUEST BROWSE (explore before signing up)
 // ============================================================
 function isGuest() { return document.body.classList.contains('guest'); }
+
+// Everything but About is members only. The database enforces that too
+// (supabase/members-only.sql), so this is only the polite half: a guest
+// tapping a members page gets the sign in box with a line saying why.
+const GUEST_VIEWS = ['about'];
+function membersOnly() {
+  openOverlay('overlay-signin');
+  document.getElementById('signin-gate-note').style.display = 'block';
+}
 
 function guestBrowse(name) {
   STATE.currentUser = null;

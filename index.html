@@ -35,7 +35,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=90">
+  <link rel="stylesheet" href="styles.css?v=91">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -61,6 +61,7 @@
       <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-signin')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
+      <p class="signin-gate-note" id="signin-gate-note" style="display:none">The leaderboard, food scores, photos and wait times are for members. Sign in, or create a free account to see them.</p>
       <div class="field">
         <label class="field-lbl">Email</label>
         <input class="field-input" id="signin-user" type="email" placeholder="you@email.com">
@@ -2322,10 +2323,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"
         integrity="sha384-JBR+x8blGwjDRO63aHCGiZMD4VNiTR4ZUGA+N6ZKLf3zNt1fK8IBpcgPaMrxqWBp"
         crossorigin="anonymous"></script>
-<script src="main.js?v=46"></script>
+<script src="main.js?v=47"></script>
 <script src="restaurants-data.js?v=5"></script>
-<script src="supabase-auth.js?v=16"></script>
-<script src="supabase-data.js?v=25"></script>
+<script src="supabase-auth.js?v=17"></script>
+<script src="supabase-data.js?v=26"></script>
 <script src="supabase-food.js?v=25"></script>
 <script src="supabase-festivals.js?v=5"></script>
 <script src="supabase-waittimes.js?v=8"></script>
