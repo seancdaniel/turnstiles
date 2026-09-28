@@ -1263,6 +1263,11 @@ document.addEventListener('DOMContentLoaded', () => {
 const IN_APP = !/^https?:$/.test(location.protocol);
 const SITE_URL = 'https://goturnstiles.com';
 function siteUrl(path) { return IN_APP ? SITE_URL + path : path; }
+// .web-only hides things the App Store will not accept in the app: the
+// Ko-fi donate link (Apple 3.1.1, outside payments), "beta" and "under
+// construction" labels (2.2), and Add to Home Screen, which means
+// nothing inside an app. .app-only is the reverse. See styles.css.
+if (IN_APP) document.documentElement.classList.add('in-app');
 
 // ---- Supabase connection ----
 const SUPABASE_URL = 'https://guglgdsmqbtcvkmvxwrc.supabase.co';

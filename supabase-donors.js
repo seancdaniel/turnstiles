@@ -102,7 +102,10 @@ function renderThanks() {
   var wall = document.getElementById('donor-wall');
   if (!wall) return;
   if (!donors.length) {
-    wall.innerHTML = '<div class="donor-empty">No donors yet. Be the first! The Margarita Fund link is on the <a onclick="showView(\'about\')">About page</a>.</div>';
+    // the app cannot point at the donate link (see .web-only in main.js)
+    wall.innerHTML = IN_APP
+      ? '<div class="donor-empty">No donors yet.</div>'
+      : '<div class="donor-empty">No donors yet. Be the first! The Margarita Fund link is on the <a onclick="showView(\'about\')">About page</a>.</div>';
     return;
   }
   wall.innerHTML = donors.map(donorChipHtml).join('');

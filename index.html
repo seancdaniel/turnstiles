@@ -35,7 +35,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=92">
+  <link rel="stylesheet" href="styles.css?v=93">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -240,10 +240,10 @@
       <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-welcome')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
-      <p style="font-size:14px;color:var(--ink-light);line-height:1.6;margin-bottom:12px">Thank you for joining Turnstiles! The site is currently still under construction, so I appreciate all the feedback you can provide.</p>
+      <p style="font-size:14px;color:var(--ink-light);line-height:1.6;margin-bottom:12px">Thank you for joining Turnstiles! <span class="web-only">The site is currently still under construction, so I</span><span class="app-only">I</span> appreciate all the feedback you can provide.</p>
       <p style="font-size:14px;color:var(--ink-light);line-height:1.6;margin-bottom:16px">I can be reached at:</p>
       <a href="mailto:help@goturnstiles.com" class="about-help-link"><i class="ti ti-mail"></i> help@goturnstiles.com</a>
-      <div class="field" style="border-top:1px dashed var(--border);padding-top:14px;margin-top:16px">
+      <div class="field web-only" style="border-top:1px dashed var(--border);padding-top:14px;margin-top:16px">
         <label class="field-lbl">Keep Turnstiles a Tap Away</label>
         <button type="button" class="btn-sm" onclick="openOverlay('overlay-add-to-home')"><i class="ti ti-device-mobile" style="font-size:12px"></i> How To Add It</button>
       </div>
@@ -1360,7 +1360,7 @@
               <button class="btn-hero" onclick="newCheckin()"><i class="ti ti-circle-plus"></i> <span id="cred-cta">Log a Check-In</span></button>
               <button class="btn-hero-outline" onclick="showView('community')">Browse Community</button>
               <button class="btn-hero-outline" onclick="openEditProfile()"><i class="ti ti-pencil" style="font-size:11px"></i> Edit Profile</button>
-              <span class="cred-beta">🚧 Beta</span>
+              <span class="cred-beta web-only">🚧 Beta</span>
             </div>
             <!-- Progress to the next rank. Fills what was ~140px of dead
                  column beside the taller passport ticket, and it is the
@@ -1961,7 +1961,7 @@
             <p>Right now its just me running the show. No team, no corporate backing, just one person building this thing one ride, one post, and one update at a time. So thanks for being here, thanks for giving it a shot, and thanks in advance for your patience as I keep building this out. More is coming, and if you have any issues or suggestions, please feel free to reach out to me directly via my email below.</p>
           </div>
         </div>
-        <div class="about-side-col">
+        <div class="about-side-col web-only">
           <div class="about-donate">
             <i class="ti ti-heart"></i>
             <h2>Support Turnstiles</h2>
@@ -2242,7 +2242,7 @@
           </div>
 
           <div class="ticket-eyebrow">The Official Passholder Tracker · Est. 2026</div>
-          <div class="beta-badge">🚧 Beta — Actively Under Construction</div>
+          <div class="beta-badge web-only">🚧 Beta — Actively Under Construction</div>
           <h1 class="ticket-wordmark">TURN<span>STILES</span></h1>
 
           <div class="ticket-banner">
@@ -2327,7 +2327,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"
         integrity="sha384-JBR+x8blGwjDRO63aHCGiZMD4VNiTR4ZUGA+N6ZKLf3zNt1fK8IBpcgPaMrxqWBp"
         crossorigin="anonymous"></script>
-<script src="main.js?v=48"></script>
+<script src="main.js?v=49"></script>
 <script src="restaurants-data.js?v=5"></script>
 <script src="supabase-auth.js?v=17"></script>
 <script src="supabase-data.js?v=27"></script>
@@ -2335,7 +2335,7 @@
 <script src="supabase-festivals.js?v=6"></script>
 <script src="supabase-waittimes.js?v=8"></script>
 <script src="waittimes-live.js?v=4"></script>
-<script src="supabase-donors.js?v=2"></script>
+<script src="supabase-donors.js?v=3"></script>
 <script src="supabase-invite.js?v=2"></script>
 <script src="leaderboard.js?v=7"></script>
 <script src="supabase-tallies.js?v=3"></script>
