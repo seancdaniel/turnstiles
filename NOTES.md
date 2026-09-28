@@ -290,7 +290,19 @@ Six items were identified. Status:
    policy URL.** `openLegal()` remembers the overlay it opened over (signup), and
    `closeOverlay` puts it back, since only one overlay is ever open at a time.
    Acceptance is not recorded server side; add a column if that is ever needed.
-6. **Trademark / store metadata** - not started, no code. Keep Disney and
+6. **Trademark / store metadata** - **DRAFTED** in `app/store-listing.md`
+   (2026-09-28): name, subtitle, description, keywords, App Privacy answers,
+   age rating answers, reviewer notes, and a tier rename table. Open: Individual
+   vs Organization, whether to rename trademarked tiers, screenshots, and a
+   demo account for the reviewer (password goes ONLY in App Store Connect).
+   Also done for review: inside the app, `.web-only` hides the Ko-fi card
+   (Apple 3.1.1), both "Beta" labels and the welcome popup's "under
+   construction" line (2.2), and Add to Home Screen. `goturnstiles.com/support`
+   opens the Contact box, for the listing's Support URL. **Money plan agreed
+   with Sean:** app stays free; first submission has no donate link; later an
+   in-app tip jar (Apple IAP, 15%) or the Ko-fi link under the US storefront
+   outside-link rules if they still hold; long term affiliate links for
+   tickets/hotels and maybe an optional "Turnstiles Plus". Keep Disney and
    Universal out of the app NAME, subtitle and keywords; that is where reviewers
    and rights holders are strictest. Tier names (Padawan, Prefect, Agent J,
    Galaxy Defender, Tri-Wizard Cup, Club 33) are trademarked properties used as

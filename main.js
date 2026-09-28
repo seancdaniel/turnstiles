@@ -124,11 +124,12 @@ function openLegal(id) {
   openOverlay(id);
 }
 
-// goturnstiles.com/#privacy and /#terms open the matching page, so each
-// has a real address (the App Store listing needs one for the policy).
-// vercel.json also sends /privacy and /terms here.
+// goturnstiles.com/#privacy, /#terms and /#support open the matching page,
+// so each has a real address (the App Store listing needs a privacy policy
+// URL and a support URL). vercel.json also sends /privacy, /terms and
+// /support here.
 function openLegalFromHash() {
-  const id = { '#privacy': 'overlay-privacy', '#terms': 'overlay-terms' }[location.hash];
+  const id = { '#privacy': 'overlay-privacy', '#terms': 'overlay-terms', '#support': 'overlay-contact' }[location.hash];
   if (id) openLegal(id);
 }
 window.addEventListener('hashchange', openLegalFromHash);

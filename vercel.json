@@ -41,6 +41,11 @@
       "source": "/terms",
       "destination": "/#terms",
       "permanent": false
+    },
+    {
+      "source": "/support",
+      "destination": "/#support",
+      "permanent": false
     }
   ]
 }
