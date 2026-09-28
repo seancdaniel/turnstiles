@@ -41,7 +41,9 @@ async function loadDataNow() {
       sb.from('ride_logs').select('*').order('created_at', { ascending: false }),
       sb.from('food_tallies').select('*').order('created_at', { ascending: false }),
       sb.from('blocks').select('*'),
-      sb.from('reports').select('*').order('created_at', { ascending: false })
+      sb.from('reports').select('*').order('created_at', { ascending: false }),
+      sb.from('checkin_photos').select('*').order('created_at', { ascending: true }),
+      sb.from('photo_likes').select('photo_id,user_id')
     ]);
     var profiles = r[0].data || [];
     var idMap = {};
@@ -109,6 +111,13 @@ async function loadDataNow() {
     // Blocks are own-rows-only under RLS, so this is just your list. Reports
     // are admin-read-only, so for everybody else the query succeeds and returns
     // nothing, which is exactly right and needs no special casing here.
+    // only your own rows come back (RLS), so this is always just yours
+    STATE.checkinPhotos = (r[14].data || []).map(function (x) {
+      return { id: x.id, checkinId: x.checkin_id, url: x.image_url };
+    });
+    STATE.photoLikes = (r[15].data || []).map(function (x) {
+      return { photoId: x.photo_id, userId: x.user_id };
+    });
     STATE.blocks = (r[12].data || []).map(function (b) {
       return { id: b.id, blockerId: b.blocker_id, blockedId: b.blocked_id };
     });
@@ -301,7 +310,6 @@ async function submitFoodReview(btn) {
     }
     var res = await sb.from('food_reviews').insert({ user_id: STATE.currentUser.id, item_name: name, park: park, spot: spot, score: score, review: review, photo_url: photoUrl });
     if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
-    if (photoUrl) await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: park, caption: name + (spot ? ' - ' + spot : ''), image_url: photoUrl });
     var matchingFavorite = STATE.foodFavorites.find(function (f) {
       return f.userId === STATE.currentUser.id && f.itemName.toLowerCase() === name.toLowerCase() &&
         f.park === park && (f.spot || '') === spot;

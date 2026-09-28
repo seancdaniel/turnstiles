@@ -1141,12 +1141,13 @@ function renderProfile() {
   }
   histEl.innerHTML = `<table class="visit-table">
     <thead><tr>
-      <th>Park</th><th>Date</th><th>Miles</th><th>Food Score</th><th>Foods Tried</th><th></th>
+      <th>Park</th><th>Date</th><th>Photos</th><th>Miles</th><th>Food Score</th><th>Foods Tried</th><th></th>
     </tr></thead>
     <tbody>
       ${my.slice(0,20).map(c=>`<tr>
         <td>${parkEmoji(c.park)} ${escapeHtml(c.park)} ${typeof checkinVerifyCellHtml==='function'?checkinVerifyCellHtml(c):''}</td>
         <td>${formatDate(c.date)}</td>
+        <td>${typeof checkinPhotoCellHtml==='function'?checkinPhotoCellHtml(c):'—'}</td>
         <td>${c.miles?c.miles+' mi':'<button class="btn-sm" onclick="openAddMiles(\''+c.id+'\')">Add Miles</button>'}</td>
         <td>${c.score?'<span class="visit-tag">'+c.score.toFixed(1)+'/10</span>':'—'}</td>
         <td style="font-size:12px;color:var(--ink-faint)">${escapeHtml((c.foods||[]).join(', '))||'—'}</td>

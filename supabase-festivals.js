@@ -114,7 +114,6 @@ async function submitFestivalReview(btn) {
     }
     var res = await sb.from('festival_reviews').insert({ user_id: STATE.currentUser.id, festival_id: cf.id, item_name: item, booth_name: booth || null, score: score, review: review, photo_url: photoUrl });
     if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
-    if (photoUrl) await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: 'EPCOT', caption: item + (booth ? ' - ' + booth : ''), image_url: photoUrl });
     var matchingFavorite = STATE.festivalFavorites.find(function (f) {
       return f.userId === STATE.currentUser.id && f.festivalId === cf.id &&
         f.itemName.toLowerCase() === item.toLowerCase() && (f.boothName || '') === booth;

@@ -35,7 +35,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=91">
+  <link rel="stylesheet" href="styles.css?v=92">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -482,6 +482,10 @@
         <input type="file" id="ci-photo-input" accept="image/*" style="display:none" onchange="handlePhotoSelect(event)">
         <div id="ci-photo-preview" style="margin-top:8px;display:none">
           <img id="ci-photo-img" style="width:100%;max-height:180px;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
+          <label class="share-row" for="ci-photo-share">
+            <input type="checkbox" id="ci-photo-share">
+            <span><strong>Share to Community Photos</strong><span class="share-sub">Leave this off and only you can see the photo, in Visit History.</span></span>
+          </label>
         </div>
       </div>
       <div class="field-hint"><i class="ti ti-shoe" style="font-size:11px"></i> No need to log your miles walked now — add them later from Visit History once you're done for the day.</div>
@@ -516,6 +520,10 @@
         <input type="file" id="am-photo-input" accept="image/*" style="display:none" onchange="handleAmPhotoSelect(event)">
         <div id="am-photo-preview" style="margin-top:8px;display:none">
           <img id="am-photo-img" style="width:100%;max-height:180px;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
+          <label class="share-row" for="am-photo-share">
+            <input type="checkbox" id="am-photo-share">
+            <span><strong>Share to Community Photos</strong><span class="share-sub">Leave this off and only you can see the photo, in Visit History.</span></span>
+          </label>
         </div>
       </div>
       <div class="field" style="border-top:1px dashed var(--border);padding-top:14px;margin-top:2px">
@@ -1880,12 +1888,8 @@
         <button class="modal-close" aria-label="Close" onclick="closeOverlay('overlay-photo-view')"><i class="ti ti-x"></i></button>
       </div>
       <div class="modal-body" style="padding:0">
-        <img id="pv-img" alt="" style="width:100%;max-height:60vh;object-fit:contain;background:#0E1E2E;display:block">
-        <div style="padding:16px 20px">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px" id="pv-user"></div>
-          <div id="pv-caption" style="font-size:13px;color:var(--ink-light);line-height:1.5"></div>
-          <button class="btn-sm pv-report" id="pv-report" style="display:none">Report photo</button>
-        </div>
+        <div class="pv-stage" id="pv-stage"></div>
+        <div class="pv-info" id="pv-info"></div>
       </div>
     </div>
   </div>
@@ -2323,12 +2327,12 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"
         integrity="sha384-JBR+x8blGwjDRO63aHCGiZMD4VNiTR4ZUGA+N6ZKLf3zNt1fK8IBpcgPaMrxqWBp"
         crossorigin="anonymous"></script>
-<script src="main.js?v=47"></script>
+<script src="main.js?v=48"></script>
 <script src="restaurants-data.js?v=5"></script>
 <script src="supabase-auth.js?v=17"></script>
-<script src="supabase-data.js?v=26"></script>
-<script src="supabase-food.js?v=25"></script>
-<script src="supabase-festivals.js?v=5"></script>
+<script src="supabase-data.js?v=27"></script>
+<script src="supabase-food.js?v=26"></script>
+<script src="supabase-festivals.js?v=6"></script>
 <script src="supabase-waittimes.js?v=8"></script>
 <script src="waittimes-live.js?v=4"></script>
 <script src="supabase-donors.js?v=2"></script>
@@ -2337,5 +2341,6 @@
 <script src="supabase-tallies.js?v=3"></script>
 <script src="moderation.js?v=1"></script>
 <script src="checkin-verify.js?v=1"></script>
+<script src="photos.js?v=1"></script>
 </body>
 </html>

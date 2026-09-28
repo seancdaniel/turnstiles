@@ -2115,6 +2115,62 @@ body {
 .legal-text strong { font-weight: 600; color: var(--ink); }
 .legal-text .legal-date { font-size: 12px; color: var(--ink-faint); margin-bottom: 10px; }
 
+/* ── Community Photos viewer (photos.js) ── */
+.pv-stage { position: relative; background: #0E1E2E; min-height: 200px; display: flex; align-items: center; justify-content: center; }
+.pv-stage img { width: 100%; max-height: 60vh; object-fit: contain; display: block; }
+.pv-empty { font-size: 64px; padding: 60px 0; }
+.pv-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 44px; height: 44px; border-radius: 50%; border: none; cursor: pointer;
+  background: rgba(14,30,46,0.62); color: #fff; font-size: 22px;
+  display: flex; align-items: center; justify-content: center;
+}
+.pv-nav:hover { background: rgba(14,30,46,0.85); }
+.pv-nav:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.pv-prev { left: 10px; } .pv-next { right: 10px; }
+.pv-info { padding: 16px 20px 18px; }
+.pv-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pv-who { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.pv-name { font-weight: 700; font-size: 13px; color: var(--ink); }
+.pv-meta { font-size: 12px; color: var(--ink-faint); margin-top: 2px; }
+.pv-caption { font-size: 14px; color: var(--ink-light); line-height: 1.55; margin-top: 12px; }
+.pv-like {
+  display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+  min-height: 40px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--border-md); background: #fff; color: var(--ink);
+  font-size: 13px; font-weight: 700;
+}
+.pv-like .ti { font-size: 18px; }
+.pv-like.on { color: var(--coral); border-color: var(--coral); background: var(--coral-lt); }
+.pv-like:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.pv-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+.pv-actions:empty { display: none; }
+.pv-hint { font-size: 12px; color: var(--ink-faint); }
+.pv-private { font-size: 13px; color: var(--ink-light); background: var(--parchment); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; }
+
+.photo-add {
+  background: var(--parchment); border: 2px dashed var(--border-md); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+}
+.photo-add .ti { font-size: 24px; color: var(--ink-faint); }
+.photo-add span { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-faint); }
+
+/* "Share to Community Photos" under a check-in photo */
+.share-row {
+  display: flex; align-items: flex-start; gap: 10px; margin-top: 10px;
+  padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--parchment); cursor: pointer; font-size: 13px; color: var(--ink);
+}
+.share-row input { width: 18px; height: 18px; margin: 1px 0 0; flex-shrink: 0; accent-color: var(--coral); cursor: pointer; }
+.share-sub { display: block; font-size: 12px; color: var(--ink-faint); margin-top: 2px; }
+
+/* Visit History photo thumbnails */
+.vh-photos { display: flex; gap: 6px; }
+.vh-thumb { position: relative; width: 40px; height: 40px; padding: 0; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; cursor: pointer; background: #0E1E2E; flex-shrink: 0; }
+.vh-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.vh-shared { position: absolute; right: 2px; bottom: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--teal-lt); color: #0F6155; font-size: 10px; display: flex; align-items: center; justify-content: center; }
+.vh-thumb:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
 /* Shown in Sign In when a guest taps a members only page */
 .signin-gate-note {
   font-size: 13px; line-height: 1.55; color: var(--ink);

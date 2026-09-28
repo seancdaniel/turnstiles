@@ -210,6 +210,7 @@ function resetCheckinForm() {
   ciEditId = null;
   document.getElementById('ci-review').value = '';
   document.getElementById('ci-verify').checked = false;
+  document.getElementById('ci-photo-share').checked = false;
   document.getElementById('ci-photo-preview').style.display = 'none';
   document.getElementById('ci-photo-img').removeAttribute('src');
   document.getElementById('ci-photo-input').value = '';
@@ -276,11 +277,11 @@ async function submitCheckin(btn) {
     }
     var checkinId = wasEdit ? ciEditId : (res.data && res.data.id);
     if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
+    // the photo stays with the check-in, and reaches Community Photos
+    // only if the box was ticked (photos.js)
     var photoImg = document.getElementById('ci-photo-img');
-    if (photoImg && photoImg.src && photoImg.src.indexOf('data:') === 0) {
-      var small = await downscale(photoImg.src);
-      var url = await uploadPhoto(small, uid);
-      if (url) await sb.from('photos').insert({ user_id: uid, park: park, caption: review || ('Check-in at ' + park), image_url: url });
+    if (checkinId && photoImg && photoImg.src && photoImg.src.indexOf('data:') === 0) {
+      await saveCheckinPhoto(checkinId, park, photoImg.src, document.getElementById('ci-photo-share').checked);
     }
     closeOverlay('overlay-checkin');
     resetCheckinForm();
@@ -307,6 +308,7 @@ function openAddMiles(id) {
   document.getElementById('am-photo-preview').style.display = 'none';
   document.getElementById('am-photo-img').removeAttribute('src');
   document.getElementById('am-photo-input').value = '';
+  document.getElementById('am-photo-share').checked = false;
   openOverlay('overlay-add-miles');
 }
 
@@ -344,9 +346,7 @@ async function submitAddMiles(btn) {
     if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
     var photoImg = document.getElementById('am-photo-img');
     if (c && photoImg && photoImg.src && photoImg.src.indexOf('data:') === 0) {
-      var small = await downscale(photoImg.src);
-      var url = await uploadPhoto(small, uid);
-      if (url) await sb.from('photos').insert({ user_id: uid, park: c.park, caption: 'Check-in at ' + c.park, image_url: url });
+      await saveCheckinPhoto(amEditId, c.park, photoImg.src, document.getElementById('am-photo-share').checked);
     }
     closeOverlay('overlay-add-miles');
     amEditId = null;
@@ -424,7 +424,7 @@ async function submitPhoto(btn) {
       var small = await downscale(img.src);
       url = await uploadPhoto(small, STATE.currentUser.id);
     }
-    var res = await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: park, caption: caption || ('At ' + park), image_url: url });
+    var res = await sb.from('photos').insert({ user_id: STATE.currentUser.id, park: park, caption: caption || null, image_url: url });
     if (res.error) { toast('Could not share photo: ' + res.error.message, 'error'); return; }
     closeOverlay('overlay-photo');
     document.getElementById('ph-caption').value = '';
