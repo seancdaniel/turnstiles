@@ -304,8 +304,9 @@ Six items were identified. Status:
    outside-link rules if they still hold; long term affiliate links for
    tickets/hotels and maybe an optional "Turnstiles Plus". Keep Disney and
    Universal out of the app NAME, subtitle and keywords; that is where reviewers
-   and rights holders are strictest. Tier names (Padawan, Prefect, Agent J,
-   Galaxy Defender, Tri-Wizard Cup, Club 33) are trademarked properties used as
+   and rights holders are strictest. Yearly tier names (Dopey, Park Hopper,
+   Galaxy Defender, Tri-Wizard Cup, Club 33; the monthly ladder went back to
+   Bronze..Grandmaster on 2026-09-28) are trademarked properties used as
    product features: low practical risk, trivial to rename, worth knowing.
 
 ### #5 as built (2026-09-25)

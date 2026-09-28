@@ -135,14 +135,13 @@ Put its email and password **only** in App Store Connect.
 
 1. **Individual or Organization** enrollment. Decides the seller name shown on
    the store and the copyright line.
-2. **Trademarked tier names.** Low practical risk, trivial to rename, easier
-   before the first review than after a rejection:
+2. **Franchise tier names (yearly ladder).** Not checked against the USPTO;
+   what matters for Apple (5.2) is recognisable franchise references, not
+   registration. Low practical risk inside the app, trivial to rename. The
+   monthly ladder went back to Bronze..Grandmaster on 2026-09-28. Yearly:
 
    | Current | Owner | Possible replacement |
    |---|---|---|
-   | Padawan | Lucasfilm | Apprentice |
-   | Prefect | (Harry Potter usage; also a plain word) | keep, or Head Student |
-   | Agent J | Men in Black | Field Agent |
    | Dopey | Disney | Rookie |
    | Park Hopper | Disney (ticket product) | Hopper |
    | Galaxy Defender | Men in Black ride | Space Ranger (also Disney, avoid) / Star Defender |
