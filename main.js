@@ -796,7 +796,10 @@ function updatePassport() {
   document.getElementById('stat-rank').textContent = rank ? '#'+rank : '#—';
 
   // Passport card
-  document.getElementById('passport-name').textContent = (u.fname+' '+u.lname[0]+'.').toUpperCase();
+  // your own card: your name even if you hide it from others, and a made
+  // up surname in full if you never gave one (an initial would waste the joke)
+  document.getElementById('passport-name').textContent =
+    (u.fname ? u.fname + ' ' + (u.lname ? u.lname[0] + '.' : funSurname(u.id)) : u.username).toUpperCase();
   document.getElementById('passport-avatar').innerHTML = avatarHtml(u.avatarUrl, u.avatar);
   const yearlyTier = getYearlyTier(checkinsThisYear(u.id));
   document.getElementById('passport-tier').textContent = yearlyTier ? yearlyTier.name : 'Unranked';
@@ -1113,7 +1116,7 @@ function renderProfile() {
   const credAv = document.getElementById('cred-avatar');
   if (credAv) credAv.innerHTML = avatarHtml(u.avatarUrl, u.avatar);
   const credName = document.getElementById('cred-name');
-  if (credName) credName.textContent = (u.fname + ' ' + (u.lname || '')).trim() || u.username;
+  if (credName) credName.textContent = u.fname ? u.fname + ' ' + lastNameFor(u) : u.username;
   const credHandle = document.getElementById('cred-handle');
   if (credHandle) credHandle.textContent = '@' + u.username;
   const credSince = document.getElementById('cred-since');

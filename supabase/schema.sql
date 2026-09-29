@@ -1116,3 +1116,43 @@ delete from public.photos p
  where p.image_url is not null
    and (exists (select 1 from public.food_reviews f where f.photo_url = p.image_url)
      or exists (select 1 from public.festival_reviews r where r.photo_url = p.image_url));
+
+-- ============================================================
+-- MIGRATION — hide your full name. Safe to re-run.
+-- Same as supabase/name-privacy.sql, which has the full rationale.
+-- ============================================================
+
+alter table public.profiles
+  add column if not exists show_full_name boolean not null default true;
+
+revoke select on public.profiles from anon, authenticated;
+grant select (
+  id,
+  username,
+  avatar,
+  avatar_url,
+  bio,
+  location,
+  join_year,
+  created_at,
+  disney_pass,
+  universal_pass,
+  is_admin,
+  welcomed,
+  share_activity,
+  show_full_name
+) on public.profiles to authenticated;
+
+grant update (show_full_name) on public.profiles to authenticated;
+
+-- Runs with its owner's rights (the default for a view), so it can read
+-- the names the caller cannot, and the WHERE clause decides which to
+-- hand back. Signed in only.
+create or replace view public.profile_names as
+  select id, first_name, last_name
+    from public.profiles
+   where auth.uid() is not null
+     and (show_full_name or id = auth.uid());
+
+revoke all on public.profile_names from public, anon;
+grant select on public.profile_names to authenticated;

@@ -28,7 +28,7 @@ async function loadData() {
 async function loadDataNow() {
   try {
     var r = await Promise.all([
-      sb.from('profiles').select('*'),
+      fetchProfiles(),
       sb.from('checkins').select('*').order('created_at', { ascending: false }),
       sb.from('food_reviews').select('*').order('created_at', { ascending: false }),
       sb.from('photos').select('*').order('created_at', { ascending: false }),

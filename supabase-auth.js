@@ -5,6 +5,66 @@
 // in the first place. Defense in depth: validate on the way in, escape on the way out.
 function isValidUsername(u) { return /^[A-Za-z0-9_.]{3,20}$/.test(u); }
 
+// Every profiles column the site reads, by name. first_name/last_name are
+// deliberately absent: after supabase/name-privacy.sql they are not
+// readable from profiles at all, and come from the profile_names view,
+// which only returns a name its owner chose to show (or your own).
+// A new profiles column must be added here AND to the grant in that file.
+const PROFILE_COLS = 'id,username,avatar,avatar_url,bio,location,join_year,created_at,' +
+  'disney_pass,universal_pass,is_admin,welcomed,share_activity,show_full_name';
+
+// Profiles plus the names each viewer is allowed to see, as rows shaped
+// like the old select('*') so profileToUser does not care which path ran.
+// Until name-privacy.sql has been run the named select fails on
+// show_full_name, and this falls back to select('*'), which still has the
+// names in it. Either way it resolves; it never rejects loadData.
+async function fetchProfiles(userId) {
+  let q = sb.from('profiles').select(PROFILE_COLS);
+  if (userId) q = q.eq('id', userId);
+  let res = await q;
+  if (res.error) {
+    let q2 = sb.from('profiles').select('*');
+    if (userId) q2 = q2.eq('id', userId);
+    return q2;
+  }
+  let nq = sb.from('profile_names').select('id,first_name,last_name');
+  if (userId) nq = nq.eq('id', userId);
+  const names = await nq;
+  const byId = {};
+  (names.data || []).forEach(n => { byId[n.id] = n; });
+  return { data: (res.data || []).map(p => Object.assign({}, p, {
+    first_name: byId[p.id] ? byId[p.id].first_name : null,
+    last_name: byId[p.id] ? byId[p.id].last_name : null
+  })), error: null };
+}
+
+// A made up theme park surname for anyone who left theirs blank, instead
+// of the "undefined" the ticket card used to print. Picked from the user
+// id, so the same person always gets the same one, and nothing is stored:
+// add a real last name and it takes over.
+const FUN_SURNAMES = [
+  'McChurro', 'Queueington', 'Von Pretzel', 'Loopsworth', 'Ponchobottom',
+  'Splashmore', "O'Coaster", 'Funnelcake', 'Snackington', 'Waitsworth',
+  'Turkeyleg', 'Van Sunscreen', 'Droptower', 'Lanyardson', 'Rideaway',
+  'Strollerman', 'Sweatington', 'Parkbench', 'De Popcorn', 'Longline',
+  'Wristbandson', 'Sprinkleton', 'Coasterfield', 'Fireworth'
+];
+function funSurname(id) {
+  let h = 0;
+  const s = String(id || '');
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return FUN_SURNAMES[h % FUN_SURNAMES.length];
+}
+function lastNameFor(u) { return u.lname || funSurname(u.id); }
+
+// The name other people see: first and last name if the person shows it,
+// otherwise just the username. When hidden, the view never sent the name,
+// so an empty fname covers both cases.
+function publicName(u) {
+  if (u.showFullName === false || !u.fname) return u.username;
+  return u.fname + ' ' + lastNameFor(u);
+}
+
 function profileToUser(p, email) {
   return {
     id: p.id, username: p.username,
@@ -17,14 +77,16 @@ function profileToUser(p, email) {
     // way existing rows and a database that has not run the migration yet both
     // behave exactly as before
     shareActivity: p.share_activity !== false,
+    // opt-out too, same reasoning
+    showFullName: p.show_full_name !== false,
     parks: [], joinYear: p.join_year || new Date().getFullYear()
   };
 }
 
 async function fetchProfile(userId) {
-  const { data, error } = await sb.from('profiles').select('*').eq('id', userId).single();
-  if (error) { console.log('profile fetch error:', error.message); return null; }
-  return data;
+  const { data, error } = await fetchProfiles(userId);
+  if (error || !data || !data.length) { console.log('profile fetch error:', error ? error.message : 'not found'); return null; }
+  return data[0];
 }
 
 function enterApp(user) {
@@ -207,6 +269,7 @@ function openEditProfile() {
   document.getElementById('ep-disney-pass').value = u.disneyPass || '';
   document.getElementById('ep-universal-pass').value = u.universalPass || '';
   document.getElementById('ep-share-activity').checked = u.shareActivity !== false;
+  document.getElementById('ep-show-name').checked = u.showFullName !== false;
   document.getElementById('ep-user-err').classList.remove('show');
   openOverlay('overlay-edit-profile');
 }
@@ -221,6 +284,7 @@ async function submitEditProfile() {
   const disneyPass = document.getElementById('ep-disney-pass').value;
   const universalPass = document.getElementById('ep-universal-pass').value;
   const shareActivity = document.getElementById('ep-share-activity').checked;
+  const showFullName = document.getElementById('ep-show-name').checked;
   const err = document.getElementById('ep-user-err');
   err.classList.remove('show');
   if (!fname || !username) { toast('First name and username are required.', 'error'); return; }
@@ -248,7 +312,8 @@ async function submitEditProfile() {
   const patch = {
     first_name: fname, last_name: lname, username: username,
     avatar: editSelectedAvatar || u.avatar, avatar_url: avatarUrl, bio: bio, location: location,
-    disney_pass: disneyPass, universal_pass: universalPass, share_activity: shareActivity
+    disney_pass: disneyPass, universal_pass: universalPass, share_activity: shareActivity,
+    show_full_name: showFullName
   };
   let { error } = await sb.from('profiles').update(patch).eq('id', u.id);
   // same reasoning as wait_times.ride_id: the deploy lands before the migration
@@ -257,11 +322,16 @@ async function submitEditProfile() {
     delete patch.share_activity;
     ({ error } = await sb.from('profiles').update(patch).eq('id', u.id));
   }
+  if (error && /show_full_name/.test(error.message || '')) {
+    delete patch.show_full_name;
+    ({ error } = await sb.from('profiles').update(patch).eq('id', u.id));
+  }
   if (error) { toast('Could not save: ' + error.message, 'error'); return; }
   STATE.currentUser = Object.assign({}, u, {
     fname: fname, lname: lname, username: username,
     avatar: editSelectedAvatar || u.avatar, avatarUrl: avatarUrl || '', bio: bio, location: location,
-    disneyPass: disneyPass, universalPass: universalPass, shareActivity: shareActivity
+    disneyPass: disneyPass, universalPass: universalPass, shareActivity: shareActivity,
+    showFullName: showFullName
   });
   document.getElementById('nav-avatar').innerHTML = avatarHtml(STATE.currentUser.avatarUrl, STATE.currentUser.avatar);
   document.getElementById('nav-username').textContent = STATE.currentUser.username;

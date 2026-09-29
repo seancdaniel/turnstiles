@@ -61,7 +61,8 @@ async function submitInvite(btn) {
       ? session.data.session.access_token : null;
     if (!token) { inviteError('Your session has expired. Sign in again.'); return; }
 
-    var who = STATE.currentUser.fname || STATE.currentUser.username || '';
+    // someone who hides their name signs the invite with their username
+    var who = (STATE.currentUser.showFullName !== false && STATE.currentUser.fname) || STATE.currentUser.username || '';
 
     var res = await fetch(siteUrl('/api/invite'), {
       method: 'POST',

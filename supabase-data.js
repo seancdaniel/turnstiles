@@ -45,7 +45,7 @@ function openUserProfile(userId) {
   var yearlyTier = getYearlyTier(checkinsThisYear(userId));
 
   document.getElementById('up-avatar').innerHTML = avatarHtml(u.avatarUrl, u.avatar);
-  document.getElementById('up-name').textContent = (u.fname + ' ' + (u.lname || '')).trim() || u.username;
+  document.getElementById('up-name').textContent = publicName(u);
   document.getElementById('up-username').textContent = '@' + u.username;
   document.getElementById('up-bio').textContent = u.bio || 'No bio yet.';
   document.getElementById('up-stat-visits').textContent = my.length;
@@ -138,7 +138,7 @@ function rerenderActive() {
 async function loadData() {
   try {
     var r = await Promise.all([
-      sb.from('profiles').select('*'),
+      fetchProfiles(),
       sb.from('checkins').select('*').order('created_at', { ascending: false }),
       sb.from('food_reviews').select('*').order('created_at', { ascending: false }),
       sb.from('photos').select('*').order('created_at', { ascending: false })
