@@ -588,25 +588,34 @@ async function toggleFavoriteCurrent() {
   updateFdFavButton();
 }
 
+// Want to Try box under Next Tier on the home page. Shows the newest few
+// so the hero column stays short; "Show all" opens the rest in place.
+var WTT_PREVIEW = 4;
+var wttShowAll = false;
 function renderFoodFavorites() {
   var el = document.getElementById('my-food-favorites');
   if (!el || !STATE.currentUser) return;
   var mine = STATE.foodFavorites.filter(function (f) { return f.userId === STATE.currentUser.id; });
+  var hd = '<div class="wtt-hd"><span>Want to Try' + (mine.length ? ' <b>' + mine.length + '</b>' : '') + '</span>' +
+    '<button class="wtt-link" onclick="showView(\'food\')">Food Scores <i class="ti ti-arrow-right"></i></button></div>';
   if (!mine.length) {
-    el.innerHTML = '<div class="empty-state"><div class="empty-state-sub">Nothing on your list yet.<br>Save an item from Food Scores to remember it for next time.</div></div>';
+    el.innerHTML = hd + '<div class="wtt-empty">Nothing saved yet. Tap <b>☆ Want to Try</b> on any food in Food Scores and it lands here.</div>';
     return;
   }
-  el.innerHTML = mine.map(function (f) {
+  var shown = wttShowAll ? mine : mine.slice(0, WTT_PREVIEW);
+  el.innerHTML = hd + shown.map(function (f) {
     var loc = f.park + (f.spot ? ' · ' + f.spot : '');
-    return '<div class="myfr-row">' +
-      '<div class="myfr-emoji">' + foodEmoji(f.itemName) + '</div>' +
-      '<div class="myfr-info"><div class="myfr-name">' + escapeHtml(f.itemName) + '</div><div class="myfr-loc">' + escapeHtml(loc) + '</div></div>' +
-      '<div class="myfr-actions">' +
-        '<button class="btn-sm primary" onclick="rateFavorite(\'' + f.id + '\')">Rate It</button>' +
-        '<button class="btn-sm danger" onclick="removeFavorite(\'' + f.id + '\')">Remove</button>' +
-      '</div>' +
+    return '<div class="wtt-row">' +
+      '<div class="wtt-emoji">' + foodEmoji(f.itemName) + '</div>' +
+      '<div class="wtt-info"><div class="wtt-name">' + escapeHtml(f.itemName) + '</div><div class="wtt-loc">' + escapeHtml(loc) + '</div></div>' +
+      '<button class="wtt-rate" onclick="rateFavorite(\'' + f.id + '\')"><i class="ti ti-star"></i> Rate</button>' +
+      '<button class="wtt-x" aria-label="Remove ' + escapeHtml(f.itemName) + ' from Want to Try" onclick="removeFavorite(\'' + f.id + '\')"><i class="ti ti-x"></i></button>' +
       '</div>';
-  }).join('');
+  }).join('') +
+  (mine.length > WTT_PREVIEW
+    ? '<button class="wtt-more" onclick="wttShowAll=!wttShowAll;renderFoodFavorites()">' +
+        (wttShowAll ? 'Show fewer' : 'Show all ' + mine.length) + '</button>'
+    : '');
 }
 
 function rateFavorite(id) {

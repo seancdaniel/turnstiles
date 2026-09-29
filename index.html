@@ -35,7 +35,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Abril+Fatface&family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=93">
+  <link rel="stylesheet" href="styles.css?v=95">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -1376,6 +1376,10 @@
                  the card says where you stand, this says what is next.
                  Built straight from MONTHLY_TIERS / YEARLY_TIERS. -->
             <div class="nextier" id="nextier"></div>
+            <!-- Want to Try, moved up from the bottom of the page so saved foods
+                 are one glance away. Same material as Next Tier above it.
+                 Built by renderFoodFavorites() in supabase-food.js. -->
+            <div class="wtt" id="my-food-favorites"></div>
           </div>
           <!-- Passport -->
           <div class="passport-col">
@@ -1433,90 +1437,6 @@
         </div>
       </section>
 
-      <!-- PARK SELECTOR -->
-      <section class="section-wrap" id="parks">
-        <div class="section-head">
-          <div><h2 class="section-title">SELECT A PARK</h2><p class="section-sub">Log a check-in for any park</p></div>
-        </div>
-        <div class="tabs">
-          <button class="tab active" onclick="switchParkTab(this,'disney')">Disney World</button>
-          <button class="tab" onclick="switchParkTab(this,'universal')">Universal Orlando</button>
-          <button class="tab" onclick="switchParkTab(this,'water')">Water Parks</button>
-        </div>
-        <div id="ptab-disney">
-          <div class="park-grid">
-            <div class="park-card" onclick="quickCheckin('Magic Kingdom')">
-              <span class="park-icon-big">🏰</span>
-              <div class="park-card-name">MAGIC KINGDOM</div>
-              <div class="park-card-visits" id="pv-Magic Kingdom">0 visits</div>
-              <button class="checkin-btn featured"><i class="ti ti-plus"></i> Check In</button>
-            </div>
-            <div class="park-card" onclick="quickCheckin('EPCOT')">
-              <span class="park-icon-big">🌍</span>
-              <div class="park-card-name">EPCOT</div>
-              <div class="park-card-visits" id="pv-EPCOT">0 visits</div>
-              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
-            </div>
-            <div class="park-card" onclick="quickCheckin('Hollywood Studios')">
-              <span class="park-icon-big">🎬</span>
-              <div class="park-card-name">HOLLYWOOD STUDIOS</div>
-              <div class="park-card-visits" id="pv-Hollywood Studios">0 visits</div>
-              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
-            </div>
-            <div class="park-card" onclick="quickCheckin('Animal Kingdom')">
-              <span class="park-icon-big">🦁</span>
-              <div class="park-card-name">ANIMAL KINGDOM</div>
-              <div class="park-card-visits" id="pv-Animal Kingdom">0 visits</div>
-              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
-            </div>
-          </div>
-        </div>
-        <div id="ptab-universal" style="display:none">
-          <div class="park-grid">
-            <div class="park-card" onclick="quickCheckin('Universal Studios Florida')">
-              <span class="park-icon-big">🎥</span>
-              <div class="park-card-name">UNIVERSAL STUDIOS FL</div>
-              <div class="park-card-visits" id="pv-Universal Studios Florida">0 visits</div>
-              <button class="checkin-btn featured"><i class="ti ti-plus"></i> Check In</button>
-            </div>
-            <div class="park-card" onclick="quickCheckin('Islands of Adventure')">
-              <span class="park-icon-big">⚓</span>
-              <div class="park-card-name">ISLANDS OF ADVENTURE</div>
-              <div class="park-card-visits" id="pv-Islands of Adventure">0 visits</div>
-              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
-            </div>
-            <div class="park-card" onclick="quickCheckin('Epic Universe')">
-              <span class="park-icon-big">🌌</span>
-              <div class="park-card-name">EPIC UNIVERSE</div>
-              <div class="park-card-visits" id="pv-Epic Universe">0 visits</div>
-              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
-            </div>
-          </div>
-        </div>
-        <div id="ptab-water" style="display:none">
-          <div class="park-grid park-grid-3">
-            <div class="park-card" onclick="quickCheckin('Blizzard Beach')">
-              <span class="park-icon-big">⛷️</span>
-              <div class="park-card-name">BLIZZARD BEACH</div>
-              <div class="park-card-visits" id="pv-Blizzard Beach">0 visits</div>
-              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
-            </div>
-            <div class="park-card" onclick="quickCheckin('Typhoon Lagoon')">
-              <span class="park-icon-big">🌊</span>
-              <div class="park-card-name">TYPHOON LAGOON</div>
-              <div class="park-card-visits" id="pv-Typhoon Lagoon">0 visits</div>
-              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
-            </div>
-            <div class="park-card" onclick="quickCheckin('Volcano Bay')">
-              <span class="park-icon-big">🌋</span>
-              <div class="park-card-name">VOLCANO BAY</div>
-              <div class="park-card-visits" id="pv-Volcano Bay">0 visits</div>
-              <button class="checkin-btn"><i class="ti ti-plus"></i> Check In</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- PROFILE (merged into the same page as My Parks) -->
       <section class="section-wrap" style="padding-bottom:52px">
         <!-- Past Accomplishments. This replaced a profile header card that had
@@ -1536,10 +1456,6 @@
           <div><h2 class="section-title">MY FOOD REVIEWS</h2><p class="section-sub">Ratings you've left - Edit to update</p></div>
         </div>
         <div class="light-card" id="my-food-reviews" style="margin-bottom:26px"></div>
-        <div class="section-head" style="margin-bottom:14px">
-          <div><h2 class="section-title">WANT TO TRY</h2><p class="section-sub">Saved from Food Scores - rate it once you've tried it</p></div>
-        </div>
-        <div class="light-card" id="my-food-favorites" style="margin-bottom:26px"></div>
         <div class="section-head" style="margin-bottom:14px">
           <div><h2 class="section-title">VISIT HISTORY</h2><p class="section-sub">Every check-in you've logged</p></div>
         </div>
@@ -2339,7 +2255,7 @@
 <script src="restaurants-data.js?v=5"></script>
 <script src="supabase-auth.js?v=18"></script>
 <script src="supabase-data.js?v=29"></script>
-<script src="supabase-food.js?v=28"></script>
+<script src="supabase-food.js?v=29"></script>
 <script src="supabase-festivals.js?v=6"></script>
 <script src="supabase-waittimes.js?v=8"></script>
 <script src="waittimes-live.js?v=4"></script>
