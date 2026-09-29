@@ -228,7 +228,8 @@ body {
    button, so it stands out from the navy around it. On #B83D2B only solid
    cream text clears 4.5:1 (5.3:1); faded cream (0.85 = 4.3) and the gold
    accent (3.6) do not, so hierarchy comes from size and weight, never from
-   opacity. The Rate button inverts: coral on cream, also 5.3:1. */
+   opacity. Each saved food is a cream card inside the coral, so the items
+   stand out from the frame instead of blending into it. */
 .wtt {
   --wtt-bg: #B83D2B;
   --wtt-ink: #FFF8EC;
@@ -261,38 +262,39 @@ body {
 .wtt-link:hover { text-decoration-color: var(--wtt-ink); }
 .wtt-row {
   display: flex; align-items: center; gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--wtt-rule);
+  margin-top: 10px; padding: 10px 10px 10px 12px;
+  background: var(--wtt-ink); border-radius: 8px;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.12);
 }
-.wtt-row:last-of-type { border-bottom: none; }
 .wtt-emoji { font-size: 22px; width: 30px; text-align: center; flex-shrink: 0; }
 .wtt-info { flex: 1; min-width: 0; }
 .wtt-name {
   font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.6px; line-height: 1.1;
-  color: var(--wtt-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .wtt-loc {
-  font-size: 11px; font-weight: 300; color: var(--wtt-ink); margin-top: 2px;
+  font-size: 11px; color: var(--ink-light); margin-top: 2px;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .wtt-rate {
   flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px;
   min-height: 34px; padding: 0 12px; border-radius: 6px; cursor: pointer;
-  border: 1px solid var(--wtt-ink); background: var(--wtt-ink);
-  color: var(--wtt-bg); font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+  border: 1px solid var(--wtt-bg); background: var(--wtt-bg);
+  color: var(--wtt-ink); font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
 }
-.wtt-rate:hover { background: #fff; }
+.wtt-rate:hover { background: #99301F; border-color: #99301F; }
 .wtt-x {
   flex-shrink: 0; width: 34px; height: 34px; border-radius: 6px; cursor: pointer;
-  border: 1px solid var(--wtt-rule); background: none; color: var(--wtt-ink); font-size: 15px;
+  border: 1px solid var(--border-md); background: none; color: var(--ink); font-size: 15px;
   display: inline-flex; align-items: center; justify-content: center;
 }
-.wtt-x:hover { border-color: var(--wtt-ink); background: rgba(255,248,236,0.1); }
-.wtt-rate:focus-visible, .wtt-x:focus-visible, .wtt-link:focus-visible, .wtt-more:focus-visible { outline: 2px solid var(--wtt-ink); outline-offset: 2px; }
+.wtt-x:hover { border-color: var(--ink); background: rgba(26,42,58,0.06); }
+.wtt-link:focus-visible, .wtt-more:focus-visible { outline: 2px solid var(--wtt-ink); outline-offset: 2px; }
+.wtt-rate:focus-visible, .wtt-x:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .wtt-empty { font-size: 13px; font-weight: 300; line-height: 1.55; color: var(--wtt-ink); padding: 10px 0 4px; }
 .wtt-empty b { font-weight: 700; }
 .wtt-more {
-  display: block; width: 100%; margin-top: 4px; padding: 9px 0 3px;
+  display: block; width: 100%; margin-top: 10px; padding: 9px 0 3px;
   background: none; border: none; border-top: 1px solid var(--wtt-rule); cursor: pointer;
   font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--wtt-ink);
 }
