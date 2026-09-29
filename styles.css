@@ -279,10 +279,12 @@ body {
 .wtt-rate {
   flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px;
   min-height: 34px; padding: 0 12px; border-radius: 6px; cursor: pointer;
-  border: 1px solid var(--wtt-bg); background: var(--wtt-bg);
+  /* the page's own background navy (body, #142636). Only this button:
+     .wtt-rate is used nowhere but the Want to Try box. */
+  border: 1px solid #142636; background: #142636;
   color: var(--wtt-ink); font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
 }
-.wtt-rate:hover { background: #99301F; border-color: #99301F; }
+.wtt-rate:hover { background: var(--navy); border-color: var(--navy); }
 .wtt-x {
   flex-shrink: 0; width: 34px; height: 34px; border-radius: 6px; cursor: pointer;
   border: 1px solid var(--border-md); background: none; color: var(--ink); font-size: 15px;
