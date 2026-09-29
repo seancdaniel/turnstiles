@@ -1163,3 +1163,12 @@ create or replace view public.profile_names as
 
 revoke all on public.profile_names from public, anon;
 grant select on public.profile_names to authenticated;
+
+-- ============================================================
+-- MIGRATION — check-in completed flag. Safe to re-run.
+-- Same as supabase/checkin-completed.sql.
+-- ============================================================
+alter table public.checkins
+  add column if not exists completed boolean not null default false;
+
+update public.checkins set completed = true where miles > 0 and not completed;

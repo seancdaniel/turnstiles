@@ -52,7 +52,11 @@ async function loadDataNow() {
       return { id: c.id, userId: c.user_id, park: c.park, date: c.visit_date,
         miles: Number(c.miles) || 0, foods: c.foods || [],
         score: c.score != null ? Number(c.score) : null, review: c.review || '',
-        verified: c.verified, ts: new Date(c.created_at).getTime() };
+        verified: c.verified,
+        // finished via Complete Check-In; logged miles count too, which
+        // covers rows from before the column existed
+        completed: !!c.completed || Number(c.miles) > 0,
+        ts: new Date(c.created_at).getTime() };
     });
     STATE.foodReviews = (r[2].data || []).map(function (f) {
       return { id: f.id, userId: f.user_id,

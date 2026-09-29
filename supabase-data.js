@@ -150,7 +150,11 @@ async function loadData() {
       return { id: c.id, userId: c.user_id, park: c.park, date: c.visit_date,
         miles: Number(c.miles) || 0, foods: c.foods || [],
         score: c.score != null ? Number(c.score) : null, review: c.review || '',
-        verified: c.verified, ts: new Date(c.created_at).getTime() };
+        verified: c.verified,
+        // finished via Complete Check-In; logged miles count too, which
+        // covers rows from before the column existed
+        completed: !!c.completed || Number(c.miles) > 0,
+        ts: new Date(c.created_at).getTime() };
     });
     STATE.foodReviews = (r[2].data || []).map(function (f) {
       return { id: f.id, userId: f.user_id,
@@ -334,15 +338,27 @@ function rateAFoodFromCheckin() {
   }
 }
 
-async function submitAddMiles(btn) {
+// Save and Finalize Without Miles both land here, and both mark the visit
+// completed, which is what takes it off the home page reminder. Skipping
+// miles leaves them untouched (Visit History can still add them later),
+// but a photo picked in the form is still saved.
+async function submitAddMiles(btn, skipMiles) {
   if (!STATE.currentUser || !amEditId) { closeOverlay('overlay-add-miles'); return; }
   if (btn && btn.disabled) return; // see submitCheckin - same double-click guard
   if (btn) btn.disabled = true;
   try {
     var c = STATE.checkins.find(function (x) { return x.id === amEditId; });
     var uid = STATE.currentUser.id;
-    var miles = parseFloat(document.getElementById('am-miles').value) || 0;
-    var res = await sb.from('checkins').update({ miles: miles }).eq('id', amEditId).eq('user_id', uid);
+    var patch = { completed: true };
+    if (!skipMiles) patch.miles = parseFloat(document.getElementById('am-miles').value) || 0;
+    var res = await sb.from('checkins').update(patch).eq('id', amEditId).eq('user_id', uid);
+    // the deploy lands before checkin-completed.sql is run by hand
+    if (res.error && /completed/.test(res.error.message || '')) {
+      delete patch.completed;
+      res = Object.keys(patch).length
+        ? await sb.from('checkins').update(patch).eq('id', amEditId).eq('user_id', uid)
+        : { error: null };
+    }
     if (res.error) { toast('Could not save: ' + res.error.message, 'error'); return; }
     var photoImg = document.getElementById('am-photo-img');
     if (c && photoImg && photoImg.src && photoImg.src.indexOf('data:') === 0) {
@@ -352,7 +368,7 @@ async function submitAddMiles(btn) {
     amEditId = null;
     document.getElementById('am-miles').value = '';
     await loadData();
-    toast('Check-in updated!');
+    toast(skipMiles ? 'Check-in complete!' : 'Check-in updated!');
   } finally {
     if (btn) btn.disabled = false;
   }
@@ -368,6 +384,8 @@ function renderCurrentCheckin() {
   var mine = STATE.checkins.filter(function (c) { return c.userId === u.id; }); // newest-first, per loadData()'s query order
   if (!mine.length) { box.style.display = 'none'; return; }
   var latest = mine[0];
+  // finished visits need no nudge; the next check-in brings it back
+  if (latest.completed) { box.style.display = 'none'; return; }
   box.dataset.checkinId = latest.id;
   document.getElementById('cp-park').textContent = latest.park;
   document.getElementById('cp-date').textContent = formatDate(latest.date);
