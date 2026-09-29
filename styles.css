@@ -224,64 +224,77 @@ body {
    the columns shrink makes the names truncate with an ellipsis instead. */
 .hero-inner > * { min-width: 0; }
 
-/* Want to Try, under Next Tier: same card, same label, same rules */
+/* Want to Try, under Next Tier. Coral, the same as the Complete Check-In
+   button, so it stands out from the navy around it. On #B83D2B only solid
+   cream text clears 4.5:1 (5.3:1); faded cream (0.85 = 4.3) and the gold
+   accent (3.6) do not, so hierarchy comes from size and weight, never from
+   opacity. The Rate button inverts: coral on cream, also 5.3:1. */
 .wtt {
+  --wtt-bg: #B83D2B;
+  --wtt-ink: #FFF8EC;
+  --wtt-rule: rgba(255,248,236,0.22);
   margin-top: 14px;
-  border: 1px solid rgba(231,206,138,0.16);
+  border: 1px solid #99301F;
   border-radius: 10px;
   padding: 15px 18px 12px;
-  background: rgba(255,255,255,0.022);
+  background: var(--wtt-bg);
+  color: var(--wtt-ink);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.22);
 }
 .wtt-hd {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
-  color: rgba(244,239,227,0.42);
+  font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--wtt-ink);
   padding-bottom: 11px; margin-bottom: 4px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--wtt-rule);
 }
-.wtt-hd b { color: var(--gold-lt); margin-left: 4px; }
+.wtt-hd b {
+  margin-left: 6px; padding: 1px 7px; border-radius: 999px;
+  background: var(--wtt-ink); color: var(--wtt-bg); letter-spacing: 0.5px;
+}
 .wtt-link {
   background: none; border: none; cursor: pointer; padding: 4px 0;
-  font: inherit; letter-spacing: 1.6px; color: var(--gold-lt);
+  font: inherit; letter-spacing: 1.6px; color: var(--wtt-ink);
   display: inline-flex; align-items: center; gap: 4px;
+  text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--wtt-rule);
 }
-.wtt-link:hover { color: #fff; }
+.wtt-link:hover { text-decoration-color: var(--wtt-ink); }
 .wtt-row {
   display: flex; align-items: center; gap: 12px;
   padding: 10px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--wtt-rule);
 }
 .wtt-row:last-of-type { border-bottom: none; }
 .wtt-emoji { font-size: 22px; width: 30px; text-align: center; flex-shrink: 0; }
 .wtt-info { flex: 1; min-width: 0; }
 .wtt-name {
-  font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 0.6px; line-height: 1.1;
-  color: #F4EFE3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.6px; line-height: 1.1;
+  color: var(--wtt-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .wtt-loc {
-  font-size: 11px; color: rgba(244,239,227,0.5); margin-top: 2px;
+  font-size: 11px; font-weight: 300; color: var(--wtt-ink); margin-top: 2px;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .wtt-rate {
   flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px;
   min-height: 34px; padding: 0 12px; border-radius: 6px; cursor: pointer;
-  border: 1px solid rgba(231,206,138,0.45); background: rgba(231,206,138,0.08);
-  color: var(--gold-lt); font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+  border: 1px solid var(--wtt-ink); background: var(--wtt-ink);
+  color: var(--wtt-bg); font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
 }
-.wtt-rate:hover { background: rgba(231,206,138,0.18); color: #fff; }
+.wtt-rate:hover { background: #fff; }
 .wtt-x {
   flex-shrink: 0; width: 34px; height: 34px; border-radius: 6px; cursor: pointer;
-  border: 1px solid transparent; background: none; color: rgba(244,239,227,0.4); font-size: 15px;
+  border: 1px solid var(--wtt-rule); background: none; color: var(--wtt-ink); font-size: 15px;
   display: inline-flex; align-items: center; justify-content: center;
 }
-.wtt-x:hover { color: #F4EFE3; border-color: rgba(255,255,255,0.14); }
-.wtt-rate:focus-visible, .wtt-x:focus-visible, .wtt-link:focus-visible, .wtt-more:focus-visible { outline: 2px solid var(--gold-lt); outline-offset: 2px; }
-.wtt-empty { font-size: 12px; line-height: 1.55; color: rgba(244,239,227,0.55); padding: 10px 0 4px; }
-.wtt-empty b { color: #F4EFE3; font-weight: 600; }
+.wtt-x:hover { border-color: var(--wtt-ink); background: rgba(255,248,236,0.1); }
+.wtt-rate:focus-visible, .wtt-x:focus-visible, .wtt-link:focus-visible, .wtt-more:focus-visible { outline: 2px solid var(--wtt-ink); outline-offset: 2px; }
+.wtt-empty { font-size: 13px; font-weight: 300; line-height: 1.55; color: var(--wtt-ink); padding: 10px 0 4px; }
+.wtt-empty b { font-weight: 700; }
 .wtt-more {
   display: block; width: 100%; margin-top: 4px; padding: 9px 0 3px;
-  background: none; border: none; border-top: 1px solid rgba(255,255,255,0.06); cursor: pointer;
-  font-size: 9px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--gold-lt);
+  background: none; border: none; border-top: 1px solid var(--wtt-rule); cursor: pointer;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--wtt-ink);
 }
 
 /* ── LEADERBOARD — two parchment boards, each with its own park picker ──
