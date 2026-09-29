@@ -42,8 +42,12 @@ grant update (
   disney_pass,
   universal_pass,
   share_activity,
-  welcomed
+  welcomed,
+  show_full_name
 ) on public.profiles to authenticated;
+-- (show_full_name added 2026-09-29; this file needs activity-privacy.sql and
+-- name-privacy.sql's columns to exist, and name-privacy.sql now repeats
+-- this section so running that one alone is enough.)
 
 
 -- ------------------------------------------------------------

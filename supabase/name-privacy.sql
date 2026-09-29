@@ -23,8 +23,33 @@
 -- supabase-auth.js), so add it there too.
 -- ============================================================
 
+-- share_activity comes from activity-privacy.sql, which was never run
+-- on the live project (found 2026-09-29 when this file failed on it), so
+-- it is created here too. Harmless if it already exists.
+alter table public.profiles
+  add column if not exists share_activity boolean not null default true;
 alter table public.profiles
   add column if not exists show_full_name boolean not null default true;
+
+-- The admin loophole from security-hardening.sql section 1, which had also
+-- never run (it grants share_activity too, so it failed the same way).
+-- Only these columns are writable from the site; is_admin, id, join_year
+-- and created_at can only be changed in the SQL editor.
+revoke update on public.profiles from anon, authenticated;
+grant update (
+  first_name,
+  last_name,
+  username,
+  avatar,
+  avatar_url,
+  bio,
+  location,
+  disney_pass,
+  universal_pass,
+  share_activity,
+  welcomed,
+  show_full_name
+) on public.profiles to authenticated;
 
 revoke select on public.profiles from anon, authenticated;
 grant select (
@@ -44,7 +69,6 @@ grant select (
   show_full_name
 ) on public.profiles to authenticated;
 
-grant update (show_full_name) on public.profiles to authenticated;
 
 -- Runs with its owner's rights (the default for a view), so it can read
 -- the names the caller cannot, and the WHERE clause decides which to
