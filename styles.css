@@ -3481,6 +3481,16 @@ body {
 @media (max-width: 900px) {
   .hero-inner { grid-template-columns: 1fr; gap: 32px; padding: 40px 20px 40px; }
 }
+/* Phones: the hero buttons go (Check In lives in the top bar, Edit Profile
+   in the avatar menu, and Beta is noise here), and Want to Try moves above
+   Next Tier so saved foods are the first thing under the profile card.
+   Desktop keeps the buttons and the original order. */
+@media (max-width: 900px) {
+  .cred-col { display: flex; flex-direction: column; }
+  .cred-col .hero-actions { display: none; }
+  .cred-col .wtt { order: 1; margin-top: 18px; }
+  .cred-col .nextier { order: 2; }
+}
 @media (max-width: 600px) {
   .hero-actions { flex-wrap: wrap; }
   .hero-actions .btn-hero, .hero-actions .btn-hero-outline { flex: 1 1 100%; justify-content: center; }

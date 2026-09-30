@@ -37,7 +37,7 @@
 <!-- Same Tabler 2.44.0 icon font, from jsDelivr: cdnjs dropped this version and
      its old address started returning 404, which blanked every icon on the site. -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=98">
+  <link rel="stylesheet" href="styles.css?v=99">
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -1330,7 +1330,7 @@
     <div class="page">
       <section class="hero-wrap">
         <div class="hero-inner">
-          <div>
+          <div class="cred-col">
             <!-- Passholder credential: identity -> standing -> figures.
                  Replaces the old marketing-style hero (starburst eyebrow, 90px
                  outlined wordmark, EST. banner, loose medals) - this page is the
@@ -1367,6 +1367,8 @@
               </div>
             </div>
             <div class="hero-actions">
+              <!-- hidden on phones (see .cred-col in styles.css): Check In is
+                   in the top bar and Edit Profile is in the avatar menu -->
               <button class="btn-hero" onclick="newCheckin()"><i class="ti ti-circle-plus"></i> <span id="cred-cta">Log a Check-In</span></button>
               <button class="btn-hero-outline" onclick="showView('community')">Browse Community</button>
               <button class="btn-hero-outline" onclick="openEditProfile()"><i class="ti ti-pencil" style="font-size:11px"></i> Edit Profile</button>
